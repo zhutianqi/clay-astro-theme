@@ -9,6 +9,6 @@ import sitemap from '@astrojs/sitemap';
 // });
 
 export default defineConfig({
-  site: "https://zhutianqi.github.io/clay-astro-theme",
-  integrations: [sitemap()],
+  site: "https://zhutianqi.github.io",
+  base: "/clay-astro-theme",
 });
