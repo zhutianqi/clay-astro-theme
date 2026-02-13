@@ -1,6 +1,6 @@
 ---
 templateKey: elements
-title: Clay Astro
+title: Max's Wine World
 image: /img/clay-images-7.jpg
 description: A stunning Astro theme designed for captivating image-centric websites, perfect for photographers, portfolios, and blogs.
 thumbnail: /img/clay-images-7.jpg
