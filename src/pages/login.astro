@@ -1,0 +1,39 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="登录">
+  <main style="text-align: center; padding: 5rem;">
+    <h1>会员登录</h1>
+    
+    <div data-netlify-identity-button style="margin-bottom: 2rem;"></div>
+
+    <p>--- 或者 ---</p>
+
+    <button 
+      id="login-trigger"
+      style="padding: 10px 20px; background: #00AD9F; color: white; border: none; border-radius: 4px; cursor: pointer;"
+    >
+      点击此处打开登录框
+    </button>
+  </main>
+
+  <script is:inline>
+    // 逻辑 A：点击手动按钮弹出
+    document.getElementById('login-trigger')?.addEventListener('click', () => {
+      if (window.netlifyIdentity) {
+        window.netlifyIdentity.open();
+      } else {
+        alert('Netlify 脚本还没加载好，请刷新重试');
+      }
+    });
+
+    // 逻辑 B：处理登录成功后的跳转
+    if (window.netlifyIdentity) {
+      window.netlifyIdentity.on('login', user => {
+        console.log('登录成功:', user);
+        window.location.href = '/dashboard/'; 
+      });
+    }
+  </script>
+</Layout>
