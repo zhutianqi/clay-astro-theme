@@ -43,6 +43,7 @@ const { title, description } = Astro.props;
                 document.documentElement.removeAttribute("data-theme");
             }
         </script>
+        <script is:inline src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
     </head>
     <body class="site-wrapper">
         <Header title={title} />
@@ -136,6 +137,28 @@ const { title, description } = Astro.props;
                     document.documentElement.removeAttribute("data-theme");
                 }
             });
+        </script>
+        <script is:inline>
+            if (window.netlifyIdentity) {
+                // 1. 如果是在本地开发环境，手动指向你的 Netlify 网址
+                // 将 'https://你的项目名.netlify.app' 替换为你真实的线上地址
+                if (location.hostname === "localhost" || location.hostname === "127.0.0.1") {
+                window.netlifyIdentity.init({
+                    APIConfig: {
+                    apiURL: 'https://glistening-caramel-cfa689.netlify.app/.netlify/identity'
+                    }
+                });
+                }
+
+                // 2. 登录跳转逻辑
+                window.netlifyIdentity.on("init", user => {
+                if (!user) {
+                    window.netlifyIdentity.on("login", () => {
+                    window.location.href = "/dashboard/";
+                    });
+                }
+                });
+            }
         </script>
     </body>
 </html>
