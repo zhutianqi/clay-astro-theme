@@ -2,23 +2,40 @@
 // src/pages/dashboard.astro
 import Layout from '../layouts/Layout.astro';
 
-// 获取 Netlify Identity 自动注入的 Cookie
-// 注意：Netlify 会在请求头中包含用户信息的加密 Token
+// 我们不再在这里做 return Astro.redirect
+// 只是为了在 SSR 模式下能拿到初始状态（可选）
 const userCookie = Astro.cookies.get('nf_jwt');
-
-// 如果没有找到登录 Token，直接重定向回登录页
-if (!userCookie) {
-  return Astro.redirect('/login');
-}
-
-// 如果需要更高级的校验，可以通过解析 JWT 获取用户信息
-// 但对于基础保护，检查 nf_jwt 是否存在是最简单有效的方法
 ---
 
 <Layout title="会员中心">
-  <main>
-    <h1>欢迎回来，尊贵的会员！</h1>
-    <p>这段内容是受服务器保护的，未登录者无法看到。</p>
-    <div data-netlify-identity-button></div>
-  </main>
+  <div id="guarded-content" style="display: none;">
+    <main>
+      <h1>欢迎回来，尊贵的会员！</h1>
+      <p>这是您的专属私密内容。</p>
+      <div data-netlify-identity-button></div>
+    </main>
+  </div>
+
+  <div id="loading-state" style="text-align: center; padding: 50px;">
+    <p>正在验证身份，请稍候...</p>
+  </div>
+
+  <script is:inline>
+    // 监听初始化
+    window.netlifyIdentity?.on('init', user => {
+      if (!user) {
+        // 如果明确没登录，才踢走
+        window.location.href = '/login/';
+      } else {
+        // 如果登录了，显示内容，隐藏加载状态
+        document.getElementById('guarded-content').style.display = 'block';
+        document.getElementById('loading-state').style.display = 'none';
+      }
+    });
+
+    // 监听注销
+    window.netlifyIdentity?.on('logout', () => {
+      window.location.href = '/login/';
+    });
+  </script>
 </Layout>
