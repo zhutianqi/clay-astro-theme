@@ -3,16 +3,13 @@ import Layout from '../layouts/Layout.astro';
 import PostCard from '../components/PostCard.astro';
 import { getCollection } from 'astro:content';
 
-// Fetch all collections
 const allPages = await getCollection('pages');
 const allNews = await getCollection('news');
 const allWork = await getCollection('work');
 const allSold = await getCollection('sold');
 
-// Combine for filtering
 const allContent = [...allPages, ...allNews, ...allWork, ...allSold];
 
-// Filter for pagetype containing 'main' and sort by number
 const posts = allContent.filter(item => {
     return item.data.pagetype && item.data.pagetype.includes('main');
 }).sort((a, b) => {
@@ -21,34 +18,41 @@ const posts = allContent.filter(item => {
     return numA - numB;
 });
 
-// Get index-page metadata (from pages collection)
 const indexPage = allPages.find(p => p.slug === 'index');
-const title = indexPage?.data.title || 'Clay';
+const title = indexPage?.data.title || 'Maison';
 const description = indexPage?.data.description;
 
 let postCounter = 0;
 ---
 
 <Layout title={title} description={description}>
-    <div class="post-feed">
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <p class="hero-sub">Estate Wines</p>
+            <h1 class="hero-title">Maison</h1>
+            <div class="hero-rule"></div>
+            <p class="hero-desc">Exceptional wines crafted from exceptional terroir</p>
+            <div class="hero-actions">
+                <a href="/work" class="hero-btn">Explore Wines</a>
+                <a href="/contact" class="hero-btn hero-btn-ghost">Reserve a Tasting</a>
+            </div>
+        </div>
+        <a href="#wines" class="hero-scroll-hint" aria-label="Scroll down">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </a>
+    </section>
+
+    <!-- Wine Collection Cards -->
+    <section id="wines" class="post-feed">
         {posts.map((post) => {
             postCounter++;
-            // Calculate slug. If it's from 'pages', slug is just slug (or flattened).
-            // content/pages/bio.md -> slug 'bio'.
-            // content/work/work-1.md -> slug 'work-1'? No, in config.ts, work collection.
-            // But legacy mapped work/work-1.md -> /work/work-1
-            // My [...slug].astro will handle mapping.
-            // Here I need to generate the same link.
-
             let slug = post.slug;
             if (post.collection === 'work') slug = `work/${post.slug}`;
             if (post.collection === 'news') slug = `news/${post.slug}`;
             if (post.collection === 'sold') slug = `sold/${post.slug}`;
-            // Pages collection: 'bio' -> 'bio'.
-
-            // Wait, legacy slug split logic:
-            // src/pages/bio/index.md -> /bio.
-            // content/work/work-1.md -> /work/work-1.
 
             return (
                 <PostCard
@@ -58,5 +62,151 @@ let postCounter = 0;
                 />
             );
         })}
-    </div>
+    </section>
 </Layout>
+
+<style>
+/* Hero */
+.hero {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    min-height: 600px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.hero-bg {
+    position: absolute;
+    inset: 0;
+    background-image: url('/img/hero-wine.jpg');
+    background-size: cover;
+    background-position: center;
+    transform: scale(1.04);
+    transition: transform 8s ease-out;
+}
+
+.hero:hover .hero-bg {
+    transform: scale(1);
+}
+
+.hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        to bottom,
+        rgba(8, 6, 4, 0.5) 0%,
+        rgba(8, 6, 4, 0.35) 50%,
+        rgba(8, 6, 4, 0.72) 100%
+    );
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    color: #fff;
+    padding: 0 2rem;
+    max-width: 800px;
+    animation: heroFadeIn 1.4s ease-out both;
+}
+
+@keyframes heroFadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.hero-sub {
+    font-family: var(--font-sans-serif);
+    font-size: 1.1rem;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    color: var(--color-primary, #e7c874);
+    margin: 0 0 1.5rem;
+    opacity: 0.9;
+}
+
+.hero-title {
+    font-family: var(--font-display);
+    font-size: clamp(4rem, 10vw, 9rem);
+    font-weight: 300;
+    letter-spacing: 10px;
+    text-transform: uppercase;
+    margin: 0 0 1.5rem;
+    line-height: 1;
+    color: #fff;
+}
+
+.hero-rule {
+    width: 50px;
+    height: 1px;
+    background: var(--color-primary, #e7c874);
+    margin: 0 auto 2rem;
+}
+
+.hero-desc {
+    font-family: var(--font-serif);
+    font-size: 1.8rem;
+    font-weight: 300;
+    font-style: italic;
+    letter-spacing: 1px;
+    color: rgba(255,255,255,0.75);
+    margin: 0 0 3rem;
+}
+
+.hero-actions {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.hero-btn {
+    font-family: var(--font-sans-serif);
+    font-size: 1.1rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    padding: 14px 36px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    background: var(--color-primary, #e7c874);
+    color: #0a0604;
+    border: 1px solid var(--color-primary, #e7c874);
+}
+
+.hero-btn:hover {
+    background: transparent;
+    color: var(--color-primary, #e7c874);
+    text-decoration: none;
+}
+
+.hero-btn-ghost {
+    background: transparent;
+    color: rgba(255,255,255,0.85);
+    border-color: rgba(255,255,255,0.4);
+}
+
+.hero-btn-ghost:hover {
+    border-color: var(--color-primary, #e7c874);
+    color: var(--color-primary, #e7c874);
+}
+
+.hero-scroll-hint {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+    color: rgba(255,255,255,0.4);
+    animation: bounce 2s infinite;
+    transition: color 0.3s;
+}
+.hero-scroll-hint:hover { color: var(--color-primary, #e7c874); }
+
+@keyframes bounce {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(6px); }
+}
+</style>

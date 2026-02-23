@@ -1,27 +1,26 @@
 /* Variables
 /* ---------------------------------------------------------- */
 
-@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700;1,800&family=League+Spartan:wght@300;400;500;600;700&display=swap');
-/* @import url('../../../static/font/OldLondon.woff'); */
-
-
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400&family=Raleway:wght@200;300;400;500&display=swap');
 
 :root {
-
-    /* Colours */
-    --color-primary: #3eb0ef;
-    --color-base: #131313;
-    --color-border: #ddd;
-    --color-bg: #ffffff;
+    /* Colours — Light (warm cream, wine red accent) */
+    --color-primary: #722f37;      /* wine red */
+    --color-base: #1a1209;         /* deep brown-black */
+    --color-border: #c9b990;       /* warm gold border */
+    --color-bg: #faf6ef;           /* warm cream */
+    --color-gold: #9a7d3a;         /* muted gold for light mode */
+    --color-overlay: rgba(10,6,2,0.55);
 
     /* Fonts */
-    --font-sans-serif: 'Futura', 'League Spartan', 'Trebuchet MS', Arial, sans-serif;
+    --font-display: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+    --font-sans-serif: 'Raleway', 'Trebuchet MS', Arial, sans-serif;
     --font-serif: 'EB Garamond', Georgia, Times, serif;
     --font-mono: Menlo, Courier, monospace;
-    --font-light: 100;
+    --font-light: 200;
     --font-normal: 400;
-    --font-bold: 700;
-    --font-heavy: 800;
+    --font-bold: 600;
+    --font-heavy: 700;
 
     /* Breakpoints */
     --xlarge: 1680px;
@@ -33,16 +32,14 @@
     /* Sizes */
     --height: 4rem;
     --margin: 2rem;
-    --radius: 0.5rem;
-
+    --radius: 0px;
 }
 
 [data-theme='dark'] {
-    --color-primary: #5ec2ff;
-    --color-base: #e0e0e0;
-    --color-border: #444;
-    --color-bg: #121212;
-
-
-    /* Old BG--color-bg: #f8f8f8;*/
+    --color-primary: #e7c874;      /* champagne gold */
+    --color-base: #f0ead8;         /* warm off-white */
+    --color-border: #3a3020;       /* dark warm border */
+    --color-bg: #080604;           /* near-black */
+    --color-gold: #e7c874;         /* gold accent */
+    --color-overlay: rgba(8,6,4,0.65);
 }

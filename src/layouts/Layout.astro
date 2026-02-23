@@ -20,30 +20,23 @@ const { title, description } = Astro.props;
 <html lang="en">
     <head>
         <meta charset="UTF-8" />
-        <meta name="description" content={description || "Clay Theme"} />
+        <meta name="description" content={description || "Fine Wines"} />
         <meta name="viewport" content="width=device-width" />
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
         <meta name="generator" content={Astro.generator} />
-        <title>{title || "Clay"}</title>
+        <title>{title || "Maison"}</title>
         <ClientRouter />
         <script is:inline>
-            // Theme init
-            const theme = (() => {
-                if (
-                    typeof localStorage !== "undefined" &&
-                    localStorage.getItem("theme")
-                ) {
-                    return localStorage.getItem("theme");
+            // Apply saved theme immediately to avoid flash
+            (function() {
+                const theme = localStorage.getItem('theme') || 'light';
+                if (theme === 'dark') {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                } else {
+                    document.documentElement.removeAttribute('data-theme');
                 }
-                return "light";
             })();
-            if (theme === "dark") {
-                document.documentElement.setAttribute("data-theme", "dark");
-            } else {
-                document.documentElement.removeAttribute("data-theme");
-            }
         </script>
-        <script is:inline src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
     </head>
     <body class="site-wrapper">
         <Header title={title} />
@@ -57,108 +50,69 @@ const { title, description } = Astro.props;
         <Footer />
 
         <script>
-            import { navigate } from "astro:transitions/client";
-
             function initNav() {
-                const burger = document.querySelector(".nav-burger");
-                const wrapper = document.querySelector(".site-wrapper");
-                if (burger && wrapper) {
-                    burger.addEventListener("click", (e) => {
-                        e.preventDefault();
-                        wrapper.classList.toggle("site-head-open");
+                const burger = document.querySelector('.nav-burger') as HTMLElement;
+                const head = document.querySelector('.site-head') as HTMLElement;
+
+                if (burger && head) {
+                    burger.addEventListener('click', () => {
+                        const isOpen = head.classList.toggle('site-head-open');
+                        burger.setAttribute('aria-expanded', String(isOpen));
                     });
                 }
+
+                // Close mobile menu on nav link click
+                document.querySelectorAll('.site-head-left a, .site-head-right a').forEach(link => {
+                    link.addEventListener('click', () => {
+                        head?.classList.remove('site-head-open');
+                        burger?.setAttribute('aria-expanded', 'false');
+                    });
+                });
             }
 
             function initTheme() {
-                const toggleBtn = document.getElementById("theme-toggle");
-                const updateIcon = () => {
-                    const isDark =
-                        document.documentElement.getAttribute("data-theme") ===
-                        "dark";
-                    // Add logic to animate or swap icons if needed, currently CSS handles visibility? No, added SVGs.
-                    // Simple SVG toggle:
-                    const sun = document.querySelector(
-                        ".sun-icon",
-                    ) as HTMLElement;
-                    const moon = document.querySelector(
-                        ".moon-icon",
-                    ) as HTMLElement;
+                const toggleBtn = document.getElementById('theme-toggle');
+
+                const updateIcons = () => {
+                    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+                    const sun = document.querySelector('.sun-icon') as HTMLElement;
+                    const moon = document.querySelector('.moon-icon') as HTMLElement;
                     if (sun && moon) {
-                        sun.style.display = isDark ? "inline-block" : "none";
-                        moon.style.display = isDark ? "none" : "inline-block";
+                        sun.style.display = isDark ? 'inline-block' : 'none';
+                        moon.style.display = isDark ? 'none' : 'inline-block';
                     }
                 };
 
-                updateIcon();
+                updateIcons();
 
                 if (toggleBtn) {
-                    toggleBtn.addEventListener("click", () => {
-                        const currentTheme =
-                            document.documentElement.getAttribute("data-theme");
-                        const newTheme =
-                            currentTheme === "dark" ? "light" : "dark";
-
-                        if (newTheme === "dark") {
-                            document.documentElement.setAttribute(
-                                "data-theme",
-                                "dark",
-                            );
+                    toggleBtn.addEventListener('click', () => {
+                        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+                        if (isDark) {
+                            document.documentElement.removeAttribute('data-theme');
+                            localStorage.setItem('theme', 'light');
                         } else {
-                            document.documentElement.removeAttribute(
-                                "data-theme",
-                            );
+                            document.documentElement.setAttribute('data-theme', 'dark');
+                            localStorage.setItem('theme', 'dark');
                         }
-                        localStorage.setItem("theme", newTheme);
-                        updateIcon();
+                        updateIcons();
                     });
                 }
             }
 
-            // Run on view transitions (fires on initial load too)
-            document.addEventListener("astro:page-load", () => {
+            document.addEventListener('astro:page-load', () => {
                 initNav();
                 initTheme();
             });
 
-            // Re-apply theme on swap to prevent flash?
-            // The is:inline script in head handles the initial check on reload.
-            // astro:after-swap handles verifying state after client-side nav.
-            document.addEventListener("astro:after-swap", () => {
-                const theme = localStorage.getItem("theme");
-                if (
-                    theme === "dark" ||
-                    (!theme &&
-                        window.matchMedia("(prefers-color-scheme: dark)")
-                            .matches)
-                ) {
-                    document.documentElement.setAttribute("data-theme", "dark");
+            document.addEventListener('astro:after-swap', () => {
+                const theme = localStorage.getItem('theme') || 'light';
+                if (theme === 'dark') {
+                    document.documentElement.setAttribute('data-theme', 'dark');
                 } else {
-                    document.documentElement.removeAttribute("data-theme");
+                    document.documentElement.removeAttribute('data-theme');
                 }
             });
-        </script>
-        <script is:inline>
-            if (window.netlifyIdentity) {
-                // 1. 如果是在本地开发环境，手动指向你的 Netlify 网址
-                // 将 'https://你的项目名.netlify.app' 替换为你真实的线上地址
-                if (location.hostname === "localhost" || location.hostname === "127.0.0.1") {
-                window.netlifyIdentity.init({
-                    APIConfig: {
-                    apiURL: 'https://glistening-caramel-cfa689.netlify.app/.netlify/identity'
-                    }
-                });
-                }
-
-                // 2. 登录跳转逻辑
-                window.netlifyIdentity.on("init", user => {
-                if (!user) {
-                    window.netlifyIdentity.on("login", () => {
-                    window.location.href = "/dashboard/";
-                    });
-                }
-                });
-            }
         </script>
     </body>
 </html>

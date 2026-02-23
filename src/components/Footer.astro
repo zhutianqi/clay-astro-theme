@@ -1,9 +1,28 @@
 ---
 ---
 <footer class="site-foot">
-    <div>&copy; {new Date().getFullYear()} <a href="/">Clay</a></div>
-    <div>
-        Powered by <a href="https://astro.build" target="_blank" rel="noopener noreferrer">Astro</a> |
-        Licensed under <a href="https://opensource.org/licenses/MIT" target="_blank" rel="noopener noreferrer">MIT</a>
+    <div class="site-foot-inner">
+        <div class="site-foot-brand">Maison</div>
+        <div class="site-foot-divider"></div>
+        <div>&copy; {new Date().getFullYear()} &nbsp;·&nbsp; Crafted with care</div>
+        <div>
+            <a href="/bio">About</a>
+            &nbsp;&nbsp;·&nbsp;&nbsp;
+            <a href="/work">Wines</a>
+            &nbsp;&nbsp;·&nbsp;&nbsp;
+            <a href="/news">Experience</a>
+            &nbsp;&nbsp;·&nbsp;&nbsp;
+            <a href="/contact">Contact</a>
+        </div>
     </div>
 </footer>
+
+<style>
+.site-foot-divider {
+    width: 40px;
+    height: 1px;
+    background: var(--color-primary);
+    margin: 0.5rem auto;
+    opacity: 0.6;
+}
+</style>
