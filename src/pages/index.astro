@@ -7,16 +7,11 @@ const allPages = await getCollection('pages');
 const allNews = await getCollection('news');
 const allWork = await getCollection('work');
 const allSold = await getCollection('sold');
-
 const allContent = [...allPages, ...allNews, ...allWork, ...allSold];
 
-const posts = allContent.filter(item => {
-    return item.data.pagetype && item.data.pagetype.includes('main');
-}).sort((a, b) => {
-    const numA = a.data.number || 9999;
-    const numB = b.data.number || 9999;
-    return numA - numB;
-});
+const posts = allContent.filter(item =>
+    item.data.pagetype && item.data.pagetype.includes('main')
+).sort((a, b) => (a.data.number || 9999) - (b.data.number || 9999));
 
 const indexPage = allPages.find(p => p.slug === 'index');
 const title = indexPage?.data.title || 'Maison';
@@ -26,187 +21,449 @@ let postCounter = 0;
 ---
 
 <Layout title={title} description={description}>
-    <!-- Hero Section -->
+
+    <!-- ── HERO ──────────────────────────────── -->
     <section class="hero">
         <div class="hero-bg"></div>
         <div class="hero-overlay"></div>
         <div class="hero-content">
-            <p class="hero-sub">Estate Wines</p>
+            <p class="hero-estate-label">Estate Wines · Napa Valley</p>
             <h1 class="hero-title">Maison</h1>
             <div class="hero-rule"></div>
-            <p class="hero-desc">Exceptional wines crafted from exceptional terroir</p>
+            <p class="hero-desc">
+                We are proud to share our remarkable limited production wines, whose subtle balance of elegance, structure, power and finesse are a striking embodiment of everything we hold dear about this land.
+            </p>
             <div class="hero-actions">
-                <a href="/work" class="hero-btn">Explore Wines</a>
-                <a href="/contact" class="hero-btn hero-btn-ghost">Reserve a Tasting</a>
+                <a href="/contact" class="hero-btn">Join the Allocation List</a>
+                <a href="/work" class="hero-btn hero-btn-ghost">Explore the Wines</a>
             </div>
         </div>
-        <a href="#wines" class="hero-scroll-hint" aria-label="Scroll down">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        <a href="#quote-section" class="hero-scroll" aria-label="Scroll down">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
         </a>
     </section>
 
-    <!-- Wine Collection Cards -->
-    <section id="wines" class="post-feed">
+    <!-- ── QUOTE CAROUSEL ─────────────────────── -->
+    <section id="quote-section" class="quote-section">
+        <div class="quote-inner">
+            <div class="progress-ring-wrap" aria-hidden="true">
+                <svg class="progress-ring" width="48" height="48" viewBox="0 0 48 48">
+                    <circle class="progress-ring__bg" cx="24" cy="24" r="20" />
+                    <circle class="progress-ring__circle" cx="24" cy="24" r="20" />
+                </svg>
+                <span class="progress-ring__count" id="quote-count">1</span>
+            </div>
+
+            <ul class="quote-list" id="quote-list" aria-live="polite">
+                <li class="quote-item revealed" data-index="0">
+                    <blockquote class="quote-text">
+                        "Opens with gregarious blue and black fruits, dried herbs, chargrill and savory notes. The full-bodied palate is vibrant, expressive, mineral, and earthy with black fruits and firm, grainy tannins, finishing long."
+                    </blockquote>
+                    <cite class="quote-cite">
+                        <span class="quote-score">98 Points</span>
+                        <span class="quote-source">Robert Parker · Wine Advocate</span>
+                        <span class="quote-wine">Leonidas Cabernet Sauvignon 2020</span>
+                    </cite>
+                </li>
+                <li class="quote-item" data-index="1">
+                    <blockquote class="quote-text">
+                        "Extraordinary complexity and finesse. This is a wine of great poise and elegance, with a crystalline purity of fruit that is genuinely rare in today's market. Among the finest Napa Valley wines I have encountered in years."
+                    </blockquote>
+                    <cite class="quote-cite">
+                        <span class="quote-score">97 Points</span>
+                        <span class="quote-source">James Suckling</span>
+                        <span class="quote-wine">Leonidas Cabernet Sauvignon 2018</span>
+                    </cite>
+                </li>
+                <li class="quote-item" data-index="2">
+                    <blockquote class="quote-text">
+                        "Mountain intensity with classical restraint. Each sip reveals something new — a testament to both terroir and the winemaker's art. Among the finest expressions of Howell Mountain I have encountered from any appellation."
+                    </blockquote>
+                    <cite class="quote-cite">
+                        <span class="quote-score">96 Points</span>
+                        <span class="quote-source">Wine Spectator</span>
+                        <span class="quote-wine">Howell Mountain Hillside Blend 2019</span>
+                    </cite>
+                </li>
+                <li class="quote-item" data-index="3">
+                    <blockquote class="quote-text">
+                        "Effortlessly beautiful. The kind of Pinot Noir that reminds you why the grape is called the heartbreak grape — seductive and elusive in equal measure. A remarkable achievement from an already remarkable estate."
+                    </blockquote>
+                    <cite class="quote-cite">
+                        <span class="quote-score">94 Points</span>
+                        <span class="quote-source">Vinous</span>
+                        <span class="quote-wine">Estate Pinot Noir 2021</span>
+                    </cite>
+                </li>
+            </ul>
+
+            <div class="quote-dots" id="quote-dots" aria-label="Quote navigation">
+                <button class="quote-dot active" data-slide="0" aria-label="Quote 1"></button>
+                <button class="quote-dot" data-slide="1" aria-label="Quote 2"></button>
+                <button class="quote-dot" data-slide="2" aria-label="Quote 3"></button>
+                <button class="quote-dot" data-slide="3" aria-label="Quote 4"></button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── SECTION LABEL ──────────────────────── -->
+    <div class="section-header">
+        <div class="section-rule"></div>
+        <span class="section-label">The Collection</span>
+        <div class="section-rule"></div>
+    </div>
+
+    <!-- ── WINE CARDS ─────────────────────────── -->
+    <section class="post-feed">
         {posts.map((post) => {
             postCounter++;
             let slug = post.slug;
             if (post.collection === 'work') slug = `work/${post.slug}`;
             if (post.collection === 'news') slug = `news/${post.slug}`;
             if (post.collection === 'sold') slug = `sold/${post.slug}`;
-
             return (
-                <PostCard
-                    count={postCounter}
-                    post={post}
-                    slug={slug}
-                />
+                <PostCard count={postCounter} post={post} slug={slug} />
             );
         })}
     </section>
+
 </Layout>
 
 <style>
-/* Hero */
+/* ── HERO ──────────────────────────────── */
 .hero {
     position: relative;
     width: 100%;
     height: 100vh;
-    min-height: 600px;
+    min-height: 640px;
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
 }
-
 .hero-bg {
     position: absolute;
     inset: 0;
     background-image: url('/img/hero-wine.jpg');
     background-size: cover;
-    background-position: center;
-    transform: scale(1.04);
-    transition: transform 8s ease-out;
+    background-position: center 30%;
+    transform: scale(1.06);
+    transition: transform 10s ease-out;
+    will-change: transform;
 }
-
-.hero:hover .hero-bg {
-    transform: scale(1);
-}
-
+.hero:hover .hero-bg { transform: scale(1.02); }
 .hero-overlay {
     position: absolute;
     inset: 0;
     background: linear-gradient(
         to bottom,
-        rgba(8, 6, 4, 0.5) 0%,
-        rgba(8, 6, 4, 0.35) 50%,
-        rgba(8, 6, 4, 0.72) 100%
+        rgba(8,6,4,0.42) 0%,
+        rgba(8,6,4,0.28) 40%,
+        rgba(8,6,4,0.75) 100%
     );
 }
-
 .hero-content {
     position: relative;
     z-index: 2;
     text-align: center;
     color: #fff;
-    padding: 0 2rem;
-    max-width: 800px;
-    animation: heroFadeIn 1.4s ease-out both;
+    padding: 0 4vw;
+    max-width: 860px;
+    animation: heroIn 1.6s ease-out both;
 }
-
-@keyframes heroFadeIn {
-    from { opacity: 0; transform: translateY(20px); }
+@keyframes heroIn {
+    from { opacity: 0; transform: translateY(28px); }
     to   { opacity: 1; transform: translateY(0); }
 }
-
-.hero-sub {
+.hero-estate-label {
     font-family: var(--font-sans-serif);
-    font-size: 1.1rem;
+    font-size: 1rem;
     letter-spacing: 5px;
     text-transform: uppercase;
     color: var(--color-primary, #e7c874);
-    margin: 0 0 1.5rem;
+    margin: 0 0 2rem;
     opacity: 0.9;
 }
-
 .hero-title {
     font-family: var(--font-display);
-    font-size: clamp(4rem, 10vw, 9rem);
+    font-size: clamp(5rem, 12vw, 11rem);
     font-weight: 300;
-    letter-spacing: 10px;
+    letter-spacing: 12px;
     text-transform: uppercase;
     margin: 0 0 1.5rem;
     line-height: 1;
     color: #fff;
 }
-
 .hero-rule {
-    width: 50px;
+    width: 60px;
     height: 1px;
     background: var(--color-primary, #e7c874);
-    margin: 0 auto 2rem;
+    margin: 0 auto 2.5rem;
 }
-
 .hero-desc {
     font-family: var(--font-serif);
-    font-size: 1.8rem;
+    font-size: clamp(1.6rem, 2vw, 2rem);
     font-weight: 300;
     font-style: italic;
-    letter-spacing: 1px;
+    line-height: 1.75;
     color: rgba(255,255,255,0.75);
-    margin: 0 0 3rem;
+    margin: 0 auto 3.5rem;
+    max-width: 680px;
 }
-
 .hero-actions {
     display: flex;
     gap: 1.5rem;
     justify-content: center;
     flex-wrap: wrap;
 }
-
 .hero-btn {
     font-family: var(--font-sans-serif);
-    font-size: 1.1rem;
+    font-size: 1rem;
     letter-spacing: 3px;
     text-transform: uppercase;
-    padding: 14px 36px;
+    padding: 15px 40px;
     text-decoration: none;
     transition: all 0.3s ease;
     background: var(--color-primary, #e7c874);
     color: #0a0604;
     border: 1px solid var(--color-primary, #e7c874);
+    display: inline-block;
 }
-
-.hero-btn:hover {
-    background: transparent;
-    color: var(--color-primary, #e7c874);
-    text-decoration: none;
-}
-
+.hero-btn:hover { background: transparent; color: var(--color-primary, #e7c874); text-decoration: none; }
 .hero-btn-ghost {
     background: transparent;
-    color: rgba(255,255,255,0.85);
-    border-color: rgba(255,255,255,0.4);
+    color: rgba(255,255,255,0.82);
+    border-color: rgba(255,255,255,0.35);
 }
-
-.hero-btn-ghost:hover {
-    border-color: var(--color-primary, #e7c874);
-    color: var(--color-primary, #e7c874);
-}
-
-.hero-scroll-hint {
+.hero-btn-ghost:hover { border-color: var(--color-primary, #e7c874); color: var(--color-primary, #e7c874); }
+.hero-scroll {
     position: absolute;
-    bottom: 2rem;
+    bottom: 2.5rem;
     left: 50%;
     transform: translateX(-50%);
     z-index: 2;
-    color: rgba(255,255,255,0.4);
-    animation: bounce 2s infinite;
+    color: rgba(255,255,255,0.38);
+    animation: scrollBounce 2.2s infinite;
     transition: color 0.3s;
+    text-decoration: none;
 }
-.hero-scroll-hint:hover { color: var(--color-primary, #e7c874); }
+.hero-scroll:hover { color: var(--color-primary, #e7c874); }
+@keyframes scrollBounce {
+    0%,100% { transform: translateX(-50%) translateY(0); }
+    55%      { transform: translateX(-50%) translateY(7px); }
+}
 
-@keyframes bounce {
-    0%, 100% { transform: translateX(-50%) translateY(0); }
-    50% { transform: translateX(-50%) translateY(6px); }
+/* ── QUOTE SECTION ─────────────────────── */
+.quote-section {
+    padding: 8vw 4vw 6vw;
+    background: var(--color-bg);
+    display: flex;
+    justify-content: center;
+}
+.quote-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 760px;
+    width: 100%;
+    gap: 2.5rem;
+    text-align: center;
+}
+
+/* Progress ring */
+.progress-ring-wrap {
+    position: relative;
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+}
+.progress-ring__bg {
+    fill: none;
+    stroke: var(--color-border);
+    stroke-width: 1.5;
+}
+.progress-ring__circle {
+    fill: none;
+    stroke: var(--color-primary);
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-dasharray: 125.66;
+    stroke-dashoffset: 125.66;
+    transform: rotate(-90deg);
+    transform-origin: 24px 24px;
+}
+.progress-ring__count {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    color: var(--color-base);
+    opacity: 0.55;
+}
+
+/* Quote list */
+.quote-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    min-height: 260px;
+    width: 100%;
+}
+.quote-item {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    opacity: 0;
+    transform: translateY(14px);
+    transition: opacity 0.65s ease, transform 0.65s ease;
+    pointer-events: none;
+}
+.quote-item.revealed {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+    position: relative;
+}
+.quote-text {
+    font-family: var(--font-serif);
+    font-size: clamp(1.8rem, 2.4vw, 2.4rem);
+    font-style: italic;
+    font-weight: 400;
+    line-height: 1.8;
+    color: var(--color-base);
+    opacity: 0.88;
+    margin: 0;
+    padding: 0 1rem;
+    border: none;
+    quotes: none;
+}
+.quote-text::before, .quote-text::after { content: none; }
+.quote-cite {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    font-style: normal;
+}
+.quote-score {
+    font-family: var(--font-display);
+    font-size: 3.2rem;
+    font-weight: 300;
+    color: var(--color-primary);
+    letter-spacing: 3px;
+    line-height: 1;
+}
+.quote-source {
+    font-family: var(--font-sans-serif);
+    font-size: 1rem;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--color-base);
+    opacity: 0.5;
+}
+.quote-wine {
+    font-family: var(--font-serif);
+    font-size: 1.45rem;
+    font-style: italic;
+    color: var(--color-base);
+    opacity: 0.38;
+}
+
+/* Dots */
+.quote-dots {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+.quote-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-border);
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    transition: background 0.3s, transform 0.3s;
+}
+.quote-dot.active {
+    background: var(--color-primary);
+    transform: scale(1.35);
+}
+
+/* ── SECTION DIVIDER ───────────────────── */
+.section-header {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    padding: 0 3vw 4vw;
+}
+.section-rule {
+    flex: 1;
+    height: 1px;
+    background: var(--color-border);
+    opacity: 0.45;
+}
+.section-label {
+    font-family: var(--font-sans-serif);
+    font-size: 0.95rem;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--color-base);
+    opacity: 0.4;
+    white-space: nowrap;
 }
 </style>
+
+<script>
+(function() {
+    const DURATION = 7500;
+    const circumference = 2 * Math.PI * 20;
+
+    let current = 0;
+    let startTs: number | null = null;
+    let paused = false;
+    let rafId: number;
+
+    const items = Array.from(document.querySelectorAll<HTMLElement>('.quote-item'));
+    const dots = Array.from(document.querySelectorAll<HTMLButtonElement>('.quote-dot'));
+    const ring = document.querySelector<SVGCircleElement>('.progress-ring__circle');
+    const countEl = document.getElementById('quote-count');
+    const section = document.getElementById('quote-section');
+
+    if (!items.length || !ring) return;
+
+    function goTo(idx: number) {
+        items[current].classList.remove('revealed');
+        dots[current]?.classList.remove('active');
+        current = ((idx % items.length) + items.length) % items.length;
+        items[current].classList.add('revealed');
+        dots[current]?.classList.add('active');
+        if (countEl) countEl.textContent = String(current + 1);
+        startTs = null;
+    }
+
+    function tick(ts: number) {
+        if (!paused) {
+            if (!startTs) startTs = ts;
+            const progress = Math.min((ts - startTs) / DURATION, 1);
+            ring.style.strokeDashoffset = String(circumference * (1 - progress));
+            if (progress >= 1) goTo(current + 1);
+        }
+        rafId = requestAnimationFrame(tick);
+    }
+
+    dots.forEach((dot, i) => dot.addEventListener('click', () => goTo(i)));
+    section?.addEventListener('mouseenter', () => { paused = true; });
+    section?.addEventListener('mouseleave', () => { paused = false; });
+
+    rafId = requestAnimationFrame(tick);
+    document.addEventListener('astro:before-swap', () => cancelAnimationFrame(rafId));
+})();
+</script>

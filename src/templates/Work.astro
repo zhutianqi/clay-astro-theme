@@ -6,56 +6,363 @@ interface Props {
   entry: CollectionEntry<'work'> | CollectionEntry<'news'> | CollectionEntry<'sold'>;
   next?: any;
   prev?: any;
-  baseSlug?: string; // e.g. 'work'
+  baseSlug?: string;
 }
 
 const { entry, next, prev, baseSlug } = Astro.props;
 const { Content } = await entry.render();
 
-const { title, description, thumbnail } = entry.data;
-
-// Icons logic (replacing SVG imports with inline or similar)
-// For simplicity, using text or simple arrows.
+const { title, description, thumbnail, rating, critic, vintage, varietal, appellation, price, production } = entry.data;
+const hasWineData = rating || varietal || vintage || appellation;
 ---
 
 <Layout title={title} description={description}>
-  <article class={`post-content ${thumbnail ? '' : 'no-image'}`}>
-    {/* Title hidden as it is shown in the header now
-    <header class="post-content-header">
-      <h1 class="post-content-title">{title}</h1>
-    </header>
-    */}
-
-    {description && (
-      <p class="post-content-excerpt">{description}</p>
-    )}
+  <article class="wine-detail">
 
     {thumbnail && (
-      <div class="post-content-image">
-        <img src={thumbnail} class="kg-image" alt={title} />
+      <div class="wine-hero-img">
+        <img src={thumbnail} alt={title} class="wine-hero-photo" />
+        <div class="wine-hero-fade"></div>
       </div>
     )}
 
-    <div class="post-content-body">
-      <Content />
-    </div>
+    <div class="wine-body">
 
-    <div class="post-link">
-      <div>
-        {next && (
-            <a style="display: flex; align-items: center; color: #131313; font-size: 2rem;" href={`/${baseSlug}/${next.slug}`}>
-               <span>&larr; {next.data.title}</span>
-            </a>
-        )}
-      </div>
-      <div>
-        {prev && (
-            <a style="display: flex; align-items: center; color: #131313; font-size: 2rem;" href={`/${baseSlug}/${prev.slug}`}>
-               <span>{prev.data.title} &rarr;</span>
-            </a>
-        )}
-      </div>
-    </div>
+      <header class="wine-header">
+        {varietal && <p class="wine-varietal">{varietal}</p>}
+        <h1 class="wine-title">{title}</h1>
+        {appellation && <p class="wine-appellation">{appellation}{vintage ? ` · ${vintage}` : ''}</p>}
+        <div class="wine-header-rule"></div>
+      </header>
 
+      {rating && (
+        <div class="wine-rating-block">
+          <div class="wine-rating-score">{rating}</div>
+          <div class="wine-rating-info">
+            <span class="wine-rating-label">Points</span>
+            {critic && <span class="wine-rating-critic">{critic}</span>}
+          </div>
+        </div>
+      )}
+
+      {hasWineData && (
+        <div class="wine-specs">
+          {vintage && (
+            <div class="wine-spec">
+              <span class="wine-spec-label">Vintage</span>
+              <span class="wine-spec-value">{vintage}</span>
+            </div>
+          )}
+          {varietal && (
+            <div class="wine-spec">
+              <span class="wine-spec-label">Varietal</span>
+              <span class="wine-spec-value">{varietal}</span>
+            </div>
+          )}
+          {appellation && (
+            <div class="wine-spec">
+              <span class="wine-spec-label">Appellation</span>
+              <span class="wine-spec-value">{appellation}</span>
+            </div>
+          )}
+          {price && (
+            <div class="wine-spec">
+              <span class="wine-spec-label">Price</span>
+              <span class="wine-spec-value">{price}</span>
+            </div>
+          )}
+          {production && (
+            <div class="wine-spec">
+              <span class="wine-spec-label">Production</span>
+              <span class="wine-spec-value">{production}</span>
+            </div>
+          )}
+        </div>
+      )}
+
+      {description && <p class="wine-excerpt">{description}</p>}
+
+      <div class="post-content-body">
+        <Content />
+      </div>
+
+      <div class="wine-cta">
+        <a href="/contact" class="wine-cta-btn">Enquire About This Wine</a>
+      </div>
+
+      {(next || prev) && (
+        <nav class="wine-nav">
+          <div class="wine-nav-prev">
+            {next && (
+              <a href={`/${baseSlug}/${next.slug}`} class="wine-nav-link">
+                <span class="wine-nav-dir">← Previous</span>
+                <span class="wine-nav-title">{next.data.title}</span>
+              </a>
+            )}
+          </div>
+          <div class="wine-nav-next">
+            {prev && (
+              <a href={`/${baseSlug}/${prev.slug}`} class="wine-nav-link">
+                <span class="wine-nav-dir">Next →</span>
+                <span class="wine-nav-title">{prev.data.title}</span>
+              </a>
+            )}
+          </div>
+        </nav>
+      )}
+
+    </div>
   </article>
 </Layout>
+
+<style>
+.wine-detail { max-width: 100%; }
+
+.wine-hero-img {
+  position: relative;
+  width: 100%;
+  height: 65vh;
+  min-height: 420px;
+  overflow: hidden;
+}
+.wine-hero-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+.wine-hero-fade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, transparent 35%, var(--color-bg) 100%);
+}
+
+.wine-body {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 4rem 4vw 6rem;
+}
+
+.wine-header { text-align: center; margin-bottom: 3rem; }
+.wine-varietal {
+  font-family: var(--font-sans-serif);
+  font-size: 1rem;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  margin: 0 0 1rem;
+}
+.wine-title {
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 6vw, 5.5rem);
+  font-weight: 300;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--color-base);
+  margin: 0 0 1rem;
+  line-height: 1.15;
+}
+.wine-appellation {
+  font-family: var(--font-serif);
+  font-size: 1.5rem;
+  font-style: italic;
+  color: var(--color-base);
+  opacity: 0.5;
+  margin: 0;
+}
+.wine-header-rule {
+  width: 40px;
+  height: 1px;
+  background: var(--color-primary);
+  margin: 2rem auto 0;
+  opacity: 0.7;
+}
+
+.wine-rating-block {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  padding: 2.5rem;
+  border: 1px solid var(--color-border);
+  margin-bottom: 3rem;
+}
+.wine-rating-score {
+  font-family: var(--font-display);
+  font-size: 6rem;
+  font-weight: 300;
+  line-height: 1;
+  color: var(--color-primary);
+}
+.wine-rating-info { display: flex; flex-direction: column; gap: 0.4rem; }
+.wine-rating-label {
+  font-family: var(--font-sans-serif);
+  font-size: 0.85rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--color-base);
+  opacity: 0.4;
+}
+.wine-rating-critic {
+  font-family: var(--font-serif);
+  font-size: 1.5rem;
+  font-style: italic;
+  color: var(--color-base);
+  opacity: 0.65;
+}
+
+.wine-specs {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  border: 1px solid var(--color-border);
+  margin-bottom: 3rem;
+}
+.wine-spec {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 1.5rem;
+  border-right: 1px solid var(--color-border);
+  text-align: center;
+}
+.wine-spec:last-child { border-right: none; }
+.wine-spec-label {
+  font-family: var(--font-sans-serif);
+  font-size: 0.8rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--color-base);
+  opacity: 0.38;
+}
+.wine-spec-value {
+  font-family: var(--font-display);
+  font-size: 1.45rem;
+  color: var(--color-base);
+  font-weight: 300;
+}
+
+.wine-excerpt {
+  font-family: var(--font-serif);
+  font-size: 2rem;
+  font-style: italic;
+  line-height: 1.65;
+  color: var(--color-base);
+  opacity: 0.6;
+  text-align: center;
+  margin: 0 0 3rem;
+}
+
+.post-content-body {
+  font-size: 1.75rem;
+  line-height: 1.78;
+  color: var(--color-base);
+  margin-bottom: 3rem;
+}
+.post-content-body h2 {
+  font-family: var(--font-display);
+  font-size: 2.6rem;
+  font-weight: 300;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin: 3.5rem 0 1.5rem;
+  color: var(--color-base);
+}
+.post-content-body h3 {
+  font-family: var(--font-sans-serif);
+  font-size: 1rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  margin: 2.5rem 0 1rem;
+}
+.post-content-body blockquote {
+  border-left: 2px solid var(--color-primary);
+  padding: 0.5rem 0 0.5rem 2rem;
+  margin: 2.5rem 0;
+}
+.post-content-body blockquote p {
+  font-style: italic;
+  font-size: 1.85rem;
+  color: var(--color-base);
+  opacity: 0.72;
+  margin: 0;
+}
+.post-content-body strong { color: var(--color-primary); }
+.post-content-body ul, .post-content-body ol {
+  padding-left: 1.5rem;
+  margin: 1rem 0;
+  list-style: disc;
+}
+.post-content-body li { margin-bottom: 0.4rem; }
+.post-content-body table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 2rem 0;
+  font-size: 1.5rem;
+}
+.post-content-body th, .post-content-body td {
+  padding: 10px 14px;
+  border: 1px solid var(--color-border);
+  text-align: left;
+}
+.post-content-body th {
+  font-family: var(--font-sans-serif);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  opacity: 0.45;
+}
+
+.wine-cta {
+  text-align: center;
+  padding: 3rem 0;
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+  margin-bottom: 4rem;
+}
+.wine-cta-btn {
+  font-family: var(--font-sans-serif);
+  font-size: 1rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  padding: 14px 40px;
+  border: 1px solid var(--color-primary);
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: background 0.3s, color 0.3s;
+  display: inline-block;
+}
+.wine-cta-btn:hover { background: var(--color-primary); color: var(--color-bg); text-decoration: none; }
+
+.wine-nav { display: flex; justify-content: space-between; gap: 2rem; }
+.wine-nav-link {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  text-decoration: none;
+  color: var(--color-base);
+  transition: color 0.2s;
+}
+.wine-nav-link:hover { color: var(--color-primary); text-decoration: none; }
+.wine-nav-dir {
+  font-family: var(--font-sans-serif);
+  font-size: 0.85rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  opacity: 0.38;
+}
+.wine-nav-title {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 300;
+}
+.wine-nav-next { text-align: right; }
+
+@media (max-width: 600px) {
+  .wine-specs { grid-template-columns: 1fr 1fr; }
+  .wine-rating-score { font-size: 4rem; }
+  .wine-nav { flex-direction: column; }
+  .wine-nav-next { text-align: left; }
+}
+</style>

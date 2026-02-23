@@ -13,6 +13,14 @@ const commonSchema = z.object({
   subheading: z.string().optional(),
   number: z.number().optional(),
   pagetype: z.array(z.string()).optional(),
+  // Wine-specific fields
+  rating: z.number().optional(),
+  critic: z.string().optional(),
+  vintage: z.string().optional(),
+  varietal: z.string().optional(),
+  appellation: z.string().optional(),
+  price: z.string().optional(),
+  production: z.string().optional(),
 }).partial();
 
 const news = defineCollection({

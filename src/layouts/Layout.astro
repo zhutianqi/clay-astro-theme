@@ -51,21 +51,23 @@ const { title, description } = Astro.props;
 
         <script>
             function initNav() {
-                const burger = document.querySelector('.nav-burger') as HTMLElement;
-                const head = document.querySelector('.site-head') as HTMLElement;
+                const burger = document.getElementById('nav-burger') as HTMLElement;
+                const drawer = document.getElementById('mobile-drawer') as HTMLElement;
 
-                if (burger && head) {
+                if (burger && drawer) {
                     burger.addEventListener('click', () => {
-                        const isOpen = head.classList.toggle('site-head-open');
+                        const isOpen = drawer.classList.toggle('is-open');
                         burger.setAttribute('aria-expanded', String(isOpen));
+                        drawer.setAttribute('aria-hidden', String(!isOpen));
+                        burger.classList.toggle('is-active', isOpen);
                     });
                 }
 
-                // Close mobile menu on nav link click
-                document.querySelectorAll('.site-head-left a, .site-head-right a').forEach(link => {
+                drawer?.querySelectorAll('a').forEach(link => {
                     link.addEventListener('click', () => {
-                        head?.classList.remove('site-head-open');
+                        drawer.classList.remove('is-open');
                         burger?.setAttribute('aria-expanded', 'false');
+                        burger?.classList.remove('is-active');
                     });
                 });
             }

@@ -8,19 +8,26 @@ export interface Props {
 const { count, post, slug } = Astro.props;
 const thumbnail = post.data.thumbnail;
 const title = post.data.title;
+const rating = post.data.rating;
+const varietal = post.data.varietal;
+const vintage = post.data.vintage;
 const isLarge = count % 3 === 0;
 
 const bgStyle = thumbnail ? `background-image: url(${thumbnail});` : '';
-const postClass = `post-card ${isLarge ? 'post-card-large' : ''} ${thumbnail ? 'with-image' : 'no-image'} post`;
+const postClass = `post-card ${isLarge ? 'post-card-large' : ''} ${thumbnail ? 'with-image' : 'no-image'}`;
 ---
 
 <article class={postClass} style={bgStyle}>
   <a href={`/${slug}`} class="post-card-link">
     <div class="post-card-content">
-      <h2 class="post-card-title">
-        {title}
-      </h2>
-      <div class="post-card-rule"></div>
+      {rating && (
+        <div class="post-card-rating">{rating}<span class="post-card-rating-pts">pts</span></div>
+      )}
+      <div class="post-card-text">
+        {varietal && <p class="post-card-varietal">{varietal}{vintage ? ` · ${vintage}` : ''}</p>}
+        <h2 class="post-card-title">{title}</h2>
+        <div class="post-card-rule"></div>
+      </div>
     </div>
   </a>
 </article>
@@ -28,26 +35,29 @@ const postClass = `post-card ${isLarge ? 'post-card-large' : ''} ${thumbnail ? '
 <style>
 .post-card {
   position: relative;
-  flex: 1 0 auto;
+  flex: 1 0 300px;
   display: flex;
-  height: 38vw;
+  height: 40vw;
+  max-height: 680px;
   background: linear-gradient(160deg, #1a1209 0%, #0a0604 100%) center center;
   background-size: cover;
   overflow: hidden;
   counter-increment: posts;
-  margin: 0;
   border: 1px solid var(--color-border);
 }
 
 @media (max-width: 700px) {
   .post-card {
     flex: 1 1 100%;
-    height: 70vw;
+    height: 72vw;
+    max-height: none;
   }
 }
 
 .post-card-large {
   flex: 1 1 100%;
+  height: 55vw;
+  max-height: 760px;
 }
 
 .post-card-link {
@@ -57,96 +67,120 @@ const postClass = `post-card ${isLarge ? 'post-card-large' : ''} ${thumbnail ? '
 }
 
 .post-card-content {
-  flex: 1 1 auto;
+  position: absolute;
+  inset: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 1.2rem;
+  justify-content: flex-end;
+  padding: 3rem 2.5rem;
+  background: linear-gradient(to top, rgba(8,6,4,0.88) 0%, rgba(8,6,4,0.3) 40%, rgba(8,6,4,0.05) 100%);
+  opacity: 0;
+  transition: opacity 0.45s cubic-bezier(0.33,0,0.2,1);
+  text-align: center;
+}
+.post-card.no-image .post-card-content {
+  opacity: 1;
+  background: transparent;
+  align-items: flex-start;
+  justify-content: flex-end;
+}
+.post-card-link:hover .post-card-content { opacity: 1; }
+
+@media (max-width: 700px) {
+  .post-card.with-image .post-card-content {
+    opacity: 1;
+    background: linear-gradient(to top, rgba(8,6,4,0.85) 0%, rgba(8,6,4,0.2) 60%, transparent 100%);
+  }
+}
+
+/* Rating badge */
+.post-card-rating {
   position: absolute;
-  inset: 0;
-  color: #fff;
-  background: var(--color-overlay, rgba(8,6,4,0.55));
-  transition: background 0.4s ease;
+  top: 1.8rem;
+  right: 1.8rem;
+  font-family: var(--font-display);
+  font-size: 3.5rem;
+  font-weight: 300;
+  color: var(--color-primary, #e7c874);
+  line-height: 1;
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+  opacity: 0;
+  transform: translateY(-6px);
+  transition: opacity 0.45s ease, transform 0.45s ease;
+}
+.post-card-rating-pts {
+  font-family: var(--font-sans-serif);
+  font-size: 0.9rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  opacity: 0.65;
+}
+.post-card-link:hover .post-card-rating {
+  opacity: 1;
+  transform: translateY(0);
 }
 
-.post-card.with-image .post-card-content {
-  background: rgba(8,6,4,0.25);
+.post-card-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem;
 }
+.post-card.no-image .post-card-text { align-items: flex-start; }
 
-.post-card-link:hover .post-card-content {
-  background: rgba(8,6,4,0.6);
+.post-card-varietal {
+  font-family: var(--font-sans-serif);
+  font-size: 0.9rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--color-primary, #e7c874);
+  margin: 0;
+  opacity: 0.9;
 }
-
 .post-card-title {
   margin: 0;
   font-family: var(--font-display);
-  font-size: 3.8rem;
+  font-size: clamp(2.4rem, 3.5vw, 4rem);
   font-weight: 300;
-  letter-spacing: 5px;
+  letter-spacing: 4px;
   text-transform: uppercase;
   text-align: center;
-  max-width: 70%;
   color: #fff;
   transition: color 0.3s;
+  line-height: 1.15;
 }
-
-.post-card-link:hover .post-card-title {
-  color: var(--color-primary);
+.post-card.no-image .post-card-title {
+  font-size: clamp(3rem, 4vw, 5rem);
+  text-align: left;
+  color: var(--color-base);
 }
+.post-card-link:hover .post-card-title { color: var(--color-primary, #e7c874); }
 
 .post-card-rule {
   width: 0;
   height: 1px;
-  background: var(--color-primary);
-  transition: width 0.4s ease;
+  background: var(--color-primary, #e7c874);
+  transition: width 0.45s ease;
 }
+.post-card-link:hover .post-card-rule { width: 40px; }
 
-.post-card-link:hover .post-card-rule {
-  width: 50px;
-}
-
-/* Cards without images */
 .post-card.no-image::before {
   display: block;
   content: counter(posts, upper-roman);
   position: absolute;
-  bottom: -0.1em;
+  bottom: -0.05em;
   right: 4vw;
   font-family: var(--font-display);
-  font-size: 22vw;
+  font-size: 20vw;
   line-height: 1em;
-  font-weight: 300;
+  font-weight: 200;
   letter-spacing: -0.05em;
-  color: rgba(255,255,255,0.04);
-  pointer-events: none;
-}
-
-.post-card.no-image .post-card-content {
-  align-items: flex-start;
-  justify-content: flex-end;
-  padding: 4vw;
-  background: transparent;
-}
-
-.post-card.no-image .post-card-title {
-  font-size: 4.5rem;
-  text-align: left;
-  max-width: 80%;
   color: var(--color-base);
-}
-
-.post-card.no-image:hover .post-card-title {
-  color: var(--color-primary);
-}
-
-@media (max-width: 1200px) {
-  .post-card.no-image .post-card-title {
-    font-size: 3rem;
-  }
-}
-@media (max-width: 700px) {
-  .post-card-title { font-size: 2.8rem; }
-  .post-card.no-image::before { font-size: 40vw; }
+  opacity: 0.04;
+  pointer-events: none;
+  user-select: none;
 }
 </style>
