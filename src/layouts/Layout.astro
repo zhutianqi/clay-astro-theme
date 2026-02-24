@@ -102,9 +102,35 @@ const { title, description } = Astro.props;
                 }
             }
 
+            function initReveal() {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('revealed');
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+                document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
+            }
+
+            function initTransparentNav() {
+                const head = document.querySelector('.site-head') as HTMLElement;
+                const hero = document.querySelector('.hero') as HTMLElement;
+                if (!head || !hero) return;
+                const onScroll = () => {
+                    const heroBottom = hero.getBoundingClientRect().bottom;
+                    head.classList.toggle('is-transparent', heroBottom > 80);
+                };
+                onScroll();
+                window.addEventListener('scroll', onScroll, { passive: true });
+            }
+
             document.addEventListener('astro:page-load', () => {
                 initNav();
                 initTheme();
+                initReveal();
+                initTransparentNav();
             });
 
             document.addEventListener('astro:after-swap', () => {
