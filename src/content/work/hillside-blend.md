@@ -11,6 +11,10 @@ rating: 96
 critic: Wine Spectator
 price: $165
 production: 290 cases
+tasting_notes: ["Iron", "Black Olive", "Wild Herbs", "Blackberry", "Dried Fig", "Smoked Meat", "Bitter Chocolate"]
+color_description: Deep garnet, almost opaque, with a narrow brick rim and volcanic intensity.
+pairings: ["Braised Lamb Shank", "Wild Boar Ragù", "Duck Confit", "Aged Manchego", "Mushroom Risotto"]
+cellar_potential: "2025 — 2042"
 ---
 
 ## Tasting Notes

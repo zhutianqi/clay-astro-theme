@@ -11,6 +11,10 @@ rating: 94
 critic: Vinous
 price: $95
 production: 620 cases
+tasting_notes: ["Fresh Strawberry", "Red Cherry", "Dried Rose Petal", "Forest Floor", "Cured Meat", "Violet", "Earthiness"]
+color_description: Translucent ruby, sheer and brilliant, with a luminous garnet core.
+pairings: ["Roasted Duck", "Salmon en Croûte", "Wild Mushroom Pasta", "Aged Pinot Cheese", "Braised Beets"]
+cellar_potential: "2023 — 2033"
 ---
 
 ## Tasting Notes

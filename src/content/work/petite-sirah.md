@@ -11,6 +11,10 @@ rating: 93
 critic: Wine & Spirits
 price: $145
 production: 175 cases
+tasting_notes: ["Inky Blackberry", "Black Pepper", "Blueberry Jam", "Violets", "Roasted Espresso", "Dark Chocolate", "Garrigue"]
+color_description: Near-opaque indigo-black, almost impenetrable, with a deep purple rim.
+pairings: ["Osso Buco", "Smoked Brisket", "Aged Cheddar", "Dark Chocolate", "Cassoulet"]
+cellar_potential: "2026 — 2045"
 ---
 
 ## Tasting Notes

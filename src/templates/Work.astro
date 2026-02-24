@@ -12,63 +12,114 @@ interface Props {
 const { entry, next, prev, baseSlug } = Astro.props;
 const { Content } = await entry.render();
 
-const { title, description, thumbnail, rating, critic, vintage, varietal, appellation, price, production } = entry.data;
-const hasWineData = varietal || vintage || appellation || price || production;
+const {
+  title, description, thumbnail, rating, critic,
+  vintage, varietal, appellation, price, production,
+  tasting_notes, color_description, pairings, cellar_potential
+} = entry.data;
 ---
 
 <Layout title={title} description={description}>
   <article class="wine-detail">
 
-    {thumbnail && (
-      <div class="wine-hero-img">
-        <img src={thumbnail} alt={title} class="wine-hero-photo" />
-        <div class="wine-hero-fade"></div>
+    <!-- ── CINEMATIC HERO with title overlay ── -->
+    <div class="wine-hero">
+      <div class="wine-hero-img-wrap">
+        {thumbnail
+          ? <img src={thumbnail} alt={title} class="wine-hero-photo" />
+          : <div class="wine-hero-no-img"></div>
+        }
       </div>
-    )}
+      <div class="wine-hero-fade"></div>
+      <div class="wine-hero-text">
+        {varietal && <p class="wine-hero-varietal">{varietal}</p>}
+        <h1 class="wine-hero-title">{title}</h1>
+        {appellation && (
+          <p class="wine-hero-sub">{appellation}{vintage ? ` · ${vintage}` : ''}</p>
+        )}
+      </div>
+    </div>
 
-    <div class="wine-body">
-
-      <header class="wine-header" data-reveal="up">
-        {varietal && <p class="wine-varietal">{varietal}</p>}
-        <h1 class="wine-title">{title}</h1>
-        {appellation && <p class="wine-appellation">{appellation}{vintage ? ` · ${vintage}` : ''}</p>}
-        <div class="wine-header-rule"></div>
-      </header>
-
-      {/* Score — large editorial number, no box */}
-      {rating && (
-        <div class="wine-score-display" data-reveal="up" data-delay="1">
-          <div class="wine-score-main">
-            <span class="wine-score-number">{rating}</span>
+    <!-- ── SCORE — always dark, full-width, watermark ── -->
+    {rating && (
+      <section class="wine-score-section" data-score={String(rating)}>
+        <div class="wine-score-inner">
+          <div class="wine-score-main" data-reveal="up">
+            <span class="wine-score-number" data-target={String(rating)}>{rating}</span>
             <span class="wine-score-pts">Points</span>
           </div>
-          {critic && <p class="wine-score-critic">{critic}</p>}
+          {critic && (
+            <p class="wine-score-critic" data-reveal="up" data-delay="1">{critic}</p>
+          )}
+          <p class="wine-score-tagline" data-reveal="up" data-delay="2">
+            An exceptional expression of{appellation ? ` ${appellation}` : ' the estate'}.
+          </p>
+        </div>
+      </section>
+    )}
+
+    <!-- ── BODY ── -->
+    <div class="wine-body">
+
+      <!-- Color description -->
+      {color_description && (
+        <p class="wine-color-desc" data-reveal="up">{color_description}</p>
+      )}
+
+      <!-- Tasting profile -->
+      {tasting_notes && tasting_notes.length > 0 && (
+        <div class="wine-notes-section" data-reveal="up">
+          <p class="wine-section-label">Tasting Profile</p>
+          <p class="wine-notes-flow">
+            {tasting_notes.map((note, i) => (
+              <Fragment key={i}>
+                <span class="wine-note-item">{note}</span>{i < tasting_notes!.length - 1 && <span class="wine-note-sep"> · </span>}
+              </Fragment>
+            ))}
+          </p>
         </div>
       )}
 
-      {/* Specs — editorial lines, no grid cells */}
-      {hasWineData && (
-        <div class="wine-specs-editorial" data-reveal="up" data-delay="2">
+      <!-- Specs — editorial lines -->
+      {(varietal || vintage || appellation || price || production) && (
+        <div class="wine-specs-editorial" data-reveal="up">
           {(varietal || vintage) && (
-            <p class="wine-specs-primary">
-              {[varietal, vintage].filter(Boolean).join(' · ')}
-            </p>
+            <p class="wine-specs-primary">{[varietal, vintage].filter(Boolean).join(' · ')}</p>
           )}
           {appellation && <p class="wine-specs-secondary">{appellation}</p>}
           {(price || production) && (
-            <p class="wine-specs-tertiary">
-              {[price, production].filter(Boolean).join(' · ')}
-            </p>
+            <p class="wine-specs-tertiary">{[price, production].filter(Boolean).join(' · ')}</p>
           )}
         </div>
       )}
 
-      {description && <p class="wine-excerpt" data-reveal="up">{description}</p>}
+      <!-- Pull quote / description -->
+      {description && (
+        <p class="wine-excerpt" data-reveal="up">{description}</p>
+      )}
 
+      <!-- Markdown body -->
       <div class="post-content-body" data-reveal="up">
         <Content />
       </div>
 
+      <!-- Food pairings -->
+      {pairings && pairings.length > 0 && (
+        <div class="wine-pairings-section" data-reveal="up">
+          <p class="wine-section-label">Ideal Pairings</p>
+          <p class="wine-pairings-flow">{pairings.join(' · ')}</p>
+        </div>
+      )}
+
+      <!-- Cellar potential -->
+      {cellar_potential && (
+        <div class="wine-cellar-section" data-reveal="up">
+          <p class="wine-section-label">Drinking Window</p>
+          <p class="wine-cellar-value">{cellar_potential}</p>
+        </div>
+      )}
+
+      <!-- CTA -->
       <div class="wine-cta" data-reveal="up">
         <a href="/contact" class="wine-cta-link">
           <span>Enquire About This Wine</span>
@@ -76,6 +127,7 @@ const hasWineData = varietal || vintage || appellation || price || production;
         </a>
       </div>
 
+      <!-- Prev / Next -->
       {(next || prev) && (
         <nav class="wine-nav">
           <div class="wine-nav-prev">
@@ -97,20 +149,23 @@ const hasWineData = varietal || vintage || appellation || price || production;
         </nav>
       )}
 
-    </div>
+    </div><!-- /wine-body -->
   </article>
 </Layout>
 
 <style>
-.wine-detail { max-width: 100%; }
-
-/* ── Hero image — Ken Burns cinematic zoom ── */
-.wine-hero-img {
+/* ── Hero — cinematic with title overlay ── */
+.wine-hero {
   position: relative;
-  width: 100%;
-  height: 75vh;
-  min-height: 480px;
+  height: 85vh;
+  min-height: 520px;
   overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+}
+.wine-hero-img-wrap {
+  position: absolute;
+  inset: 0;
 }
 .wine-hero-photo {
   width: 100%;
@@ -120,6 +175,11 @@ const hasWineData = varietal || vintage || appellation || price || production;
   display: block;
   animation: kenburns 14s ease-out forwards;
 }
+.wine-hero-no-img {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(160deg, #1a120a, #0a0604);
+}
 @keyframes kenburns {
   0%   { transform: scale(1.08); }
   100% { transform: scale(1); }
@@ -127,93 +187,176 @@ const hasWineData = varietal || vintage || appellation || price || production;
 .wine-hero-fade {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to bottom, rgba(0,0,0,0.08) 0%, transparent 30%, var(--color-bg) 100%);
+  background: linear-gradient(
+    to bottom,
+    rgba(8,6,4,0.12) 0%,
+    transparent 25%,
+    rgba(8,6,4,0.55) 65%,
+    rgba(8,6,4,0.92) 100%
+  );
 }
-
-/* ── Body container ── */
-.wine-body {
-  max-width: 760px;
-  margin: 0 auto;
-  padding: 4rem 4vw 6rem;
+.wine-hero-text {
+  position: relative;
+  z-index: 2;
+  padding: 0 6vw 5rem;
+  color: #fff;
+  animation: heroIn 1.6s cubic-bezier(0.16,1,0.3,1) both;
+  animation-delay: 0.25s;
 }
-
-/* ── Header ── */
-.wine-header { text-align: center; margin-bottom: 4rem; }
-.wine-varietal {
+@keyframes heroIn {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: none; }
+}
+.wine-hero-varietal {
   font-family: var(--font-sans-serif);
-  font-size: 1rem;
-  letter-spacing: 4px;
+  font-size: 0.95rem;
+  letter-spacing: 5px;
   text-transform: uppercase;
-  color: var(--color-primary);
+  color: #e7c874;
   margin: 0 0 1.2rem;
+  opacity: 0.9;
 }
-.wine-title {
+.wine-hero-title {
   font-family: var(--font-display);
-  font-size: clamp(3rem, 6vw, 5.5rem);
-  font-weight: 300;
+  font-size: clamp(3.5rem, 8vw, 8rem);
+  font-weight: 200;
   letter-spacing: 4px;
   text-transform: uppercase;
-  color: var(--color-base);
+  color: #fff;
   margin: 0 0 1rem;
-  line-height: 1.15;
+  line-height: 1.05;
 }
-.wine-appellation {
+.wine-hero-sub {
   font-family: var(--font-serif);
   font-size: 1.6rem;
   font-style: italic;
-  color: var(--color-base);
-  opacity: 0.42;
+  color: rgba(255,255,255,0.52);
   margin: 0;
 }
-.wine-header-rule {
-  width: 36px;
-  height: 1px;
-  background: var(--color-primary);
-  margin: 2rem auto 0;
-  opacity: 0.6;
-}
 
-/* ── Score — large typographic display, no box ── */
-.wine-score-display {
+/* ── Score section — always dark, full-width ── */
+.wine-score-section {
+  background: #0a0604;
+  padding: 7rem 4vw 6rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+/* Huge watermark score */
+.wine-score-section::before {
+  content: attr(data-score);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -48%);
+  font-family: var(--font-display);
+  font-size: clamp(22rem, 50vw, 42rem);
+  font-weight: 200;
+  color: rgba(231,200,116,0.04);
+  pointer-events: none;
+  user-select: none;
+  line-height: 0.9;
+  letter-spacing: -14px;
+}
+.wine-score-inner {
+  position: relative;
+  z-index: 2;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1.2rem;
-  padding: 4rem 0 3.5rem;
-  text-align: center;
+  gap: 1.5rem;
 }
 .wine-score-main {
   display: flex;
   align-items: flex-start;
-  gap: 1.2rem;
+  gap: 1.5rem;
 }
 .wine-score-number {
   font-family: var(--font-display);
-  font-size: clamp(9rem, 22vw, 15rem);
+  font-size: clamp(6rem, 14vw, 11rem);
   font-weight: 200;
-  line-height: 0.82;
-  color: var(--color-primary);
-  letter-spacing: -6px;
+  line-height: 0.85;
+  color: #e7c874;
+  letter-spacing: -4px;
 }
 .wine-score-pts {
   font-family: var(--font-sans-serif);
-  font-size: 0.82rem;
+  font-size: 0.85rem;
   letter-spacing: 4px;
   text-transform: uppercase;
-  opacity: 0.35;
-  color: var(--color-base);
-  padding-top: 1.2rem;
+  color: rgba(240,234,216,0.45);
+  padding-top: 1.4rem;
 }
 .wine-score-critic {
   font-family: var(--font-serif);
   font-size: 2rem;
   font-style: italic;
-  color: var(--color-base);
-  opacity: 0.42;
+  color: rgba(240,234,216,0.55);
   margin: 0;
 }
+.wine-score-tagline {
+  font-family: var(--font-sans-serif);
+  font-size: 0.9rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: rgba(240,234,216,0.22);
+  margin: 0.5rem 0 0;
+}
 
-/* ── Specs — editorial lines, no grid ── */
+/* ── Body container ── */
+.wine-body {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 6rem 4vw 6rem;
+}
+
+/* ── Color description ── */
+.wine-color-desc {
+  font-family: var(--font-serif);
+  font-size: 1.5rem;
+  font-style: italic;
+  text-align: center;
+  color: var(--color-base);
+  opacity: 0.45;
+  margin: 0 0 4rem;
+  letter-spacing: 0.3px;
+}
+[data-theme='dark'] .wine-color-desc { opacity: 0.62; }
+
+/* ── Section label ── */
+.wine-section-label {
+  font-family: var(--font-sans-serif);
+  font-size: 0.82rem;
+  letter-spacing: 4.5px;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  margin: 0 0 1.4rem;
+  opacity: 0.85;
+}
+
+/* ── Tasting notes — flowing italic text ── */
+.wine-notes-section {
+  margin-bottom: 4.5rem;
+  text-align: center;
+}
+.wine-notes-flow {
+  font-family: var(--font-serif);
+  font-size: clamp(1.5rem, 2vw, 1.85rem);
+  font-style: italic;
+  line-height: 2;
+  color: var(--color-base);
+  opacity: 0.62;
+  margin: 0;
+  letter-spacing: 0.5px;
+}
+[data-theme='dark'] .wine-notes-flow { opacity: 0.82; }
+.wine-note-sep {
+  color: var(--color-primary);
+  opacity: 0.65;
+  font-style: normal;
+}
+
+/* ── Specs — editorial lines ── */
 .wine-specs-editorial {
   text-align: center;
   margin-bottom: 4.5rem;
@@ -224,17 +367,19 @@ const hasWineData = varietal || vintage || appellation || price || production;
   letter-spacing: 4px;
   text-transform: uppercase;
   color: var(--color-base);
-  opacity: 0.58;
+  opacity: 0.55;
   margin: 0 0 0.6rem;
 }
+[data-theme='dark'] .wine-specs-primary { opacity: 0.82; }
 .wine-specs-secondary {
   font-family: var(--font-serif);
-  font-size: 1.85rem;
+  font-size: 1.9rem;
   font-style: italic;
   color: var(--color-base);
-  opacity: 0.36;
+  opacity: 0.35;
   margin: 0 0 0.5rem;
 }
+[data-theme='dark'] .wine-specs-secondary { opacity: 0.62; }
 .wine-specs-tertiary {
   font-family: var(--font-sans-serif);
   font-size: 0.88rem;
@@ -244,33 +389,35 @@ const hasWineData = varietal || vintage || appellation || price || production;
   opacity: 0.26;
   margin: 0;
 }
+[data-theme='dark'] .wine-specs-tertiary { opacity: 0.52; }
 
-/* ── Excerpt ── */
+/* ── Pull quote ── */
 .wine-excerpt {
   font-family: var(--font-serif);
-  font-size: 2rem;
+  font-size: clamp(1.85rem, 2.5vw, 2.2rem);
   font-style: italic;
   line-height: 1.72;
   color: var(--color-base);
-  opacity: 0.58;
+  opacity: 0.6;
   text-align: center;
-  margin: 0 0 3.5rem;
+  margin: 0 0 4rem;
 }
+[data-theme='dark'] .wine-excerpt { opacity: 0.78; }
 
-/* ── Body content ── */
+/* ── Markdown body ── */
 .post-content-body {
   font-size: 1.75rem;
-  line-height: 1.78;
+  line-height: 1.82;
   color: var(--color-base);
-  margin-bottom: 4rem;
+  margin-bottom: 4.5rem;
 }
 .post-content-body h2 {
   font-family: var(--font-display);
-  font-size: 2.6rem;
+  font-size: 2.8rem;
   font-weight: 300;
   letter-spacing: 3px;
   text-transform: uppercase;
-  margin: 3.5rem 0 1.5rem;
+  margin: 4rem 0 1.5rem;
   color: var(--color-base);
 }
 .post-content-body h3 {
@@ -293,11 +440,11 @@ const hasWineData = varietal || vintage || appellation || price || production;
   opacity: 0.65;
   margin: 0;
 }
+[data-theme='dark'] .post-content-body blockquote p { opacity: 0.82; }
 .post-content-body strong { color: var(--color-primary); }
 .post-content-body ul, .post-content-body ol {
   padding-left: 1.5rem;
   margin: 1rem 0;
-  list-style: disc;
 }
 .post-content-body li { margin-bottom: 0.4rem; }
 .post-content-body table {
@@ -319,7 +466,41 @@ const hasWineData = varietal || vintage || appellation || price || production;
   opacity: 0.4;
 }
 
-/* ── CTA — animated underline text link ── */
+/* ── Pairings ── */
+.wine-pairings-section {
+  text-align: center;
+  margin-bottom: 4rem;
+  padding: 3.5rem 0;
+  border-top: 1px solid var(--color-border);
+}
+.wine-pairings-flow {
+  font-family: var(--font-sans-serif);
+  font-size: 1rem;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--color-base);
+  opacity: 0.52;
+  margin: 0;
+  line-height: 2;
+}
+[data-theme='dark'] .wine-pairings-flow { opacity: 0.78; }
+
+/* ── Cellar potential ── */
+.wine-cellar-section {
+  text-align: center;
+  margin-bottom: 5rem;
+}
+.wine-cellar-value {
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 5vw, 4.5rem);
+  font-weight: 300;
+  letter-spacing: 6px;
+  color: var(--color-primary);
+  margin: 0;
+  line-height: 1.2;
+}
+
+/* ── CTA ── */
 .wine-cta {
   text-align: center;
   padding: 5rem 0;
@@ -341,8 +522,7 @@ const hasWineData = varietal || vintage || appellation || price || production;
 .wine-cta-link::after {
   content: '';
   position: absolute;
-  bottom: 0;
-  left: 0;
+  bottom: 0; left: 0;
   width: 100%;
   height: 1px;
   background: var(--color-primary);
@@ -350,23 +530,15 @@ const hasWineData = varietal || vintage || appellation || price || production;
   transform-origin: right;
   transition: transform 0.45s cubic-bezier(0.2,0,0,1);
 }
-.wine-cta-link:hover {
-  gap: 2rem;
-  text-decoration: none;
-}
-.wine-cta-link:hover::after {
-  transform: scaleX(1);
-  transform-origin: left;
-}
+.wine-cta-link:hover { gap: 2rem; text-decoration: none; }
+.wine-cta-link:hover::after { transform: scaleX(1); transform-origin: left; }
 .wine-cta-arrow {
   transition: transform 0.4s cubic-bezier(0.2,0,0,1);
   display: inline-block;
 }
-.wine-cta-link:hover .wine-cta-arrow {
-  transform: translateX(6px);
-}
+.wine-cta-link:hover .wine-cta-arrow { transform: translateX(6px); }
 
-/* ── Prev/next navigation ── */
+/* ── Prev/next nav ── */
 .wine-nav {
   display: flex;
   justify-content: space-between;
@@ -397,9 +569,41 @@ const hasWineData = varietal || vintage || appellation || price || production;
 }
 .wine-nav-next { text-align: right; }
 
-@media (max-width: 600px) {
-  .wine-score-number { font-size: clamp(7rem, 28vw, 10rem); letter-spacing: -3px; }
+@media (max-width: 700px) {
+  .wine-hero-title { letter-spacing: 2px; }
+  .wine-score-number { font-size: clamp(5rem, 20vw, 8rem); letter-spacing: -2px; }
   .wine-nav { flex-direction: column; }
   .wine-nav-next { text-align: left; }
 }
 </style>
+
+<script>
+// Score count-up animation triggered on scroll into view
+(function() {
+  const scoreEl = document.querySelector<HTMLElement>('.wine-score-number[data-target]');
+  if (!scoreEl || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  const target = parseInt(scoreEl.dataset.target || '0', 10);
+  const start  = Math.max(target - 15, 0);
+  const dur    = 900;
+
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      obs.unobserve(entry.target);
+      const t0 = performance.now();
+      scoreEl.textContent = String(start);
+      const tick = (now: number) => {
+        const p = Math.min((now - t0) / dur, 1);
+        const ease = 1 - Math.pow(1 - p, 3);
+        scoreEl.textContent = String(Math.round(start + (target - start) * ease));
+        if (p < 1) requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    });
+  }, { threshold: 0.6 });
+
+  obs.observe(scoreEl);
+  document.addEventListener('astro:before-swap', () => obs.disconnect());
+})();
+</script>

@@ -11,6 +11,10 @@ rating: 98
 critic: Robert Parker, Wine Advocate
 price: $195
 production: 380 cases
+tasting_notes: ["Crushed Cassis", "Dark Plum", "Fresh Violets", "Cedar", "Graphite", "Espresso", "Bitter Chocolate"]
+color_description: Deep ruby-purple, near-opaque at the core, shading to violet at the rim.
+pairings: ["Prime Rib", "Braised Short Ribs", "Dry-Aged Ribeye", "Aged Comté", "Rack of Lamb"]
+cellar_potential: "2024 — 2040"
 ---
 
 ## Tasting Notes

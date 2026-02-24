@@ -11,6 +11,10 @@ rating: 95
 critic: James Suckling
 price: $125
 production: 520 cases
+tasting_notes: ["Crushed Flint", "Lemon Curd", "White Peach", "Sea Spray", "Nectarine", "Toasted Almond", "White Flowers"]
+color_description: Pale gold with silver highlights and extraordinary crystalline clarity.
+pairings: ["Dungeness Crab", "Lobster Bisque", "Halibut en Papillote", "Truffle Risotto", "Burrata"]
+cellar_potential: "2023 — 2032"
 ---
 
 ## Tasting Notes

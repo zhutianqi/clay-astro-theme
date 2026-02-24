@@ -1070,8 +1070,15 @@ const events = (await getCollection('news')).sort((a, b) =>
     }
 
     dots.forEach((d, i) => d.addEventListener('click', () => goTo(i)));
-    section?.addEventListener('mouseenter', () => { paused = true; });
-    section?.addEventListener('mouseleave', () => { paused = false; });
+
+    // Touch swipe support
+    let touchX = 0;
+    section?.addEventListener('touchstart', (e) => { touchX = e.touches[0].clientX; }, { passive: true });
+    section?.addEventListener('touchend', (e) => {
+        const dx = e.changedTouches[0].clientX - touchX;
+        if (Math.abs(dx) > 40) goTo(dx < 0 ? current + 1 : current - 1);
+    }, { passive: true });
+
     rafId = requestAnimationFrame(tick);
     document.addEventListener('astro:before-swap', () => cancelAnimationFrame(rafId));
 })();

@@ -21,6 +21,10 @@ const commonSchema = z.object({
   appellation: z.string().optional(),
   price: z.string().optional(),
   production: z.string().optional(),
+  tasting_notes: z.array(z.string()).optional(),
+  color_description: z.string().optional(),
+  pairings: z.array(z.string()).optional(),
+  cellar_potential: z.string().optional(),
 }).partial();
 
 const news = defineCollection({
