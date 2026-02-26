@@ -7,28 +7,7 @@ body {
     margin: 0;
 }
 
-/* Theme toggle */
-.theme-toggle {
-    background: transparent;
-    border: 1px solid var(--color-border);
-    cursor: pointer;
-    padding: 5px 11px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    color: var(--color-base);
-    font-family: var(--font-sans-serif);
-    font-size: 0.9rem;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    opacity: 0.8;
-    transition: opacity 0.3s, border-color 0.3s;
-    flex-shrink: 0;
-}
-.theme-toggle:focus { outline: none; }
-.theme-toggle:hover { opacity: 1; border-color: var(--color-primary); }
-.sun-icon { color: var(--color-primary); }
-.moon-icon { color: var(--color-base); }
+/* Theme toggle — borderless, styled in Header.astro */
 
 /* Layout */
 .site-wrapper {
@@ -215,10 +194,11 @@ body {
     transition: opacity 0.25s, color 0.25s;
     white-space: nowrap;
 }
-/* Better contrast in dark mode */
+/* Full contrast in dark mode — gold text clearly visible */
 [data-theme='dark'] .site-head-left a,
 [data-theme='dark'] .site-head-right a {
-    opacity: 0.88;
+    opacity: 0.95;
+    color: #f8f2e5;
 }
 .site-head-left a:hover,
 .site-head-right a:hover,
@@ -228,35 +208,7 @@ body {
     text-decoration: none;
 }
 
-/* Mobile burger */
-.nav-burger {
-    display: none;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    padding: 8px;
-    position: absolute;
-    right: 3vw;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 9999;
-}
-.nav-burger span {
-    display: block;
-    width: 26px;
-    height: 1.5px;
-    background: var(--color-base);
-    margin: 5px 0;
-    transition: all 0.32s cubic-bezier(0.4,0,0.2,1);
-    transform-origin: center;
-}
-/* Always use light bars when nav is transparent over dark hero */
-.site-head.is-transparent .nav-burger span {
-    background: rgba(255,255,255,0.92);
-}
-.nav-burger.is-active span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
-.nav-burger.is-active span:nth-child(2) { opacity: 0; transform: scaleX(0); }
-.nav-burger.is-active span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+/* Mobile burger — fully styled in Header.astro */
 
 @media (max-width: 850px) {
     .site-head-container {
@@ -266,7 +218,7 @@ body {
     }
     .site-head-left,
     .site-head-right { display: none !important; }
-    .nav-burger { display: flex; flex-direction: column; }
+    /* burger display handled in Header.astro */
     .site-head-center {
         justify-content: flex-start;
         padding-left: 4vw;

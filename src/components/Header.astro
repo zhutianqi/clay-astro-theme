@@ -55,7 +55,7 @@ const currentPath = Astro.url?.pathname ?? '';
                 <!-- Experience dropdown -->
                 <li class={`nav-item has-dropdown${(currentPath.startsWith('/news') || currentPath.startsWith('/wine-tasting') || currentPath.startsWith('/accolades')) ? ' nav-current' : ''}`} role="menuitem">
                     <a href="/news">Experience</a>
-                    <ul class="dropdown dropdown-right" role="menu" aria-label="Experience submenu">
+                    <ul class="dropdown" role="menu" aria-label="Experience submenu">
                         <li><a href="/wine-tasting">Wine Tasting</a></li>
                         <li><a href="/news">Events &amp; Gallery</a></li>
                         <li><a href="/accolades">Accolades</a></li>
@@ -70,21 +70,25 @@ const currentPath = Astro.url?.pathname ?? '';
             </ul>
 
             <button id="theme-toggle" class="theme-toggle" aria-label="Toggle Dark Mode">
-                <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
-                <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
             </button>
         </nav>
 
-        <!-- MOBILE BURGER -->
+        <!-- MOBILE BURGER — visible on ≤850px -->
         <button class="nav-burger" id="nav-burger" aria-label="Open menu" aria-expanded="false">
-            <span></span>
-            <span></span>
-            <span></span>
+            <span class="burger-bar bar-1"></span>
+            <span class="burger-bar bar-2"></span>
+            <span class="burger-bar bar-3"></span>
+            <span class="burger-text">Menu</span>
         </button>
     </div>
 
     <!-- MOBILE DRAWER -->
     <div class="mobile-drawer" id="mobile-drawer" aria-hidden="true">
+        <button class="mobile-close" id="mobile-close-btn" aria-label="Close menu">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
         <nav>
             <div class="mobile-section">
                 <span class="mobile-section-label">About</span>
@@ -125,7 +129,7 @@ const currentPath = Astro.url?.pathname ?? '';
 </header>
 
 <style>
-/* ── Dropdown chevron on top-level nav links ── */
+/* ── Dropdown chevron ── */
 .nav-item.has-dropdown > a::after {
     content: '';
     display: inline-block;
@@ -134,178 +138,341 @@ const currentPath = Astro.url?.pathname ?? '';
     border-right: 1px solid currentColor;
     border-bottom: 1px solid currentColor;
     transform: rotate(45deg) translateY(-2px);
-    margin-left: 6px;
-    opacity: 0.38;
+    margin-left: 7px;
+    opacity: 0.4;
     vertical-align: middle;
-    transition: transform 0.28s cubic-bezier(0.2,0,0,1), opacity 0.28s;
+    transition: transform 0.25s cubic-bezier(0.2,0,0,1), opacity 0.25s;
 }
 .nav-item.has-dropdown:hover > a::after {
     transform: rotate(225deg) translateY(0px);
-    opacity: 0.7;
+    opacity: 0.75;
 }
 
-/* ── Dropdown panel — glass morphism, no harsh border ── */
+/* ────────────────────────────────────────────
+   MEGA DROPDOWN — full-width, centered, no box
+   ──────────────────────────────────────────── */
+/*
+  Positions relative to header.site-head (position:sticky),
+  NOT relative to the nav-item li. No min-width box.
+  No left/right rectangular alignment.
+*/
+.nav-item.has-dropdown {
+    /* keep static so dropdown uses header as containing block */
+    position: static;
+}
 .dropdown {
     position: absolute;
-    top: calc(100% + 16px);
+    top: 100%;
     left: 0;
+    right: 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0;
     background: rgba(var(--color-bg-rgb), 0.97);
-    backdrop-filter: blur(28px) saturate(1.7);
-    -webkit-backdrop-filter: blur(28px) saturate(1.7);
+    backdrop-filter: blur(32px) saturate(1.8);
+    -webkit-backdrop-filter: blur(32px) saturate(1.8);
     border: none;
-    min-width: 240px;
-    padding: 2rem 0;
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(-10px) scale(0.98);
-    transform-origin: top left;
-    transition: opacity 0.25s cubic-bezier(0.2,0,0,1),
-                transform 0.25s cubic-bezier(0.2,0,0,1),
-                visibility 0.25s;
+    padding: 1.2rem 0 1.6rem;
     list-style: none;
     margin: 0;
     z-index: 500;
-    box-shadow: 0 40px 100px rgba(0,0,0,0.12), 0 12px 32px rgba(0,0,0,0.07);
+    /* hidden state */
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateY(-8px);
+    transition:
+        opacity 0.22s cubic-bezier(0.2,0,0,1),
+        transform 0.22s cubic-bezier(0.2,0,0,1),
+        visibility 0.22s;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.07);
 }
 
 [data-theme='dark'] .dropdown {
-    background: rgba(14, 10, 6, 0.99);
-    box-shadow: 0 40px 100px rgba(0,0,0,0.7), 0 12px 32px rgba(0,0,0,0.5);
+    background: rgba(10, 7, 4, 0.98);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.55);
 }
 
-.dropdown-right {
-    left: auto;
-    right: 0;
-    transform-origin: top right;
-}
-
+/* Visible state */
 .nav-item:hover .dropdown,
 .nav-item:focus-within .dropdown {
     opacity: 1;
     visibility: visible;
-    transform: translateY(0) scale(1);
+    pointer-events: auto;
+    transform: translateY(0);
 }
 
+/* ── Dropdown items ── */
 .dropdown li {
     margin: 0;
     padding: 0;
 }
 
-/* Dropdown link — clean elegant style with animated underline */
 .dropdown li a {
     display: block;
-    padding: 14px 44px;
+    padding: 1.4rem 2.6rem;
     font-family: var(--font-sans-serif);
-    font-size: 0.95rem;
-    letter-spacing: 2.5px;
+    font-size: 0.88rem;
+    letter-spacing: 3px;
     text-transform: uppercase;
     color: var(--color-base);
     text-decoration: none;
-    opacity: 0.42;
+    opacity: 0.55;
     white-space: nowrap;
     position: relative;
-    transition: opacity 0.22s, letter-spacing 0.35s cubic-bezier(0.2,0,0,1), color 0.22s;
+    transition: opacity 0.22s, color 0.22s;
+}
+[data-theme='dark'] .dropdown li a {
+    opacity: 0.75;
+    color: #f5efe2;
 }
 
-/* Animated underline — grows left→right on hover */
+/* Animated underline grows left → right */
 .dropdown li a::after {
     content: '';
     position: absolute;
-    bottom: 10px;
-    left: 44px;
+    bottom: 0.7rem;
+    left: 2.6rem;
     width: 0;
     height: 1px;
     background: var(--color-primary);
-    transition: width 0.38s cubic-bezier(0.2,0,0,1);
+    transition: width 0.35s cubic-bezier(0.2,0,0,1);
 }
-
 .dropdown li a:hover {
     opacity: 1;
     color: var(--color-primary);
-    letter-spacing: 3px;
     text-decoration: none;
 }
-
 .dropdown li a:hover::after {
-    width: calc(100% - 88px);
+    width: calc(100% - 5.2rem);
 }
 
-/* ── Mobile Drawer ── */
+/* Subtle vertical separator between groups */
+.dropdown li + li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 14px;
+    width: 1px;
+    background: var(--color-border);
+    opacity: 0.35;
+}
+.dropdown li { position: relative; }
+
+/* ────────────────────────────────────────────
+   MOBILE BURGER BUTTON
+   ──────────────────────────────────────────── */
+.nav-burger {
+    display: none;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 4px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 10px 0;
+    position: absolute;
+    right: 4vw;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 9999;
+}
+.burger-bar {
+    display: block;
+    height: 2px;
+    background: var(--color-base);
+    transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+    transform-origin: center;
+    border-radius: 1px;
+}
+.bar-1 { width: 28px; }
+.bar-2 { width: 20px; }   /* shorter middle — classic luxury style */
+.bar-3 { width: 28px; }
+
+/* White bars when transparent nav over dark hero */
+.site-head.is-transparent .burger-bar {
+    background: rgba(255,255,255,0.92);
+}
+
+/* Active (X) state */
+.nav-burger.is-active .bar-1 { transform: translateY(6px) rotate(45deg); width: 28px; }
+.nav-burger.is-active .bar-2 { opacity: 0; transform: scaleX(0); }
+.nav-burger.is-active .bar-3 { transform: translateY(-6px) rotate(-45deg); width: 28px; }
+
+.burger-text {
+    font-family: var(--font-sans-serif);
+    font-size: 0.7rem;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--color-base);
+    opacity: 0.7;
+    margin-top: 2px;
+    display: block;
+}
+.site-head.is-transparent .burger-text { color: rgba(255,255,255,0.8); }
+
+/* ────────────────────────────────────────────
+   MOBILE DRAWER — NO BORDERS, CLEAN
+   ──────────────────────────────────────────── */
 .mobile-drawer {
     display: none;
     position: fixed;
     inset: 0;
-    top: 70px;
+    top: 64px;
     background: var(--color-bg);
     z-index: 200;
     overflow-y: auto;
-    padding: 2rem 6vw 4rem;
-    border-top: 1px solid var(--color-border);
+    padding: 1rem 8vw 5rem;
+    /* No border-top — no rectangles */
     transform: translateX(-100%);
-    transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
+    transition: transform 0.38s cubic-bezier(0.4,0,0.2,1);
 }
 .mobile-drawer.is-open {
     transform: translateX(0);
 }
+
+/* Close button inside drawer */
+.mobile-close {
+    position: absolute;
+    top: 1.2rem;
+    right: 6vw;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: var(--color-base);
+    opacity: 0.55;
+    padding: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.2s;
+}
+.mobile-close:hover { opacity: 1; }
+
 .mobile-section {
     display: flex;
     flex-direction: column;
-    padding: 1.5rem 0;
-    border-bottom: 1px solid var(--color-border);
+    padding: 2rem 0 1.5rem;
+    /* NO border-bottom — no cheap lines */
 }
-.mobile-section:last-child { border-bottom: none; }
+
 .mobile-section-label {
     font-family: var(--font-sans-serif);
-    font-size: 0.9rem;
-    letter-spacing: 3px;
+    font-size: 0.78rem;
+    letter-spacing: 4px;
     text-transform: uppercase;
     color: var(--color-primary);
-    margin-bottom: 0.8rem;
+    margin-bottom: 1rem;
+    opacity: 0.9;
 }
+
 .mobile-section a {
     font-family: var(--font-display);
-    font-size: 2rem;
+    font-size: 2.2rem;
     font-weight: 300;
     letter-spacing: 2px;
     color: var(--color-base);
     text-decoration: none;
-    padding: 5px 0;
-    opacity: 0.85;
+    padding: 4px 0;
+    opacity: 0.82;
     transition: color 0.2s, opacity 0.2s;
+    display: block;
 }
 .mobile-section a:hover {
     color: var(--color-primary);
     opacity: 1;
 }
+
+/* Thin gold rule between sections (replaces border) */
+.mobile-section + .mobile-section::before {
+    content: '';
+    display: block;
+    width: 32px;
+    height: 1px;
+    background: var(--color-primary);
+    opacity: 0.3;
+    margin-bottom: 2rem;
+}
+
 .mobile-footer-row {
-    border-bottom: none !important;
-    padding-top: 2rem;
+    padding-top: 1rem;
+}
+.mobile-footer-row::before {
+    content: '';
+    display: block;
+    width: 32px;
+    height: 1px;
+    background: var(--color-primary);
+    opacity: 0.3;
+    margin-bottom: 2rem;
 }
 .mobile-theme-btn {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
     background: transparent;
     border: none;
     cursor: pointer;
     padding: 0;
     color: var(--color-base);
-    opacity: 0.55;
+    opacity: 0.5;
     transition: opacity 0.25s;
 }
 .mobile-theme-btn:hover { opacity: 1; }
 .mobile-theme-label {
     font-family: var(--font-sans-serif);
-    font-size: 0.9rem;
+    font-size: 0.88rem;
     letter-spacing: 2.5px;
     text-transform: uppercase;
 }
 .sun-icon-m { color: var(--color-primary); }
 .moon-icon-m { color: var(--color-base); }
 
+/* Theme toggle button — borderless */
+.theme-toggle {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 5px 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--color-base);
+    opacity: 0.7;
+    transition: opacity 0.3s;
+    flex-shrink: 0;
+}
+.theme-toggle:focus { outline: none; }
+.theme-toggle:hover { opacity: 1; }
+.sun-icon { color: var(--color-primary); }
+.moon-icon { color: var(--color-base); }
+
 @media (max-width: 850px) {
     .mobile-drawer { display: block; }
     .site-head-left,
     .site-head-right { display: none !important; }
+    .nav-burger { display: flex; }
 }
 </style>
+
+<script>
+// Wire up the mobile close button (separate from burger toggle)
+(function() {
+    const closeBtn = document.getElementById('mobile-close-btn');
+    const drawer = document.getElementById('mobile-drawer') as HTMLElement;
+    const burger = document.getElementById('nav-burger') as HTMLElement;
+    if (closeBtn && drawer && burger) {
+        closeBtn.addEventListener('click', () => {
+            drawer.classList.remove('is-open');
+            drawer.setAttribute('aria-hidden', 'true');
+            burger.setAttribute('aria-expanded', 'false');
+            burger.classList.remove('is-active');
+        });
+    }
+})();
+</script>

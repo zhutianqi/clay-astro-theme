@@ -37,11 +37,11 @@
 }
 
 [data-theme='dark'] {
-    --color-primary: #e7c874;      /* champagne gold */
-    --color-base: #f0ead8;         /* warm off-white */
-    --color-border: #3a3020;       /* dark warm border */
+    --color-primary: #f5d980;      /* bright champagne gold — high contrast */
+    --color-base: #f8f2e5;         /* bright warm white — clearly readable */
+    --color-border: #4a3c28;       /* slightly lighter border for visibility */
     --color-bg: #080604;           /* near-black */
     --color-bg-rgb: 8, 6, 4;       /* for glass morphism */
-    --color-gold: #e7c874;         /* gold accent */
+    --color-gold: #f5d980;         /* gold accent */
     --color-overlay: rgba(8,6,4,0.65);
 }
