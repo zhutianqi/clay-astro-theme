@@ -74,32 +74,44 @@ const { title, description } = Astro.props;
 
             function initTheme() {
                 const toggleBtn = document.getElementById('theme-toggle');
+                const mobileToggleBtn = document.getElementById('mobile-theme-toggle');
 
                 const updateIcons = () => {
                     const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
                     const sun = document.querySelector('.sun-icon') as HTMLElement;
                     const moon = document.querySelector('.moon-icon') as HTMLElement;
+                    const sunM = document.querySelector('.sun-icon-m') as HTMLElement;
+                    const moonM = document.querySelector('.moon-icon-m') as HTMLElement;
+                    const mobileLabel = document.getElementById('mobile-theme-label');
                     if (sun && moon) {
                         sun.style.display = isDark ? 'inline-block' : 'none';
                         moon.style.display = isDark ? 'none' : 'inline-block';
                     }
+                    if (sunM && moonM) {
+                        sunM.style.display = isDark ? 'inline-block' : 'none';
+                        moonM.style.display = isDark ? 'none' : 'inline-block';
+                    }
+                    if (mobileLabel) {
+                        mobileLabel.textContent = isDark ? 'Light Mode' : 'Dark Mode';
+                    }
+                };
+
+                const toggleTheme = () => {
+                    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+                    if (isDark) {
+                        document.documentElement.removeAttribute('data-theme');
+                        localStorage.setItem('theme', 'light');
+                    } else {
+                        document.documentElement.setAttribute('data-theme', 'dark');
+                        localStorage.setItem('theme', 'dark');
+                    }
+                    updateIcons();
                 };
 
                 updateIcons();
 
-                if (toggleBtn) {
-                    toggleBtn.addEventListener('click', () => {
-                        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-                        if (isDark) {
-                            document.documentElement.removeAttribute('data-theme');
-                            localStorage.setItem('theme', 'light');
-                        } else {
-                            document.documentElement.setAttribute('data-theme', 'dark');
-                            localStorage.setItem('theme', 'dark');
-                        }
-                        updateIcons();
-                    });
-                }
+                if (toggleBtn) toggleBtn.addEventListener('click', toggleTheme);
+                if (mobileToggleBtn) mobileToggleBtn.addEventListener('click', toggleTheme);
             }
 
             function initReveal() {
