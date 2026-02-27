@@ -186,6 +186,11 @@ const events = (await getCollection('news')).sort((a, b) =>
                                 <span class="collection-card-vintage">{wine.data.vintage}</span>
                                 {wine.data.rating && <span class="collection-card-score">{wine.data.rating} pts</span>}
                             </div>
+                            <div class="collection-card-meta">
+                                {wine.data.appellation && <span>{wine.data.appellation}</span>}
+                                {wine.data.critic && <span>{wine.data.critic}</span>}
+                                {wine.data.price && <span>{wine.data.price}</span>}
+                            </div>
                         </div>
                     </button>
                 ))}
@@ -789,7 +794,7 @@ const events = (await getCollection('news')).sort((a, b) =>
 
 /* ─── COLLECTION ─────────────────────────────── */
 .collection-section {
-    padding: min(12vw, 120px) 5vw;
+    padding: min(10vw, 96px) 5vw;
 }
 .collection-header {
     display: flex;
@@ -800,11 +805,11 @@ const events = (await getCollection('news')).sort((a, b) =>
 }
 .collection-title {
     font-family: var(--font-display);
-    font-size: clamp(3.5rem, 5vw, 6rem);
+    font-size: clamp(2.5rem, 4vw, 4.3rem);
     font-weight: 300;
-    letter-spacing: 6px;
+    letter-spacing: 0.09em;
     text-transform: uppercase;
-    color: var(--color-base);
+    color: var(--text-strong);
     margin: 0;
 }
 [data-theme]:not([data-theme='dark']) .collection-title { color: #1a1209; }
@@ -833,12 +838,12 @@ const events = (await getCollection('news')).sort((a, b) =>
     padding-bottom: 0.5rem;
 }
 .collection-card {
-    flex: 0 0 clamp(280px, 30vw, 420px);
+    flex: 0 0 clamp(300px, 31vw, 430px);
     text-decoration: none;
     color: var(--text-strong);
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    gap: 1.35rem;
 }
 [data-theme='dark'] .collection-card { color: var(--color-base); }
 .collection-card:hover { text-decoration: none; }
@@ -901,12 +906,12 @@ const events = (await getCollection('news')).sort((a, b) =>
 }
 .collection-card-title {
     font-family: var(--font-display);
-    font-size: clamp(2.2rem, 3vw, 3.25rem);
+    font-size: clamp(2.35rem, 3.15vw, 3.4rem);
     font-weight: 300;
-    letter-spacing: 2px;
+    letter-spacing: 1.6px;
     text-transform: uppercase;
     margin: 0;
-    line-height: 1.2;
+    line-height: 1.16;
     transition: color 0.25s;
     color: var(--text-strong);
 }
@@ -915,12 +920,12 @@ const events = (await getCollection('news')).sort((a, b) =>
 .collection-card-desc {
     margin: 0;
     font-family: var(--font-serif);
-    font-size: clamp(1.05rem, 1.2vw, 1.22rem);
-    line-height: 1.75;
-    color: rgba(246, 239, 226, 0.78);
+    font-size: clamp(1.1rem, 1.24vw, 1.28rem);
+    line-height: 1.72;
+    color: rgba(246, 239, 226, 0.82);
     max-width: 58ch;
     display: -webkit-box;
-    -webkit-line-clamp: 2;
+    -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
@@ -943,10 +948,26 @@ const events = (await getCollection('news')).sort((a, b) =>
 [data-theme='dark'] .collection-card-vintage { color: var(--color-base); }
 .collection-card-score {
     font-family: var(--font-display);
-    font-size: 1.95rem;
+    font-size: 2.1rem;
     color: var(--color-primary);
     font-weight: 300;
     letter-spacing: 0.5px;
+}
+.collection-card-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+    margin-top: 0.35rem;
+}
+.collection-card-meta span {
+    font-family: var(--font-sans-serif);
+    font-size: 0.82rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    border: 1px solid var(--line-strong);
+    padding: 0.35rem 0.58rem;
+    line-height: 1;
 }
 
 /* ─── PARALLAX ──────────────────────────────── */
@@ -1434,16 +1455,20 @@ const events = (await getCollection('news')).sort((a, b) =>
         overflow-wrap: anywhere;
     }
     .collection-card-desc {
-        font-size: 1rem;
-        line-height: 1.6;
+        font-size: 1.04rem;
+        line-height: 1.62;
         -webkit-line-clamp: 3;
     }
     .collection-card-footer {
         gap: 0.9rem;
         flex-wrap: wrap;
     }
-    .collection-card-vintage { font-size: 1.35rem; }
-    .collection-card-score { font-size: 1.6rem; }
+    .collection-card-vintage { font-size: 1.4rem; }
+    .collection-card-score { font-size: 1.75rem; }
+    .collection-card-meta span {
+        font-size: 0.74rem;
+        letter-spacing: 0.12em;
+    }
 }
 </style>
 
