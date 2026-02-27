@@ -1228,6 +1228,8 @@ const events = (await getCollection('news')).sort((a, b) =>
     display: flex;
     flex-direction: column;
     justify-content: center;
+    align-items: center;
+    text-align: center;
     padding: 3.5rem 3rem 3.5rem 2.5rem;
     overflow-y: auto;
 }
@@ -1278,6 +1280,7 @@ const events = (await getCollection('news')).sort((a, b) =>
 .wine-modal-notes {
     display: flex;
     flex-wrap: wrap;
+    justify-content: center;
     gap: 0.5rem 0.7rem;
     list-style: none;
     margin: 0 0 2.5rem;
@@ -1295,8 +1298,10 @@ const events = (await getCollection('news')).sort((a, b) =>
 }
 .wine-modal-footer {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
+    flex-wrap: wrap;
+    gap: 1.2rem 2.4rem;
     margin-top: auto;
 }
 .wine-modal-price {
@@ -1415,24 +1420,32 @@ const events = (await getCollection('news')).sort((a, b) =>
 
 // Wine card modal
 (function() {
-    const modal = document.getElementById('wine-modal') as HTMLElement;
-    if (!modal) return;
-
-    const backdrop = modal.querySelector('.wine-modal-backdrop') as HTMLElement;
-    const closeBtn = modal.querySelector('.wine-modal-close') as HTMLElement;
-    const img = document.getElementById('modal-img') as HTMLImageElement;
-    const scoreNum = document.getElementById('modal-score-num') as HTMLElement;
-    const varietal = document.getElementById('modal-varietal') as HTMLElement;
-    const title = document.getElementById('modal-title') as HTMLElement;
-    const meta = document.getElementById('modal-meta') as HTMLElement;
-    const desc = document.getElementById('modal-desc') as HTMLElement;
-    const notes = document.getElementById('modal-notes') as HTMLElement;
-    const price = document.getElementById('modal-price') as HTMLElement;
-    const link = document.getElementById('modal-link') as HTMLAnchorElement;
-    const scoreBadge = modal.querySelector('.wine-modal-score-badge') as HTMLElement;
+    function getEls() {
+        const modal = document.getElementById('wine-modal') as HTMLElement | null;
+        if (!modal) return null;
+        return {
+            modal,
+            backdrop: modal.querySelector('.wine-modal-backdrop') as HTMLElement | null,
+            closeBtn: modal.querySelector('.wine-modal-close') as HTMLElement | null,
+            img: document.getElementById('modal-img') as HTMLImageElement | null,
+            scoreNum: document.getElementById('modal-score-num') as HTMLElement | null,
+            varietal: document.getElementById('modal-varietal') as HTMLElement | null,
+            title: document.getElementById('modal-title') as HTMLElement | null,
+            meta: document.getElementById('modal-meta') as HTMLElement | null,
+            desc: document.getElementById('modal-desc') as HTMLElement | null,
+            notes: document.getElementById('modal-notes') as HTMLElement | null,
+            price: document.getElementById('modal-price') as HTMLElement | null,
+            link: document.getElementById('modal-link') as HTMLAnchorElement | null,
+            scoreBadge: modal.querySelector('.wine-modal-score-badge') as HTMLElement | null
+        };
+    }
 
     function openModal(trigger: HTMLElement) {
+        const els = getEls();
+        if (!els) return;
+        const { modal, img, scoreNum, varietal, title, meta, desc, notes, price, link, scoreBadge } = els;
         const slug = trigger.dataset.wineSlug || '';
+
         if (img) { img.src = trigger.dataset.wineImg || ''; img.alt = trigger.dataset.wineTitle || ''; }
         if (scoreNum) scoreNum.textContent = trigger.dataset.wineRating || '';
         if (scoreBadge) scoreBadge.style.display = trigger.dataset.wineRating ? '' : 'none';
@@ -1441,14 +1454,13 @@ const events = (await getCollection('news')).sort((a, b) =>
 
         const parts = [trigger.dataset.wineAppellation, trigger.dataset.wineVintage].filter(Boolean);
         if (meta) meta.textContent = parts.join(' · ');
-
         if (desc) desc.textContent = trigger.dataset.wineDescription || '';
 
         if (notes) {
             notes.innerHTML = '';
             try {
                 const noteList: string[] = JSON.parse(trigger.dataset.wineNotes || '[]');
-                noteList.forEach(n => {
+                noteList.forEach((n) => {
                     const li = document.createElement('li');
                     li.textContent = n;
                     notes.appendChild(li);
@@ -1465,19 +1477,33 @@ const events = (await getCollection('news')).sort((a, b) =>
     }
 
     function closeModal() {
-        modal.classList.remove('is-open');
-        modal.setAttribute('aria-hidden', 'true');
+        const els = getEls();
+        if (!els) return;
+        els.modal.classList.remove('is-open');
+        els.modal.setAttribute('aria-hidden', 'true');
         document.body.style.overflow = '';
     }
 
-    document.querySelectorAll<HTMLElement>('[data-wine-slug]').forEach(trigger => {
-        trigger.addEventListener('click', () => openModal(trigger));
-    });
+    function onDocClick(e: MouseEvent) {
+        const target = e.target as HTMLElement | null;
+        if (!target) return;
+        const trigger = target.closest('[data-wine-slug]') as HTMLElement | null;
+        if (trigger) {
+            e.preventDefault();
+            openModal(trigger);
+            return;
+        }
+        if (target.closest('.wine-modal-backdrop') || target.closest('.wine-modal-close')) {
+            closeModal();
+        }
+    }
 
-    backdrop?.addEventListener('click', closeModal);
-    closeBtn?.addEventListener('click', closeModal);
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
-    document.addEventListener('astro:before-swap', () => { closeModal(); });
+    if (!(window as any).__wineModalBound) {
+        document.addEventListener('click', onDocClick);
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+        document.addEventListener('astro:before-swap', closeModal);
+        (window as any).__wineModalBound = true;
+    }
 })();
 
 // Parallax scroll on vineyard section

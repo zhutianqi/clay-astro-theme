@@ -3,6 +3,7 @@ import { getCollection, type CollectionEntry } from "astro:content";
 import Page from "../templates/Page.astro";
 import Contact from "../templates/Contact.astro";
 import List from "../templates/List.astro";
+import AboutLuxury from "../templates/AboutLuxury.astro";
 // import Elements from '../templates/Elements.astro';
 
 export async function getStaticPaths() {
@@ -59,10 +60,13 @@ export async function getStaticPaths() {
 
 const { entry, items, baseSlug } = Astro.props;
 const templateKey = entry.data.templateKey;
+const luxuryAboutSlugs = new Set(["bio", "our-story", "winemaker"]);
 ---
 
 {
-  templateKey === "contact-page" ? (
+  luxuryAboutSlugs.has(entry.slug) ? (
+    <AboutLuxury entry={entry} />
+  ) : templateKey === "contact-page" ? (
     <Contact entry={entry} />
   ) : templateKey === "news-page" ||
     templateKey === "work-page" ||
