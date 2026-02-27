@@ -107,7 +107,12 @@ const currentPath = Astro.url?.pathname ?? '';
             <span class="burger-bar bar-1"></span>
             <span class="burger-bar bar-2"></span>
             <span class="burger-bar bar-3"></span>
-            <span class="burger-text">Menu</span>
+            <span class="burger-text-wrap">
+                <span class="burger-text">Menu</span>
+                <svg class="burger-chevron" width="10" height="10" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                    <path d="M2 4.5L6 8L10 4.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </span>
         </button>
     </div>
 
@@ -377,13 +382,16 @@ const currentPath = Astro.url?.pathname ?? '';
     transform: translateY(-50%);
     z-index: 9999;
     -webkit-tap-highlight-color: transparent;
+    -webkit-appearance: none;
+    appearance: none;
 }
 .nav-burger:focus,
 .nav-burger:focus-visible,
 .nav-burger:active {
-    outline: none;
-    box-shadow: none;
-    border-color: transparent;
+    outline: none !important;
+    box-shadow: none !important;
+    border: 0 !important;
+    border-color: transparent !important;
 }
 
 .burger-bar {
@@ -404,17 +412,45 @@ const currentPath = Astro.url?.pathname ?? '';
 .nav-burger.is-active .bar-2 { opacity: 0; transform: scaleX(0); }
 .nav-burger.is-active .bar-3 { transform: translateY(-6px) rotate(-45deg); width: 28px; }
 
+.burger-text-wrap {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 2px;
+    color: var(--text-body);
+}
 .burger-text {
     font-family: var(--font-sans-serif);
-    font-size: 0.7rem;
-    letter-spacing: 2.5px;
+    font-size: 0.72rem;
+    letter-spacing: 2.4px;
     text-transform: uppercase;
-    color: var(--text-body);
-    opacity: 0.92;
-    margin-top: 2px;
+    color: currentColor;
+    opacity: 0.95;
     display: block;
 }
-.site-head.is-transparent .burger-text { color: rgba(255,255,255,0.8); }
+.burger-chevron {
+    color: currentColor;
+    opacity: 0.8;
+    transform: translateY(0.5px);
+    transition: transform 0.25s cubic-bezier(0.2,0,0,1), opacity 0.25s;
+}
+.nav-burger.is-active .burger-chevron {
+    transform: rotate(180deg) translateY(-1px);
+    opacity: 1;
+}
+.site-head.is-transparent .burger-text-wrap,
+.site-head.is-transparent .burger-text,
+.site-head.is-transparent .burger-chevron { color: rgba(255,255,255,0.86); }
+
+/* Light mode on transparent header: keep menu button dark for contrast */
+[data-theme]:not([data-theme='dark']) .site-head.is-transparent .burger-bar {
+    background: rgba(20,13,6,0.92);
+}
+[data-theme]:not([data-theme='dark']) .site-head.is-transparent .burger-text-wrap,
+[data-theme]:not([data-theme='dark']) .site-head.is-transparent .burger-text,
+[data-theme]:not([data-theme='dark']) .site-head.is-transparent .burger-chevron {
+    color: rgba(20,13,6,0.9);
+}
 
 /* ────────────────────────────────────────────
    MOBILE DRAWER — NO BORDERS, CLEAN
