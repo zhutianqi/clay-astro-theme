@@ -153,12 +153,10 @@ const events = (await getCollection('news')).sort((a, b) =>
         </div>
         <div class="collection-scroller" data-drag-scroll>
             <div class="collection-grid">
-                {collectionWines.map((wine, i) => (
+                {collectionWines.map((wine) => (
                     <button
                         type="button"
                         class="collection-card"
-                        data-reveal="up"
-                        data-delay={String(i + 1)}
                         data-wine-slug={wine.slug}
                         data-wine-title={wine.data.title}
                         data-wine-varietal={wine.data.varietal || ''}
@@ -826,14 +824,15 @@ const events = (await getCollection('news')).sort((a, b) =>
     pointer-events: none;
 }
 .collection-grid {
-    display: grid;
-    grid-auto-flow: column;
-    grid-auto-columns: minmax(360px, 34vw);
-    gap: 4vw 3vw;
-    min-width: max-content;
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 4vw;
+    width: max-content;
+    min-width: 100%;
     padding-bottom: 0.5rem;
 }
 .collection-card {
+    flex: 0 0 clamp(280px, 30vw, 420px);
     text-decoration: none;
     color: var(--text-strong);
     display: flex;
@@ -1120,13 +1119,14 @@ const events = (await getCollection('news')).sort((a, b) =>
     .feature-img-wrap { height: 55vw; min-height: 320px; }
     .feature-img { object-fit: cover; }
     .feature-content { padding: 6vw 5vw; }
-    .collection-grid { grid-auto-columns: minmax(280px, 82vw); gap: 5vw 4vw; }
+    .collection-grid { gap: 5vw 4vw; }
+    .collection-card { flex-basis: min(82vw, 360px); }
     .events-grid { grid-template-columns: 1fr 1fr; gap: 6vw 4vw; }
 }
 @media (max-width: 600px) {
     .hero-title { letter-spacing: 8px; }
     .hero-actions { flex-direction: column; align-items: center; }
-    .collection-grid { grid-auto-columns: minmax(260px, 86vw); }
+    .collection-card { flex-basis: 86vw; }
     .events-grid { grid-template-columns: 1fr; }
     .collection-header, .events-header {
         flex-direction: column;
