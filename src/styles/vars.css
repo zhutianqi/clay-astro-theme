@@ -16,7 +16,22 @@
     --text-body: #1a1209;
     --text-muted: rgba(26,18,9,0.78);
     --text-subtle: rgba(26,18,9,0.58);
+    --text-inverse: #fff9ee;
+    --text-accent: #7f6230;
     --line-strong: rgba(114,47,55,0.34);
+
+    /* Typography scale */
+    --fs-display-xl: clamp(4rem, 8vw, 8.2rem);
+    --fs-display-lg: clamp(3rem, 6vw, 6.2rem);
+    --fs-h1: clamp(2.6rem, 4.6vw, 4.8rem);
+    --fs-h2: clamp(2rem, 3.2vw, 3.2rem);
+    --fs-h3: clamp(1.55rem, 2.2vw, 2.2rem);
+    --fs-body-lg: clamp(1.15rem, 1.35vw, 1.35rem);
+    --fs-body: clamp(1.02rem, 1.1vw, 1.16rem);
+    --fs-meta: clamp(0.82rem, 0.9vw, 0.92rem);
+    --lh-tight: 1.18;
+    --lh-heading: 1.25;
+    --lh-body: 1.72;
 
     /* Fonts */
     --font-display: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
@@ -53,5 +68,7 @@
     --text-body: #f8f2e5;
     --text-muted: rgba(248,242,229,0.84);
     --text-subtle: rgba(248,242,229,0.64);
+    --text-inverse: #120d07;
+    --text-accent: #f5d980;
     --line-strong: rgba(245,217,128,0.34);
 }
