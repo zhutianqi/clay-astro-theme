@@ -806,6 +806,7 @@ const events = (await getCollection('news')).sort((a, b) =>
     color: var(--color-base);
     margin: 0;
 }
+[data-theme]:not([data-theme='dark']) .collection-title { color: #1a1209; }
 .collection-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -813,11 +814,12 @@ const events = (await getCollection('news')).sort((a, b) =>
 }
 .collection-card {
     text-decoration: none;
-    color: var(--color-base);
+    color: #1a1209;
     display: flex;
     flex-direction: column;
     gap: 2rem;
 }
+[data-theme='dark'] .collection-card { color: var(--color-base); }
 .collection-card:hover { text-decoration: none; }
 .collection-card:hover,
 .collection-card:focus,
@@ -852,7 +854,8 @@ const events = (await getCollection('news')).sort((a, b) =>
     font-size: 0.85rem;
     letter-spacing: 3px;
     text-transform: uppercase;
-    color: rgba(231,200,116,0.9);
+    color: #f0d88e;
+    text-shadow: 0 1px 2px rgba(8,6,4,0.8);
     opacity: 0;
     transition: opacity 0.4s, transform 0.4s cubic-bezier(0.2,0,0,1);
     white-space: nowrap;
@@ -884,7 +887,9 @@ const events = (await getCollection('news')).sort((a, b) =>
     margin: 0;
     line-height: 1.2;
     transition: color 0.25s;
+    color: #1a1209;
 }
+[data-theme='dark'] .collection-card-title { color: var(--color-base); }
 .collection-card:hover .collection-card-title { color: var(--color-primary); }
 .collection-card-footer {
     display: flex;
@@ -896,7 +901,9 @@ const events = (await getCollection('news')).sort((a, b) =>
     font-size: 1.4rem;
     font-style: italic;
     opacity: 0.4;
+    color: #1a1209;
 }
+[data-theme='dark'] .collection-card-vintage { color: var(--color-base); }
 .collection-card-score {
     font-family: var(--font-display);
     font-size: 1.6rem;
@@ -1147,6 +1154,8 @@ const events = (await getCollection('news')).sort((a, b) =>
     transform: translateY(16px);
     transition: transform 0.24s ease-out;
     will-change: transform;
+    align-self: center;
+    justify-self: center;
 }
 .wine-modal.is-open .wine-modal-panel {
     transform: translateY(0);
@@ -1433,6 +1442,7 @@ const events = (await getCollection('news')).sort((a, b) =>
             modal,
             backdrop: modal.querySelector('.wine-modal-backdrop') as HTMLElement | null,
             closeBtn: modal.querySelector('.wine-modal-close') as HTMLElement | null,
+            panel: modal.querySelector('.wine-modal-panel') as HTMLElement | null,
             img: document.getElementById('modal-img') as HTMLImageElement | null,
             scoreNum: document.getElementById('modal-score-num') as HTMLElement | null,
             varietal: document.getElementById('modal-varietal') as HTMLElement | null,
@@ -1489,6 +1499,20 @@ const events = (await getCollection('news')).sort((a, b) =>
         els.modal.setAttribute('aria-hidden', 'true');
         document.body.style.overflow = '';
     }
+    function closeIfOpen() {
+        const els = getEls();
+        if (!els) return;
+        if (els.modal.classList.contains('is-open')) closeModal();
+    }
+
+    let leaveTimer: number | undefined;
+    function startLeaveAutoClose() {
+        window.clearTimeout(leaveTimer);
+        leaveTimer = window.setTimeout(closeModal, 320);
+    }
+    function cancelLeaveAutoClose() {
+        window.clearTimeout(leaveTimer);
+    }
 
     function onDocClick(e: MouseEvent) {
         const target = e.target as HTMLElement | null;
@@ -1507,9 +1531,16 @@ const events = (await getCollection('news')).sort((a, b) =>
     if (!(window as any).__wineModalBound) {
         document.addEventListener('click', onDocClick);
         document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+        document.addEventListener('visibilitychange', () => { if (document.hidden) closeIfOpen(); });
+        window.addEventListener('blur', closeIfOpen);
+        window.addEventListener('scroll', closeIfOpen, { passive: true });
         document.addEventListener('astro:before-swap', closeModal);
         (window as any).__wineModalBound = true;
     }
+
+    const panel = getEls()?.panel;
+    panel?.addEventListener('mouseleave', startLeaveAutoClose);
+    panel?.addEventListener('mouseenter', cancelLeaveAutoClose);
 })();
 
 // Parallax scroll on vineyard section
