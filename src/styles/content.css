@@ -193,7 +193,7 @@ production stylesheet in assets/built/screen.css using gulp dev
 .post-content-body blockquote {
   margin: 0 0 1.5em;
   padding: 0 1.5em;
-  border-left: #000 3px solid;
+  border-left: var(--color-border) 3px solid;
 }
 
 .post-content-body blockquote p {
@@ -263,7 +263,7 @@ production stylesheet in assets/built/screen.css using gulp dev
   width: 0px;
   height: 30px;
   background: color(var(--color-border) l(+10%));
-  box-shadow: #000 0 0 0 1px;
+  box-shadow: var(--color-border) 0 0 0 1px;
   transform: rotate(45deg);
 }
 
