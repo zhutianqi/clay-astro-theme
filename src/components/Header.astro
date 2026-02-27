@@ -211,9 +211,36 @@ const currentPath = Astro.url?.pathname ?? '';
         transform 0.28s cubic-bezier(0.2,0,0,1),
         visibility 0s 0.28s;
 }
+.dropdown::before,
+.dropdown::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: clamp(120px, 18vw, 280px);
+    background-size: cover;
+    background-position: center;
+    opacity: 0.2;
+    pointer-events: none;
+    transition: opacity 0.28s cubic-bezier(0.2,0,0,1), transform 0.35s cubic-bezier(0.2,0,0,1);
+}
+.dropdown::before {
+    left: 0;
+    background-image: url('/img/stock/menu-left.jpg');
+    transform: translateX(-10px) scale(1.02);
+}
+.dropdown::after {
+    right: 0;
+    background-image: url('/img/stock/menu-right.jpg');
+    transform: translateX(10px) scale(1.02);
+}
 [data-theme='dark'] .dropdown {
     background: rgba(10,7,4,0.98);
     box-shadow: 0 24px 80px rgba(0,0,0,0.65);
+}
+[data-theme='dark'] .dropdown::before,
+[data-theme='dark'] .dropdown::after {
+    opacity: 0.14;
 }
 
 /* Visible state */
@@ -229,6 +256,28 @@ const currentPath = Astro.url?.pathname ?? '';
         transform 0.28s cubic-bezier(0.2,0,0,1),
         visibility 0s;
 }
+.nav-item.is-open .dropdown::before,
+.nav-item:hover .dropdown::before,
+.nav-item:focus-within .dropdown::before {
+    transform: translateX(0) scale(1);
+    opacity: 0.28;
+}
+.nav-item.is-open .dropdown::after,
+.nav-item:hover .dropdown::after,
+.nav-item:focus-within .dropdown::after {
+    transform: translateX(0) scale(1);
+    opacity: 0.24;
+}
+[data-theme='dark'] .nav-item.is-open .dropdown::before,
+[data-theme='dark'] .nav-item:hover .dropdown::before,
+[data-theme='dark'] .nav-item:focus-within .dropdown::before {
+    opacity: 0.18;
+}
+[data-theme='dark'] .nav-item.is-open .dropdown::after,
+[data-theme='dark'] .nav-item:hover .dropdown::after,
+[data-theme='dark'] .nav-item:focus-within .dropdown::after {
+    opacity: 0.16;
+}
 
 /* ── Inner container — bounded content, full-height ── */
 .dropdown-inner {
@@ -236,15 +285,18 @@ const currentPath = Astro.url?.pathname ?? '';
     flex-direction: row;
     align-items: stretch;
     width: 100%;
-    max-width: 960px;
+    max-width: 1220px;
     margin: 0 auto;
     height: 100%;
+    padding: 0 clamp(16px, 2vw, 26px);
+    position: relative;
+    z-index: 2;
 }
 
 /* ── Editorial image panel — consistent 380px wide landscape crop ── */
 .dropdown-editorial {
     position: relative;
-    width: 380px;
+    width: 430px;
     flex-shrink: 0;
     overflow: hidden;
 }
@@ -518,6 +570,16 @@ const currentPath = Astro.url?.pathname ?? '';
 .theme-toggle:hover { opacity: 1; }
 .sun-icon { color: var(--color-primary); }
 .moon-icon { color: var(--color-base); }
+
+@media (max-width: 1200px) {
+    .dropdown::before,
+    .dropdown::after { display: none; }
+    .dropdown-inner {
+        max-width: 1060px;
+        padding: 0 18px;
+    }
+    .dropdown-editorial { width: 390px; }
+}
 
 @media (max-width: 850px) {
     .mobile-drawer { display: block; }
