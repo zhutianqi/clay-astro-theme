@@ -385,13 +385,28 @@ const currentPath = Astro.url?.pathname ?? '';
     -webkit-appearance: none;
     appearance: none;
 }
+.nav-burger,
+#nav-burger {
+    outline: none !important;
+    box-shadow: none !important;
+    border: 0 !important;
+    background: transparent !important;
+}
 .nav-burger:focus,
 .nav-burger:focus-visible,
-.nav-burger:active {
+.nav-burger:active,
+#nav-burger:focus,
+#nav-burger:focus-visible,
+#nav-burger:active {
     outline: none !important;
     box-shadow: none !important;
     border: 0 !important;
     border-color: transparent !important;
+    background: transparent !important;
+}
+.nav-burger::-moz-focus-inner,
+#nav-burger::-moz-focus-inner {
+    border: 0 !important;
 }
 
 .burger-bar {
@@ -441,6 +456,14 @@ const currentPath = Astro.url?.pathname ?? '';
 .site-head.is-transparent .burger-text-wrap,
 .site-head.is-transparent .burger-text,
 .site-head.is-transparent .burger-chevron { color: rgba(255,255,255,0.86); }
+
+.nav-burger *:focus,
+.nav-burger *:focus-visible,
+#nav-burger *:focus,
+#nav-burger *:focus-visible {
+    outline: none !important;
+    box-shadow: none !important;
+}
 
 /* Light mode on transparent header: keep menu button dark for contrast */
 [data-theme]:not([data-theme='dark']) .site-head.is-transparent .burger-bar {
