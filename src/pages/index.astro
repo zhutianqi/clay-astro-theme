@@ -151,44 +151,46 @@ const events = (await getCollection('news')).sort((a, b) =>
             <h2 class="collection-title">The Collection</h2>
             <a href="/work" class="text-link">View all wines <span aria-hidden="true">→</span></a>
         </div>
-        <div class="collection-grid">
-            {collectionWines.map((wine, i) => (
-                <button
-                    type="button"
-                    class="collection-card"
-                    data-reveal="up"
-                    data-delay={String(i + 1)}
-                    data-wine-slug={wine.slug}
-                    data-wine-title={wine.data.title}
-                    data-wine-varietal={wine.data.varietal || ''}
-                    data-wine-vintage={wine.data.vintage || ''}
-                    data-wine-appellation={wine.data.appellation || ''}
-                    data-wine-rating={String(wine.data.rating || '')}
-                    data-wine-critic={wine.data.critic || ''}
-                    data-wine-price={wine.data.price || ''}
-                    data-wine-description={wine.data.description || ''}
-                    data-wine-img={wine.data.thumbnail || '/img/wine-red-glass.jpg'}
-                    data-wine-notes={JSON.stringify(wine.data.tasting_notes || [])}
-                >
-                    <div class="collection-card-img-wrap">
-                        <img
-                            src={wine.data.thumbnail || '/img/wine-red-glass.jpg'}
-                            alt={wine.data.title}
-                            class="collection-card-img"
-                        />
-                        <div class="collection-card-overlay"></div>
-                        <div class="collection-card-cta">View Details</div>
-                    </div>
-                    <div class="collection-card-body">
-                        {wine.data.varietal && <span class="collection-card-varietal">{wine.data.varietal}</span>}
-                        <h3 class="collection-card-title">{wine.data.title}</h3>
-                        <div class="collection-card-footer">
-                            <span class="collection-card-vintage">{wine.data.vintage}</span>
-                            {wine.data.rating && <span class="collection-card-score">{wine.data.rating} pts</span>}
+        <div class="collection-scroller" data-drag-scroll>
+            <div class="collection-grid">
+                {collectionWines.map((wine, i) => (
+                    <button
+                        type="button"
+                        class="collection-card"
+                        data-reveal="up"
+                        data-delay={String(i + 1)}
+                        data-wine-slug={wine.slug}
+                        data-wine-title={wine.data.title}
+                        data-wine-varietal={wine.data.varietal || ''}
+                        data-wine-vintage={wine.data.vintage || ''}
+                        data-wine-appellation={wine.data.appellation || ''}
+                        data-wine-rating={String(wine.data.rating || '')}
+                        data-wine-critic={wine.data.critic || ''}
+                        data-wine-price={wine.data.price || ''}
+                        data-wine-description={wine.data.description || ''}
+                        data-wine-img={wine.data.thumbnail || '/img/wine-red-glass.jpg'}
+                        data-wine-notes={JSON.stringify(wine.data.tasting_notes || [])}
+                    >
+                        <div class="collection-card-img-wrap">
+                            <img
+                                src={wine.data.thumbnail || '/img/wine-red-glass.jpg'}
+                                alt={wine.data.title}
+                                class="collection-card-img"
+                            />
+                            <div class="collection-card-overlay"></div>
+                            <div class="collection-card-cta">View Details</div>
                         </div>
-                    </div>
-                </button>
-            ))}
+                        <div class="collection-card-body">
+                            {wine.data.varietal && <span class="collection-card-varietal">{wine.data.varietal}</span>}
+                            <h3 class="collection-card-title">{wine.data.title}</h3>
+                            <div class="collection-card-footer">
+                                <span class="collection-card-vintage">{wine.data.vintage}</span>
+                                {wine.data.rating && <span class="collection-card-score">{wine.data.rating} pts</span>}
+                            </div>
+                        </div>
+                    </button>
+                ))}
+            </div>
         </div>
     </section>
 
@@ -807,10 +809,26 @@ const events = (await getCollection('news')).sort((a, b) =>
     margin: 0;
 }
 [data-theme]:not([data-theme='dark']) .collection-title { color: #1a1209; }
+.collection-scroller {
+    overflow-x: auto;
+    overflow-y: visible;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(231,200,116,0.55) rgba(255,255,255,0.08);
+    cursor: grab;
+    -webkit-overflow-scrolling: touch;
+}
+.collection-scroller:active,
+.collection-scroller.is-dragging { cursor: grabbing; }
+.collection-scroller.is-dragging .collection-card {
+    pointer-events: none;
+}
 .collection-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(320px, 1fr);
     gap: 4vw 3vw;
+    min-width: max-content;
+    padding-bottom: 0.5rem;
 }
 .collection-card {
     text-decoration: none;
@@ -1099,13 +1117,13 @@ const events = (await getCollection('news')).sort((a, b) =>
     .feature-img-wrap { height: 55vw; min-height: 320px; }
     .feature-img { object-fit: cover; }
     .feature-content { padding: 6vw 5vw; }
-    .collection-grid { grid-template-columns: 1fr 1fr; gap: 5vw 4vw; }
+    .collection-grid { grid-auto-columns: minmax(280px, 82vw); gap: 5vw 4vw; }
     .events-grid { grid-template-columns: 1fr 1fr; gap: 6vw 4vw; }
 }
 @media (max-width: 600px) {
     .hero-title { letter-spacing: 8px; }
     .hero-actions { flex-direction: column; align-items: center; }
-    .collection-grid { grid-template-columns: 1fr; }
+    .collection-grid { grid-auto-columns: minmax(260px, 86vw); }
     .events-grid { grid-template-columns: 1fr; }
     .collection-header, .events-header {
         flex-direction: column;
@@ -1607,6 +1625,52 @@ const events = (await getCollection('news')).sort((a, b) =>
         (window as any).__wineModalBound = true;
     }
     queueModalCenterUpdate();
+})();
+
+// Drag-to-scroll on The Collection rail
+(function() {
+    const scroller = document.querySelector<HTMLElement>('[data-drag-scroll]');
+    if (!scroller) return;
+
+    let isDown = false;
+    let startX = 0;
+    let startScrollLeft = 0;
+
+    const onPointerDown = (e: PointerEvent) => {
+        if (e.pointerType === 'mouse' && e.button !== 0) return;
+        isDown = true;
+        startX = e.clientX;
+        startScrollLeft = scroller.scrollLeft;
+        scroller.classList.add('is-dragging');
+        scroller.setPointerCapture?.(e.pointerId);
+    };
+
+    const onPointerMove = (e: PointerEvent) => {
+        if (!isDown) return;
+        const dx = e.clientX - startX;
+        scroller.scrollLeft = startScrollLeft - dx;
+    };
+
+    const onPointerUp = (e: PointerEvent) => {
+        if (!isDown) return;
+        isDown = false;
+        scroller.classList.remove('is-dragging');
+        scroller.releasePointerCapture?.(e.pointerId);
+    };
+
+    scroller.addEventListener('pointerdown', onPointerDown);
+    scroller.addEventListener('pointermove', onPointerMove);
+    scroller.addEventListener('pointerup', onPointerUp);
+    scroller.addEventListener('pointercancel', onPointerUp);
+    scroller.addEventListener('pointerleave', onPointerUp);
+
+    document.addEventListener('astro:before-swap', () => {
+        scroller.removeEventListener('pointerdown', onPointerDown);
+        scroller.removeEventListener('pointermove', onPointerMove);
+        scroller.removeEventListener('pointerup', onPointerUp);
+        scroller.removeEventListener('pointercancel', onPointerUp);
+        scroller.removeEventListener('pointerleave', onPointerUp);
+    });
 })();
 
 // Parallax scroll on vineyard section
