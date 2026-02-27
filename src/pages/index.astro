@@ -7,7 +7,7 @@ const allWines = (await getCollection('work')).sort((a, b) =>
     (b.data.rating || 0) - (a.data.rating || 0)
 );
 const featuredWine = allWines[0];  // Leonidas 98pts
-const collectionWines = allWines.slice(1, 4); // next 3
+const collectionWines = allWines; // show all wines in horizontal rail
 
 // Fetch events
 const events = (await getCollection('news')).sort((a, b) =>
@@ -812,11 +812,13 @@ const events = (await getCollection('news')).sort((a, b) =>
 .collection-scroller {
     overflow-x: auto;
     overflow-y: visible;
-    scrollbar-width: thin;
-    scrollbar-color: rgba(231,200,116,0.55) rgba(255,255,255,0.08);
     cursor: grab;
     -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge legacy */
 }
+.collection-scroller::-webkit-scrollbar { display: none; } /* WebKit */
 .collection-scroller:active,
 .collection-scroller.is-dragging { cursor: grabbing; }
 .collection-scroller.is-dragging .collection-card {
