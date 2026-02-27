@@ -1142,23 +1142,23 @@ const events = (await getCollection('news')).sort((a, b) =>
     will-change: opacity;
 }
 .wine-modal-panel {
-    position: relative;
+    position: fixed;
+    left: 50%;
+    top: 50%;
     z-index: 2;
     display: grid;
     grid-template-columns: 45% 1fr;
     max-width: 960px;
     width: min(960px, 92vw);
-    max-height: 90vh;
+    max-height: min(90vh, 820px);
     background: var(--color-bg);
     overflow: hidden;
-    transform: translateY(16px);
+    transform: translate(-50%, calc(-50% + 16px));
     transition: transform 0.24s ease-out;
     will-change: transform;
-    align-self: center;
-    justify-self: center;
 }
 .wine-modal.is-open .wine-modal-panel {
-    transform: translateY(0);
+    transform: translate(-50%, -50%);
 }
 [data-theme='dark'] .wine-modal-panel {
     background: #100c08;
@@ -1170,7 +1170,7 @@ const events = (await getCollection('news')).sort((a, b) =>
     z-index: 10;
     background: none;
     border: none;
-    color: rgba(255,255,255,0.55);
+    color: rgba(26,18,9,0.48);
     width: 36px;
     height: 36px;
     display: flex;
@@ -1184,6 +1184,7 @@ const events = (await getCollection('news')).sort((a, b) =>
     -webkit-appearance: none;
     appearance: none;
 }
+[data-theme='dark'] .wine-modal-close { color: rgba(255,255,255,0.55); }
 .wine-modal-close:hover { color: #e7c874; }
 .wine-modal-close:focus { outline: none; }
 .wine-modal-close:hover,
@@ -1370,6 +1371,8 @@ const events = (await getCollection('news')).sort((a, b) =>
         grid-template-columns: 1fr;
         max-height: 92vh;
         width: min(96vw, 560px);
+        top: 50%;
+        left: 50%;
     }
     .wine-modal-img-wrap { height: 50vw; min-height: 220px; }
     .wine-modal-img { min-height: 220px; }
@@ -1487,6 +1490,7 @@ const events = (await getCollection('news')).sort((a, b) =>
         if (price) price.textContent = trigger.dataset.winePrice || '';
         if (link) link.href = `/work/${slug}`;
 
+        clearFarCloseTimer();
         modal.classList.add('is-open');
         modal.setAttribute('aria-hidden', 'false');
         document.body.style.overflow = 'hidden';
@@ -1498,6 +1502,7 @@ const events = (await getCollection('news')).sort((a, b) =>
         els.modal.classList.remove('is-open');
         els.modal.setAttribute('aria-hidden', 'true');
         document.body.style.overflow = '';
+        clearFarCloseTimer();
     }
     function closeIfOpen() {
         const els = getEls();
@@ -1505,13 +1510,27 @@ const events = (await getCollection('news')).sort((a, b) =>
         if (els.modal.classList.contains('is-open')) closeModal();
     }
 
-    let leaveTimer: number | undefined;
-    function startLeaveAutoClose() {
-        window.clearTimeout(leaveTimer);
-        leaveTimer = window.setTimeout(closeModal, 320);
+    let farCloseTimer: number | undefined;
+    function clearFarCloseTimer() {
+        window.clearTimeout(farCloseTimer);
+        farCloseTimer = undefined;
     }
-    function cancelLeaveAutoClose() {
-        window.clearTimeout(leaveTimer);
+    function scheduleFarClose() {
+        if (farCloseTimer) return;
+        farCloseTimer = window.setTimeout(closeIfOpen, 520);
+    }
+    function distanceToPanel(e: PointerEvent, panel: HTMLElement) {
+        const rect = panel.getBoundingClientRect();
+        const dx = e.clientX < rect.left ? rect.left - e.clientX : e.clientX > rect.right ? e.clientX - rect.right : 0;
+        const dy = e.clientY < rect.top ? rect.top - e.clientY : e.clientY > rect.bottom ? e.clientY - rect.bottom : 0;
+        return Math.hypot(dx, dy);
+    }
+    function onPointerMove(e: PointerEvent) {
+        const els = getEls();
+        if (!els || !els.panel || !els.modal.classList.contains('is-open')) return;
+        const far = distanceToPanel(e, els.panel) > 180;
+        if (far) scheduleFarClose();
+        else clearFarCloseTimer();
     }
 
     function onDocClick(e: MouseEvent) {
@@ -1532,15 +1551,10 @@ const events = (await getCollection('news')).sort((a, b) =>
         document.addEventListener('click', onDocClick);
         document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
         document.addEventListener('visibilitychange', () => { if (document.hidden) closeIfOpen(); });
-        window.addEventListener('blur', closeIfOpen);
-        window.addEventListener('scroll', closeIfOpen, { passive: true });
+        document.addEventListener('pointermove', onPointerMove);
         document.addEventListener('astro:before-swap', closeModal);
         (window as any).__wineModalBound = true;
     }
-
-    const panel = getEls()?.panel;
-    panel?.addEventListener('mouseleave', startLeaveAutoClose);
-    panel?.addEventListener('mouseenter', cancelLeaveAutoClose);
 })();
 
 // Parallax scroll on vineyard section
