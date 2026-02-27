@@ -814,7 +814,7 @@ const events = (await getCollection('news')).sort((a, b) =>
 }
 .collection-card {
     text-decoration: none;
-    color: #1a1209;
+    color: var(--text-strong);
     display: flex;
     flex-direction: column;
     gap: 2rem;
@@ -887,7 +887,7 @@ const events = (await getCollection('news')).sort((a, b) =>
     margin: 0;
     line-height: 1.2;
     transition: color 0.25s;
-    color: #1a1209;
+    color: var(--text-strong);
 }
 [data-theme='dark'] .collection-card-title { color: var(--color-base); }
 .collection-card:hover .collection-card-title { color: var(--color-primary); }
@@ -901,7 +901,7 @@ const events = (await getCollection('news')).sort((a, b) =>
     font-size: 1.4rem;
     font-style: italic;
     opacity: 0.4;
-    color: #1a1209;
+    color: var(--text-muted);
 }
 [data-theme='dark'] .collection-card-vintage { color: var(--color-base); }
 .collection-card-score {
@@ -1143,8 +1143,8 @@ const events = (await getCollection('news')).sort((a, b) =>
 }
 .wine-modal-panel {
     position: fixed;
-    left: var(--modal-center-x, 50vw);
-    top: var(--modal-center-y, 50vh);
+    left: 50vw;
+    top: 50vh;
     z-index: 2;
     display: grid;
     grid-template-columns: 45% 1fr;
@@ -1169,7 +1169,7 @@ const events = (await getCollection('news')).sort((a, b) =>
     right: 1.4rem;
     z-index: 10;
     background: none;
-    border: none;
+    border: 0;
     color: rgba(26,18,9,0.48);
     width: 36px;
     height: 36px;
@@ -1183,15 +1183,18 @@ const events = (await getCollection('news')).sort((a, b) =>
     box-shadow: none !important;
     -webkit-appearance: none;
     appearance: none;
+    -webkit-tap-highlight-color: transparent;
 }
 [data-theme='dark'] .wine-modal-close { color: rgba(255,255,255,0.55); }
 .wine-modal-close:hover { color: #e7c874; }
 .wine-modal-close:focus { outline: none; }
 .wine-modal-close:hover,
 .wine-modal-close:focus,
-.wine-modal-close:focus-visible {
+.wine-modal-close:focus-visible,
+.wine-modal-close:active {
     box-shadow: none !important;
     background: transparent !important;
+    border-color: transparent !important;
 }
 
 /* No focus ring on click-only interactive elements */
@@ -1370,7 +1373,7 @@ const events = (await getCollection('news')).sort((a, b) =>
     .wine-modal-panel {
         grid-template-columns: 1fr;
         max-height: 92vh;
-        width: min(96vw, 560px);
+        width: min(94vw, 560px);
     }
     .wine-modal-img-wrap { height: 50vw; min-height: 220px; }
     .wine-modal-img { min-height: 220px; }
@@ -1378,6 +1381,26 @@ const events = (await getCollection('news')).sort((a, b) =>
     [data-theme='dark'] .wine-modal-img-fade { background: linear-gradient(to top, #100c08 0%, transparent 60%); }
     .wine-modal-content { padding: 2.5rem 2rem 3rem; }
     .wine-modal-score-badge { display: none; }
+}
+
+@media (max-width: 600px) {
+    .collection-card-body { gap: 0.5rem; min-width: 0; }
+    .collection-card-varietal {
+        font-size: 0.8rem;
+        letter-spacing: 2.4px;
+        opacity: 0.92;
+    }
+    .collection-card-title {
+        font-size: clamp(1.6rem, 8.6vw, 2.2rem);
+        line-height: 1.12;
+        letter-spacing: 1.1px;
+        overflow-wrap: anywhere;
+    }
+    .collection-card-footer {
+        gap: 0.9rem;
+        flex-wrap: wrap;
+    }
+    .collection-card-score { font-size: 1.35rem; }
 }
 </style>
 
@@ -1436,6 +1459,9 @@ const events = (await getCollection('news')).sort((a, b) =>
 
 // Wine card modal
 (function() {
+    let modalCenterRaf: number | undefined;
+    const isFinePointer = window.matchMedia('(pointer: fine)').matches;
+
     function getEls() {
         const modal = document.getElementById('wine-modal') as HTMLElement | null;
         if (!modal) return null;
@@ -1488,11 +1514,12 @@ const events = (await getCollection('news')).sort((a, b) =>
         if (price) price.textContent = trigger.dataset.winePrice || '';
         if (link) link.href = `/work/${slug}`;
 
-        updateModalCenter();
+        queueModalCenterUpdate();
         clearFarCloseTimer();
         modal.classList.add('is-open');
         modal.setAttribute('aria-hidden', 'false');
         document.body.style.overflow = 'hidden';
+        queueModalCenterUpdate();
     }
 
     function closeModal() {
@@ -1531,14 +1558,26 @@ const events = (await getCollection('news')).sort((a, b) =>
         if (far) scheduleFarClose();
         else clearFarCloseTimer();
     }
+    function getViewportCenter() {
+        const vv = window.visualViewport;
+        return {
+            x: vv ? vv.width / 2 : window.innerWidth / 2,
+            y: vv ? vv.height / 2 : window.innerHeight / 2
+        };
+    }
     function updateModalCenter() {
         const els = getEls();
         if (!els?.panel) return;
-        const vv = window.visualViewport;
-        const x = vv ? vv.offsetLeft + vv.width / 2 : window.innerWidth / 2;
-        const y = vv ? vv.offsetTop + vv.height / 2 : window.innerHeight / 2;
-        els.panel.style.setProperty('--modal-center-x', `${x}px`);
-        els.panel.style.setProperty('--modal-center-y', `${y}px`);
+        const { x, y } = getViewportCenter();
+        els.panel.style.left = `${x}px`;
+        els.panel.style.top = `${y}px`;
+    }
+    function queueModalCenterUpdate() {
+        window.cancelAnimationFrame(modalCenterRaf);
+        modalCenterRaf = window.requestAnimationFrame(() => {
+            updateModalCenter();
+            modalCenterRaf = window.requestAnimationFrame(updateModalCenter);
+        });
     }
 
     function onDocClick(e: MouseEvent) {
@@ -1559,14 +1598,15 @@ const events = (await getCollection('news')).sort((a, b) =>
         document.addEventListener('click', onDocClick);
         document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
         document.addEventListener('visibilitychange', () => { if (document.hidden) closeIfOpen(); });
-        document.addEventListener('pointermove', onPointerMove);
-        window.addEventListener('resize', updateModalCenter);
-        window.visualViewport?.addEventListener('resize', updateModalCenter);
-        window.visualViewport?.addEventListener('scroll', updateModalCenter);
+        if (isFinePointer) document.addEventListener('pointermove', onPointerMove, { passive: true });
+        window.addEventListener('resize', queueModalCenterUpdate);
+        window.addEventListener('scroll', queueModalCenterUpdate, { passive: true });
+        window.visualViewport?.addEventListener('resize', queueModalCenterUpdate);
+        window.visualViewport?.addEventListener('scroll', queueModalCenterUpdate);
         document.addEventListener('astro:before-swap', closeModal);
         (window as any).__wineModalBound = true;
     }
-    updateModalCenter();
+    queueModalCenterUpdate();
 })();
 
 // Parallax scroll on vineyard section

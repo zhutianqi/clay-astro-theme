@@ -12,6 +12,11 @@
     --color-bg-rgb: 250, 246, 239; /* for glass morphism */
     --color-gold: #9a7d3a;         /* muted gold for light mode */
     --color-overlay: rgba(10,6,2,0.55);
+    --text-strong: #140d06;
+    --text-body: #1a1209;
+    --text-muted: rgba(26,18,9,0.78);
+    --text-subtle: rgba(26,18,9,0.58);
+    --line-strong: rgba(114,47,55,0.34);
 
     /* Fonts */
     --font-display: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
@@ -44,4 +49,9 @@
     --color-bg-rgb: 8, 6, 4;       /* for glass morphism */
     --color-gold: #f5d980;         /* gold accent */
     --color-overlay: rgba(8,6,4,0.65);
+    --text-strong: #fff9eb;
+    --text-body: #f8f2e5;
+    --text-muted: rgba(248,242,229,0.84);
+    --text-subtle: rgba(248,242,229,0.64);
+    --line-strong: rgba(245,217,128,0.34);
 }

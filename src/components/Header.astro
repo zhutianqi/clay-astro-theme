@@ -387,7 +387,7 @@ const currentPath = Astro.url?.pathname ?? '';
     justify-content: center;
     gap: 4px;
     background: transparent;
-    border: none;
+    border: 0;
     cursor: pointer;
     padding: 10px 0;
     position: absolute;
@@ -395,8 +395,15 @@ const currentPath = Astro.url?.pathname ?? '';
     top: 50%;
     transform: translateY(-50%);
     z-index: 9999;
+    -webkit-tap-highlight-color: transparent;
 }
-.nav-burger:focus { outline: none; }
+.nav-burger:focus,
+.nav-burger:focus-visible,
+.nav-burger:active {
+    outline: none;
+    box-shadow: none;
+    border-color: transparent;
+}
 
 .burger-bar {
     display: block;
@@ -421,8 +428,8 @@ const currentPath = Astro.url?.pathname ?? '';
     font-size: 0.7rem;
     letter-spacing: 2.5px;
     text-transform: uppercase;
-    color: var(--color-base);
-    opacity: 0.7;
+    color: var(--text-body);
+    opacity: 0.92;
     margin-top: 2px;
     display: block;
 }
@@ -450,10 +457,10 @@ const currentPath = Astro.url?.pathname ?? '';
     top: 1.2rem;
     right: 6vw;
     background: transparent;
-    border: none;
+    border: 0;
     cursor: pointer;
-    color: var(--color-base);
-    opacity: 0.55;
+    color: var(--text-body);
+    opacity: 0.82;
     padding: 6px;
     display: flex;
     align-items: center;
@@ -462,11 +469,16 @@ const currentPath = Astro.url?.pathname ?? '';
     box-shadow: none;
     -webkit-appearance: none;
     appearance: none;
+    -webkit-tap-highlight-color: transparent;
 }
 .mobile-close:focus { outline: none; }
 .mobile-close:hover,
 .mobile-close:focus,
-.mobile-close:focus-visible { box-shadow: none; }
+.mobile-close:focus-visible,
+.mobile-close:active {
+    box-shadow: none;
+    border-color: transparent;
+}
 .mobile-close:hover { opacity: 1; }
 
 .mobile-section {
@@ -488,14 +500,20 @@ const currentPath = Astro.url?.pathname ?? '';
     font-size: 2.2rem;
     font-weight: 300;
     letter-spacing: 2px;
-    color: var(--color-base);
+    color: var(--text-strong);
     text-decoration: none;
     padding: 4px 0;
-    opacity: 0.82;
+    opacity: 1;
     transition: color 0.2s, opacity 0.2s;
     display: block;
 }
-.mobile-section a:focus { outline: none; }
+.mobile-section a:focus,
+.mobile-section a:focus-visible,
+.mobile-section a:active {
+    outline: none;
+    box-shadow: none;
+    border-color: transparent;
+}
 .mobile-section a:hover { color: var(--color-primary); opacity: 1; }
 
 .mobile-section + .mobile-section::before {
@@ -522,20 +540,25 @@ const currentPath = Astro.url?.pathname ?? '';
     align-items: center;
     gap: 12px;
     background: transparent;
-    border: none;
+    border: 0;
     cursor: pointer;
     padding: 0;
-    color: var(--color-base);
-    opacity: 0.5;
+    color: var(--text-body);
+    opacity: 0.86;
     transition: opacity 0.25s;
     box-shadow: none;
     -webkit-appearance: none;
     appearance: none;
+    -webkit-tap-highlight-color: transparent;
 }
 .mobile-theme-btn:focus { outline: none; }
 .mobile-theme-btn:hover,
 .mobile-theme-btn:focus,
-.mobile-theme-btn:focus-visible { box-shadow: none; }
+.mobile-theme-btn:focus-visible,
+.mobile-theme-btn:active {
+    box-shadow: none;
+    border-color: transparent;
+}
 .mobile-theme-btn:hover { opacity: 1; }
 .mobile-theme-label {
     font-family: var(--font-sans-serif);
@@ -549,7 +572,7 @@ const currentPath = Astro.url?.pathname ?? '';
 /* Theme toggle button — borderless, no outline */
 .theme-toggle {
     background: transparent;
-    border: none;
+    border: 0;
     cursor: pointer;
     padding: 5px 8px;
     display: flex;
@@ -562,11 +585,16 @@ const currentPath = Astro.url?.pathname ?? '';
     box-shadow: none;
     -webkit-appearance: none;
     appearance: none;
+    -webkit-tap-highlight-color: transparent;
 }
 .theme-toggle:focus { outline: none; }
 .theme-toggle:hover,
 .theme-toggle:focus,
-.theme-toggle:focus-visible { box-shadow: none; }
+.theme-toggle:focus-visible,
+.theme-toggle:active {
+    box-shadow: none;
+    border-color: transparent;
+}
 .theme-toggle:hover { opacity: 1; }
 .sun-icon { color: var(--color-primary); }
 .moon-icon { color: var(--color-base); }
