@@ -781,6 +781,9 @@ const events = (await getCollection('news')).sort((a, b) =>
     border: none;
     cursor: pointer;
     text-align: left;
+    box-shadow: none;
+    -webkit-appearance: none;
+    appearance: none;
 }
 
 /* ─── COLLECTION ─────────────────────────────── */
@@ -816,6 +819,9 @@ const events = (await getCollection('news')).sort((a, b) =>
     gap: 2rem;
 }
 .collection-card:hover { text-decoration: none; }
+.collection-card:hover,
+.collection-card:focus,
+.collection-card:focus-visible { box-shadow: none; }
 .collection-card-img-wrap {
     position: relative;
     overflow: hidden;

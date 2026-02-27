@@ -407,8 +407,14 @@ const currentPath = Astro.url?.pathname ?? '';
     align-items: center;
     justify-content: center;
     transition: opacity 0.2s;
+    box-shadow: none;
+    -webkit-appearance: none;
+    appearance: none;
 }
 .mobile-close:focus { outline: none; }
+.mobile-close:hover,
+.mobile-close:focus,
+.mobile-close:focus-visible { box-shadow: none; }
 .mobile-close:hover { opacity: 1; }
 
 .mobile-section {
@@ -470,8 +476,14 @@ const currentPath = Astro.url?.pathname ?? '';
     color: var(--color-base);
     opacity: 0.5;
     transition: opacity 0.25s;
+    box-shadow: none;
+    -webkit-appearance: none;
+    appearance: none;
 }
 .mobile-theme-btn:focus { outline: none; }
+.mobile-theme-btn:hover,
+.mobile-theme-btn:focus,
+.mobile-theme-btn:focus-visible { box-shadow: none; }
 .mobile-theme-btn:hover { opacity: 1; }
 .mobile-theme-label {
     font-family: var(--font-sans-serif);
@@ -495,8 +507,14 @@ const currentPath = Astro.url?.pathname ?? '';
     opacity: 0.7;
     transition: opacity 0.3s;
     flex-shrink: 0;
+    box-shadow: none;
+    -webkit-appearance: none;
+    appearance: none;
 }
 .theme-toggle:focus { outline: none; }
+.theme-toggle:hover,
+.theme-toggle:focus,
+.theme-toggle:focus-visible { box-shadow: none; }
 .theme-toggle:hover { opacity: 1; }
 .sun-icon { color: var(--color-primary); }
 .moon-icon { color: var(--color-base); }
