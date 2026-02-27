@@ -6,7 +6,7 @@ interface Props {
   entry: CollectionEntry<'pages'>;
 }
 
-const { entry } = Astro.props;
+const { entry: _entry } = Astro.props;
 ---
 
 <Layout title="Join the Allocation List" description="Request access to Maison's annual allocation — a limited release offered exclusively to members before reaching any retail or restaurant channel.">
@@ -553,8 +553,8 @@ form { width: 100%; }
   background: transparent;
   border: none;
   cursor: pointer;
-  color: var(--color-base);
-  opacity: 0.55;
+  color: var(--color-primary);
+  opacity: 0.88;
   display: inline-flex;
   align-items: center;
   gap: 0.8rem;

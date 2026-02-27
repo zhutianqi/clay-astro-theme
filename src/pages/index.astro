@@ -1150,26 +1150,29 @@ const events = (await getCollection('news')).sort((a, b) =>
 }
 .wine-modal-close {
     position: absolute;
-    top: 1.5rem;
-    right: 1.5rem;
+    top: 1.2rem;
+    right: 1.4rem;
     z-index: 10;
-    background: rgba(0,0,0,0.35);
-    border: 1px solid rgba(255,255,255,0.15);
-    color: rgba(255,255,255,0.8);
-    width: 40px;
-    height: 40px;
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.55);
+    width: 36px;
+    height: 36px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    border-radius: 50%;
-    transition: background 0.2s, color 0.2s;
+    padding: 0;
+    outline: none;
+    transition: color 0.2s;
 }
-.wine-modal-close:hover {
-    background: rgba(231,200,116,0.2);
-    color: #e7c874;
-    border-color: rgba(231,200,116,0.4);
-}
+.wine-modal-close:hover { color: #e7c874; }
+.wine-modal-close:focus { outline: none; }
+
+/* No focus ring on click-only interactive elements */
+.collection-card:focus:not(:focus-visible),
+.quote-dot:focus:not(:focus-visible),
+.hero-scroll:focus:not(:focus-visible) { outline: none; }
 .wine-modal-img-wrap {
     position: relative;
     overflow: hidden;

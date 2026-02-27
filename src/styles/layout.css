@@ -1,6 +1,21 @@
-/* Remove browser black focus ring on mouse click; keep for keyboard nav */
+/* iOS/Safari tap highlight + browser click focus ring */
+* { -webkit-tap-highlight-color: transparent; }
 *:focus:not(:focus-visible) { outline: none !important; }
 *:focus-visible { outline: 1px solid var(--color-primary); outline-offset: 2px; }
+
+/* ── Dark mode wine content — global override to bypass Astro CSS scoping ── */
+[data-theme='dark'] .wine-body .wine-color-desc,
+[data-theme='dark'] .wine-body .wine-notes-flow,
+[data-theme='dark'] .wine-body .wine-excerpt { color: #f8f2e5 !important; opacity: 0.88 !important; }
+[data-theme='dark'] .wine-body .wine-section-label { color: #f5d980 !important; opacity: 0.9 !important; }
+[data-theme='dark'] .post-content-body { color: #f8f2e5 !important; }
+[data-theme='dark'] .post-content-body h2 { color: #f8f2e5 !important; opacity: 1 !important; }
+[data-theme='dark'] .post-content-body h3 { color: #f5d980 !important; opacity: 1 !important; }
+[data-theme='dark'] .post-content-body p,
+[data-theme='dark'] .post-content-body li { color: #f8f2e5 !important; opacity: 0.92 !important; }
+[data-theme='dark'] .post-content-body th { color: #f5d980 !important; opacity: 1 !important; }
+[data-theme='dark'] .post-content-body td { color: #f8f2e5 !important; opacity: 1 !important; }
+[data-theme='dark'] .post-content-body blockquote p { color: #f8f2e5 !important; opacity: 0.82 !important; }
 
 /* Global Styles */
 body {
