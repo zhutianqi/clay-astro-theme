@@ -465,6 +465,28 @@ const {
   font-size: 0.85rem;
   opacity: 0.68;
 }
+/* Dark mode — full contrast on table & inline headings */
+[data-theme='dark'] .post-content-body th {
+  opacity: 1;
+  color: var(--color-primary);
+}
+[data-theme='dark'] .post-content-body td {
+  color: var(--color-base);
+  opacity: 1;
+}
+[data-theme='dark'] .post-content-body h2 {
+  color: var(--color-base);
+  opacity: 1;
+}
+[data-theme='dark'] .post-content-body h3 {
+  color: var(--color-primary);
+  opacity: 1;
+}
+[data-theme='dark'] .post-content-body p,
+[data-theme='dark'] .post-content-body li {
+  color: var(--color-base);
+  opacity: 0.92;
+}
 
 /* ── Pairings ── */
 .wine-pairings-section {

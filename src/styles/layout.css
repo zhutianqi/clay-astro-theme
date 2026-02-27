@@ -1,3 +1,7 @@
+/* Remove browser black focus ring on mouse click; keep for keyboard nav */
+*:focus:not(:focus-visible) { outline: none !important; }
+*:focus-visible { outline: 1px solid var(--color-primary); outline-offset: 2px; }
+
 /* Global Styles */
 body {
     font-family: var(--font-serif);

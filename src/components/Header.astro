@@ -18,19 +18,20 @@ const currentPath = Astro.url?.pathname ?? '';
                 <li class={`nav-item has-dropdown${(currentPath.startsWith('/bio') || currentPath.startsWith('/our-story') || currentPath.startsWith('/winemaker') || currentPath.startsWith('/vineyards') || currentPath.startsWith('/philosophy')) ? ' nav-current' : ''}`} role="menuitem">
                     <a href="/bio">About</a>
                     <div class="dropdown" role="navigation" aria-label="About submenu">
-                        <div class="dropdown-editorial">
-                            <div class="dropdown-editorial-img">
+                        <div class="dropdown-inner">
+                            <div class="dropdown-editorial">
                                 <img src="/img/wine-estate.jpg" alt="" loading="lazy" />
+                                <div class="dropdown-editorial-overlay"></div>
+                                <p class="dropdown-editorial-label">The Estate</p>
                             </div>
-                            <p class="dropdown-editorial-label">The Estate</p>
+                            <nav class="dropdown-links">
+                                <a href="/our-story">Our Story</a>
+                                <a href="/winemaker">The Winemaker</a>
+                                <a href="/vineyards">Vineyards</a>
+                                <a href="/philosophy">Philosophy</a>
+                                <a href="/faq">FAQ</a>
+                            </nav>
                         </div>
-                        <nav class="dropdown-links">
-                            <a href="/our-story">Our Story</a>
-                            <a href="/winemaker">The Winemaker</a>
-                            <a href="/vineyards">Vineyards</a>
-                            <a href="/philosophy">Philosophy</a>
-                            <a href="/faq">FAQ</a>
-                        </nav>
                     </div>
                 </li>
 
@@ -38,19 +39,20 @@ const currentPath = Astro.url?.pathname ?? '';
                 <li class={`nav-item has-dropdown${currentPath.startsWith('/work') ? ' nav-current' : ''}`} role="menuitem">
                     <a href="/work">Wines</a>
                     <div class="dropdown" role="navigation" aria-label="Wines submenu">
-                        <div class="dropdown-editorial">
-                            <div class="dropdown-editorial-img">
+                        <div class="dropdown-inner">
+                            <div class="dropdown-editorial">
                                 <img src="/img/wine-bottle-label.jpg" alt="" loading="lazy" />
+                                <div class="dropdown-editorial-overlay"></div>
+                                <p class="dropdown-editorial-label">Our Selection</p>
                             </div>
-                            <p class="dropdown-editorial-label">Our Selection</p>
+                            <nav class="dropdown-links">
+                                <a href="/work/leonidas-cabernet">Leonidas Cabernet</a>
+                                <a href="/work/hillside-blend">Hillside Blend</a>
+                                <a href="/work/reserve-chardonnay">Reserve Chardonnay</a>
+                                <a href="/work/pinot-noir">Estate Pinot Noir</a>
+                                <a href="/work/petite-sirah">Palisades Petite Sirah</a>
+                            </nav>
                         </div>
-                        <nav class="dropdown-links">
-                            <a href="/work/leonidas-cabernet">Leonidas Cabernet</a>
-                            <a href="/work/hillside-blend">Hillside Blend</a>
-                            <a href="/work/reserve-chardonnay">Reserve Chardonnay</a>
-                            <a href="/work/pinot-noir">Estate Pinot Noir</a>
-                            <a href="/work/petite-sirah">Palisades Petite Sirah</a>
-                        </nav>
                     </div>
                 </li>
 
@@ -72,21 +74,22 @@ const currentPath = Astro.url?.pathname ?? '';
                 <li class={`nav-item has-dropdown${(currentPath.startsWith('/news') || currentPath.startsWith('/wine-tasting') || currentPath.startsWith('/accolades')) ? ' nav-current' : ''}`} role="menuitem">
                     <a href="/news">Experience</a>
                     <div class="dropdown" role="navigation" aria-label="Experience submenu">
-                        <div class="dropdown-editorial">
-                            <div class="dropdown-editorial-img">
+                        <div class="dropdown-inner">
+                            <div class="dropdown-editorial">
                                 <img src="/img/wine-tasting.jpg" alt="" loading="lazy" />
+                                <div class="dropdown-editorial-overlay"></div>
+                                <p class="dropdown-editorial-label">The Experience</p>
                             </div>
-                            <p class="dropdown-editorial-label">The Experience</p>
+                            <nav class="dropdown-links">
+                                <a href="/wine-tasting">Wine Tasting</a>
+                                <a href="/news">Events &amp; Gallery</a>
+                                <a href="/accolades">Accolades</a>
+                            </nav>
                         </div>
-                        <nav class="dropdown-links">
-                            <a href="/wine-tasting">Wine Tasting</a>
-                            <a href="/news">Events &amp; Gallery</a>
-                            <a href="/accolades">Accolades</a>
-                        </nav>
                     </div>
                 </li>
 
-                <!-- Contact -->
+                <!-- Contact — NO dropdown -->
                 <li class={`nav-item${(currentPath === '/contact' || currentPath === '/contact/') ? ' nav-current' : ''}`} role="menuitem">
                     <a href="/contact">Contact</a>
                 </li>
@@ -174,22 +177,13 @@ const currentPath = Astro.url?.pathname ?? '';
 }
 
 /* ────────────────────────────────────────────
-   MEGA DROPDOWN — editorial image + links
-   Positions relative to sticky header (containing block)
+   MEGA DROPDOWN
+   Positions relative to sticky header.
+   Uses .dropdown-inner to constrain layout
+   while full-width background bleeds edge-to-edge.
    ──────────────────────────────────────────── */
 .nav-item.has-dropdown {
-    position: static;
-    height: 100%;
-    display: flex;
-    align-items: center;
-}
-.nav {
-    height: 100%;
-    align-items: stretch;
-}
-.site-head-left,
-.site-head-right {
-    height: 100%;
+    position: static; /* dropdown uses header as containing block */
 }
 
 .dropdown {
@@ -197,9 +191,9 @@ const currentPath = Astro.url?.pathname ?? '';
     top: 100%;
     left: 0;
     right: 0;
+    height: 280px;           /* fixed — all dropdowns same height */
+    overflow: hidden;
     display: flex;
-    flex-direction: row;
-    justify-content: center;
     align-items: stretch;
     background: rgba(var(--color-bg-rgb), 0.98);
     backdrop-filter: blur(36px) saturate(1.8);
@@ -217,13 +211,12 @@ const currentPath = Astro.url?.pathname ?? '';
         transform 0.28s cubic-bezier(0.2,0,0,1),
         visibility 0s 0.28s;
 }
-
 [data-theme='dark'] .dropdown {
     background: rgba(10,7,4,0.98);
     box-shadow: 0 24px 80px rgba(0,0,0,0.65);
 }
 
-/* Visible state — JS .is-open + CSS :hover (fallback) + :focus-within (a11y) */
+/* Visible state */
 .nav-item.is-open .dropdown,
 .nav-item:hover .dropdown,
 .nav-item:focus-within .dropdown {
@@ -237,19 +230,25 @@ const currentPath = Astro.url?.pathname ?? '';
         visibility 0s;
 }
 
-/* ── Editorial image panel (left) ── */
+/* ── Inner container — bounded content, full-height ── */
+.dropdown-inner {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    width: 100%;
+    max-width: 960px;
+    margin: 0 auto;
+    height: 100%;
+}
+
+/* ── Editorial image panel — consistent 380px wide landscape crop ── */
 .dropdown-editorial {
     position: relative;
-    width: 260px;
+    width: 380px;
     flex-shrink: 0;
     overflow: hidden;
 }
-.dropdown-editorial-img {
-    width: 100%;
-    height: 100%;
-    min-height: 230px;
-}
-.dropdown-editorial-img img {
+.dropdown-editorial img {
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -257,61 +256,64 @@ const currentPath = Astro.url?.pathname ?? '';
     display: block;
     transition: transform 0.7s cubic-bezier(0.2,0,0,1);
 }
-.nav-item.is-open .dropdown-editorial-img img,
-.nav-item:hover .dropdown-editorial-img img {
+.nav-item.is-open .dropdown-editorial img,
+.nav-item:hover .dropdown-editorial img {
     transform: scale(1.06);
 }
-/* Dark gradient overlay on image */
-.dropdown-editorial::after {
-    content: '';
+/* Gradient overlay on image */
+.dropdown-editorial-overlay {
     position: absolute;
     inset: 0;
-    background: linear-gradient(to bottom, rgba(0,0,0,0.08) 40%, rgba(0,0,0,0.52) 100%);
+    background: linear-gradient(to right, rgba(0,0,0,0.04) 50%, var(--color-bg) 100%);
     pointer-events: none;
 }
+[data-theme='dark'] .dropdown-editorial-overlay {
+    background: linear-gradient(to right, rgba(0,0,0,0.04) 50%, rgba(10,7,4,0.98) 100%);
+}
+/* Caption on bottom of image */
 .dropdown-editorial-label {
     position: absolute;
-    bottom: 1.4rem;
-    left: 1.8rem;
-    z-index: 2;
+    bottom: 1.6rem;
+    left: 2rem;
     font-family: var(--font-display);
-    font-size: 1.45rem;
+    font-size: 1.4rem;
     font-weight: 300;
     font-style: italic;
     color: rgba(255,255,255,0.9);
     margin: 0;
     letter-spacing: 1px;
     text-shadow: 0 1px 8px rgba(0,0,0,0.35);
+    pointer-events: none;
 }
 
-/* ── Links column (right) ── */
+/* ── Links column ── */
 .dropdown-links {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding: 2.2rem 4.5vw;
+    padding: 1.8rem 3.5rem;
     gap: 0;
-    min-width: 200px;
+    flex: 1;
 }
 .dropdown-links a {
     display: block;
-    padding: 1rem 0;
+    padding: 0.88rem 0;
     font-family: var(--font-sans-serif);
-    font-size: 0.83rem;
+    font-size: 0.82rem;
     letter-spacing: 3.5px;
     text-transform: uppercase;
     color: var(--color-base);
-    opacity: 0.55;
+    opacity: 0.52;
     text-decoration: none;
     white-space: nowrap;
     transition: opacity 0.22s, color 0.22s, transform 0.25s cubic-bezier(0.2,0,0,1);
 }
 [data-theme='dark'] .dropdown-links a {
-    opacity: 0.75;
+    opacity: 0.72;
     color: #f8f2e5;
 }
 .dropdown-links a + a {
-    border-top: 1px solid rgba(150,120,60,0.12);
+    border-top: 1px solid rgba(120,95,50,0.1);
 }
 [data-theme='dark'] .dropdown-links a + a {
     border-top: 1px solid rgba(255,235,185,0.07);
@@ -319,7 +321,7 @@ const currentPath = Astro.url?.pathname ?? '';
 .dropdown-links a:hover {
     opacity: 1;
     color: var(--color-primary);
-    transform: translateX(8px);
+    transform: translateX(10px);
     text-decoration: none;
 }
 
@@ -342,6 +344,8 @@ const currentPath = Astro.url?.pathname ?? '';
     transform: translateY(-50%);
     z-index: 9999;
 }
+.nav-burger:focus { outline: none; }
+
 .burger-bar {
     display: block;
     height: 2px;
@@ -354,12 +358,8 @@ const currentPath = Astro.url?.pathname ?? '';
 .bar-2 { width: 20px; }
 .bar-3 { width: 28px; }
 
-/* White bars when transparent nav over dark hero */
-.site-head.is-transparent .burger-bar {
-    background: rgba(255,255,255,0.92);
-}
+.site-head.is-transparent .burger-bar { background: rgba(255,255,255,0.92); }
 
-/* Active (X) state */
 .nav-burger.is-active .bar-1 { transform: translateY(6px) rotate(45deg); width: 28px; }
 .nav-burger.is-active .bar-2 { opacity: 0; transform: scaleX(0); }
 .nav-burger.is-active .bar-3 { transform: translateY(-6px) rotate(-45deg); width: 28px; }
@@ -391,11 +391,8 @@ const currentPath = Astro.url?.pathname ?? '';
     transform: translateX(-100%);
     transition: transform 0.38s cubic-bezier(0.4,0,0.2,1);
 }
-.mobile-drawer.is-open {
-    transform: translateX(0);
-}
+.mobile-drawer.is-open { transform: translateX(0); }
 
-/* Close button inside drawer */
 .mobile-close {
     position: absolute;
     top: 1.2rem;
@@ -411,6 +408,7 @@ const currentPath = Astro.url?.pathname ?? '';
     justify-content: center;
     transition: opacity 0.2s;
 }
+.mobile-close:focus { outline: none; }
 .mobile-close:hover { opacity: 1; }
 
 .mobile-section {
@@ -418,7 +416,6 @@ const currentPath = Astro.url?.pathname ?? '';
     flex-direction: column;
     padding: 2rem 0 1.5rem;
 }
-
 .mobile-section-label {
     font-family: var(--font-sans-serif);
     font-size: 0.78rem;
@@ -428,7 +425,6 @@ const currentPath = Astro.url?.pathname ?? '';
     margin-bottom: 1rem;
     opacity: 0.9;
 }
-
 .mobile-section a {
     font-family: var(--font-display);
     font-size: 2.2rem;
@@ -441,12 +437,9 @@ const currentPath = Astro.url?.pathname ?? '';
     transition: color 0.2s, opacity 0.2s;
     display: block;
 }
-.mobile-section a:hover {
-    color: var(--color-primary);
-    opacity: 1;
-}
+.mobile-section a:focus { outline: none; }
+.mobile-section a:hover { color: var(--color-primary); opacity: 1; }
 
-/* Thin gold rule between sections */
 .mobile-section + .mobile-section::before {
     content: '';
     display: block;
@@ -456,10 +449,7 @@ const currentPath = Astro.url?.pathname ?? '';
     opacity: 0.3;
     margin-bottom: 2rem;
 }
-
-.mobile-footer-row {
-    padding-top: 1rem;
-}
+.mobile-footer-row { padding-top: 1rem; }
 .mobile-footer-row::before {
     content: '';
     display: block;
@@ -481,6 +471,7 @@ const currentPath = Astro.url?.pathname ?? '';
     opacity: 0.5;
     transition: opacity 0.25s;
 }
+.mobile-theme-btn:focus { outline: none; }
 .mobile-theme-btn:hover { opacity: 1; }
 .mobile-theme-label {
     font-family: var(--font-sans-serif);
@@ -491,7 +482,7 @@ const currentPath = Astro.url?.pathname ?? '';
 .sun-icon-m { color: var(--color-primary); }
 .moon-icon-m { color: var(--color-base); }
 
-/* Theme toggle button — borderless */
+/* Theme toggle button — borderless, no outline */
 .theme-toggle {
     background: transparent;
     border: none;
@@ -519,7 +510,7 @@ const currentPath = Astro.url?.pathname ?? '';
 </style>
 
 <script>
-// Wire up the mobile close button
+// Mobile close button
 (function() {
     const closeBtn = document.getElementById('mobile-close-btn');
     const drawer = document.getElementById('mobile-drawer') as HTMLElement;
@@ -534,30 +525,20 @@ const currentPath = Astro.url?.pathname ?? '';
     }
 })();
 
-// JS hover management — bridges the gap between nav link and dropdown
-// Prevents dropdown from closing when mouse passes through the header gap
+// JS hover management — 200ms delay bridges the gap between nav link and dropdown
 document.addEventListener('astro:page-load', () => {
     const items = document.querySelectorAll<HTMLElement>('.nav-item.has-dropdown');
     items.forEach(item => {
         let hideTimer: ReturnType<typeof setTimeout>;
-
         item.addEventListener('mouseenter', () => {
             clearTimeout(hideTimer);
-            // Close other open dropdowns
-            items.forEach(other => {
-                if (other !== item) other.classList.remove('is-open');
-            });
+            items.forEach(other => { if (other !== item) other.classList.remove('is-open'); });
             item.classList.add('is-open');
         });
-
         item.addEventListener('mouseleave', () => {
-            hideTimer = setTimeout(() => {
-                item.classList.remove('is-open');
-            }, 200);
+            hideTimer = setTimeout(() => item.classList.remove('is-open'), 200);
         });
     });
-
-    // Close dropdowns on outside click
     document.addEventListener('click', (e) => {
         if (!(e.target as Element).closest('.nav-item.has-dropdown')) {
             items.forEach(i => i.classList.remove('is-open'));

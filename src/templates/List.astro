@@ -174,10 +174,17 @@ const isEvents = baseSlug === 'news';
   border-radius: 50%;
   overflow: hidden;
   background: #1a1209;
-  transition: transform 0.6s cubic-bezier(0.2,0,0,1);
+  /* Outer glow to soften edge against page bg */
+  box-shadow:
+    0 0 0 12px var(--color-bg),
+    0 0 60px 20px var(--color-bg);
+  transition: transform 0.65s cubic-bezier(0.2,0,0,1), box-shadow 0.65s ease;
 }
 .lookbook-link:hover .lookbook-oval {
-  transform: scale(1.02);
+  transform: scale(1.025);
+  box-shadow:
+    0 0 0 12px var(--color-bg),
+    0 0 80px 30px var(--color-bg);
 }
 .lookbook-oval img {
   position: absolute;
@@ -187,10 +194,25 @@ const isEvents = baseSlug === 'news';
   object-fit: cover;
   object-position: center;
   display: block;
-  transition: transform 0.8s cubic-bezier(0.2,0,0,1);
+  transition: transform 0.9s cubic-bezier(0.2,0,0,1);
 }
 .lookbook-link:hover .lookbook-oval img {
-  transform: scale(1.06);
+  transform: scale(1.07) translateY(-1%);
+}
+/* Radial vignette overlay — fades edge into page background */
+.lookbook-oval::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    ellipse at 50% 50%,
+    transparent 48%,
+    var(--color-bg) 82%
+  );
+  pointer-events: none;
+  z-index: 2;
+  transition: opacity 0.65s ease;
 }
 .lookbook-oval-fallback {
   position: absolute;
@@ -231,6 +253,11 @@ const isEvents = baseSlug === 'news';
 .lookbook-info {
   text-align: center;
   padding: 0 0.5rem;
+  transform: translateY(6px);
+  transition: transform 0.55s cubic-bezier(0.2,0,0,1);
+}
+.lookbook-link:hover .lookbook-info {
+  transform: translateY(0);
 }
 .lookbook-varietal {
   font-family: var(--font-sans-serif);
@@ -306,18 +333,21 @@ const isEvents = baseSlug === 'news';
 
 .invitation-link {
   display: grid;
-  grid-template-columns: min(38%, 420px) 1fr;
-  min-height: 340px;
+  grid-template-columns: 380px 1fr;   /* fixed photo width — consistent across all cards */
+  height: 320px;                       /* fixed height — images always same size */
   text-decoration: none;
   color: inherit;
   position: relative;
   overflow: hidden;
 }
 
-/* ── Photo panel ── */
+/* ── Photo panel — fixed proportions every card ── */
 .invitation-photo {
   position: relative;
   overflow: hidden;
+  width: 380px;
+  height: 320px;      /* explicit match to card height */
+  flex-shrink: 0;
 }
 .invitation-photo img {
   width: 100%;
@@ -338,11 +368,11 @@ const isEvents = baseSlug === 'news';
 .invitation-photo-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to right, transparent 70%, var(--color-bg) 100%);
+  background: linear-gradient(to right, rgba(0,0,0,0) 65%, var(--color-bg) 100%);
   pointer-events: none;
 }
 [data-theme='dark'] .invitation-photo-overlay {
-  background: linear-gradient(to right, transparent 70%, var(--color-bg) 100%);
+  background: linear-gradient(to right, rgba(0,0,0,0) 65%, #080604 100%);
 }
 
 /* ── Content panel ── */
@@ -472,17 +502,22 @@ const isEvents = baseSlug === 'news';
 }
 
 /* ── Responsive ── */
-@media (max-width: 800px) {
+@media (max-width: 860px) {
+  /* On tablet the fixed 380px column is too wide — switch to stacked */
   .invitation-link {
     grid-template-columns: 1fr;
-    min-height: unset;
+    height: auto;
   }
   .invitation-photo {
-    height: 52vw;
-    max-height: 340px;
+    width: 100%;
+    height: 56vw;    /* consistent: same aspect on all cards */
+    max-height: 300px;
   }
   .invitation-photo-overlay {
-    background: linear-gradient(to bottom, transparent 60%, var(--color-bg) 100%);
+    background: linear-gradient(to bottom, rgba(0,0,0,0) 60%, var(--color-bg) 100%);
+  }
+  [data-theme='dark'] .invitation-photo-overlay {
+    background: linear-gradient(to bottom, rgba(0,0,0,0) 60%, #080604 100%);
   }
   .invitation-body {
     padding: 2.5rem 6vw;
@@ -499,6 +534,7 @@ const isEvents = baseSlug === 'news';
   .events-feed { padding: 0 0 8vw; }
   .invitation-title { font-size: 2rem; letter-spacing: 1.5px; }
   .invitation-body { padding: 2rem 4vw 2.5rem; }
+  .invitation-photo { height: 62vw; max-height: none; }
 }
 
 
