@@ -811,10 +811,11 @@ const events = (await getCollection('news')).sort((a, b) =>
 [data-theme]:not([data-theme='dark']) .collection-title { color: #1a1209; }
 .collection-scroller {
     overflow-x: auto;
-    overflow-y: visible;
+    overflow-y: hidden;
     cursor: grab;
     -webkit-overflow-scrolling: touch;
     scroll-behavior: smooth;
+    touch-action: pan-x;
     scrollbar-width: none; /* Firefox */
     -ms-overflow-style: none; /* IE/Edge legacy */
 }
@@ -827,7 +828,7 @@ const events = (await getCollection('news')).sort((a, b) =>
 .collection-grid {
     display: grid;
     grid-auto-flow: column;
-    grid-auto-columns: minmax(320px, 1fr);
+    grid-auto-columns: minmax(360px, 34vw);
     gap: 4vw 3vw;
     min-width: max-content;
     padding-bottom: 0.5rem;
@@ -1162,9 +1163,7 @@ const events = (await getCollection('news')).sort((a, b) =>
     will-change: opacity;
 }
 .wine-modal-panel {
-    position: fixed;
-    left: 50vw;
-    top: 50vh;
+    position: relative;
     z-index: 2;
     display: grid;
     grid-template-columns: 45% 1fr;
@@ -1173,12 +1172,12 @@ const events = (await getCollection('news')).sort((a, b) =>
     max-height: min(90vh, 820px);
     background: var(--color-bg);
     overflow: hidden;
-    transform: translate(-50%, calc(-50% + 14px)) scale(0.985);
+    transform: translateY(14px) scale(0.985);
     transition: transform 0.24s ease-out;
     will-change: transform;
 }
 .wine-modal.is-open .wine-modal-panel {
-    transform: translate(-50%, -50%) scale(1);
+    transform: translateY(0) scale(1);
 }
 [data-theme='dark'] .wine-modal-panel {
     background: #100c08;
@@ -1479,7 +1478,6 @@ const events = (await getCollection('news')).sort((a, b) =>
 
 // Wine card modal
 (function() {
-    let modalCenterRaf: number | undefined;
     const isFinePointer = window.matchMedia('(pointer: fine)').matches;
 
     function getEls() {
@@ -1534,12 +1532,10 @@ const events = (await getCollection('news')).sort((a, b) =>
         if (price) price.textContent = trigger.dataset.winePrice || '';
         if (link) link.href = `/work/${slug}`;
 
-        queueModalCenterUpdate();
         clearFarCloseTimer();
         modal.classList.add('is-open');
         modal.setAttribute('aria-hidden', 'false');
         document.body.style.overflow = 'hidden';
-        queueModalCenterUpdate();
     }
 
     function closeModal() {
@@ -1578,27 +1574,6 @@ const events = (await getCollection('news')).sort((a, b) =>
         if (far) scheduleFarClose();
         else clearFarCloseTimer();
     }
-    function getViewportCenter() {
-        const vv = window.visualViewport;
-        return {
-            x: vv ? vv.width / 2 : window.innerWidth / 2,
-            y: vv ? vv.height / 2 : window.innerHeight / 2
-        };
-    }
-    function updateModalCenter() {
-        const els = getEls();
-        if (!els?.panel) return;
-        const { x, y } = getViewportCenter();
-        els.panel.style.left = `${x}px`;
-        els.panel.style.top = `${y}px`;
-    }
-    function queueModalCenterUpdate() {
-        window.cancelAnimationFrame(modalCenterRaf);
-        modalCenterRaf = window.requestAnimationFrame(() => {
-            updateModalCenter();
-            modalCenterRaf = window.requestAnimationFrame(updateModalCenter);
-        });
-    }
 
     function onDocClick(e: MouseEvent) {
         const target = e.target as HTMLElement | null;
@@ -1619,14 +1594,9 @@ const events = (await getCollection('news')).sort((a, b) =>
         document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
         document.addEventListener('visibilitychange', () => { if (document.hidden) closeIfOpen(); });
         if (isFinePointer) document.addEventListener('pointermove', onPointerMove, { passive: true });
-        window.addEventListener('resize', queueModalCenterUpdate);
-        window.addEventListener('scroll', queueModalCenterUpdate, { passive: true });
-        window.visualViewport?.addEventListener('resize', queueModalCenterUpdate);
-        window.visualViewport?.addEventListener('scroll', queueModalCenterUpdate);
         document.addEventListener('astro:before-swap', closeModal);
         (window as any).__wineModalBound = true;
     }
-    queueModalCenterUpdate();
 })();
 
 // Drag-to-scroll on The Collection rail
@@ -1660,11 +1630,18 @@ const events = (await getCollection('news')).sort((a, b) =>
         scroller.releasePointerCapture?.(e.pointerId);
     };
 
+    const onWheel = (e: WheelEvent) => {
+        if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;
+        scroller.scrollLeft += e.deltaY;
+        e.preventDefault();
+    };
+
     scroller.addEventListener('pointerdown', onPointerDown);
     scroller.addEventListener('pointermove', onPointerMove);
     scroller.addEventListener('pointerup', onPointerUp);
     scroller.addEventListener('pointercancel', onPointerUp);
     scroller.addEventListener('pointerleave', onPointerUp);
+    scroller.addEventListener('wheel', onWheel, { passive: false });
 
     document.addEventListener('astro:before-swap', () => {
         scroller.removeEventListener('pointerdown', onPointerDown);
@@ -1672,6 +1649,7 @@ const events = (await getCollection('news')).sort((a, b) =>
         scroller.removeEventListener('pointerup', onPointerUp);
         scroller.removeEventListener('pointercancel', onPointerUp);
         scroller.removeEventListener('pointerleave', onPointerUp);
+        scroller.removeEventListener('wheel', onWheel);
     });
 })();
 
