@@ -466,13 +466,17 @@ const currentPath = Astro.url?.pathname ?? '';
 }
 
 /* Light mode on transparent header: keep menu button dark for contrast */
-[data-theme]:not([data-theme='dark']) .site-head.is-transparent .burger-bar {
-    background: rgba(20,13,6,0.92);
+html:not([data-theme='dark']) .site-head.is-transparent .burger-bar,
+:root:not([data-theme='dark']) .site-head.is-transparent .burger-bar {
+    background: rgba(20,13,6,0.92) !important;
 }
-[data-theme]:not([data-theme='dark']) .site-head.is-transparent .burger-text-wrap,
-[data-theme]:not([data-theme='dark']) .site-head.is-transparent .burger-text,
-[data-theme]:not([data-theme='dark']) .site-head.is-transparent .burger-chevron {
-    color: rgba(20,13,6,0.9);
+html:not([data-theme='dark']) .site-head.is-transparent .burger-text-wrap,
+html:not([data-theme='dark']) .site-head.is-transparent .burger-text,
+html:not([data-theme='dark']) .site-head.is-transparent .burger-chevron,
+:root:not([data-theme='dark']) .site-head.is-transparent .burger-text-wrap,
+:root:not([data-theme='dark']) .site-head.is-transparent .burger-text,
+:root:not([data-theme='dark']) .site-head.is-transparent .burger-chevron {
+    color: rgba(20,13,6,0.92) !important;
 }
 
 /* ────────────────────────────────────────────
