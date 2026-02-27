@@ -6,108 +6,90 @@ interface Props {
   entry: CollectionEntry<'pages'>;
 }
 
-interface PageConfig {
+interface HouseConfig {
   eyebrow: string;
   title: string;
   subtitle: string;
   hero: string;
   lead: string;
-  featureTitle: string;
-  featureBody: string;
-  featureImage: string;
-  gallery: string[];
+  art: string[];
 }
 
 const { entry } = Astro.props;
 const { Content } = await entry.render();
 
-const pageConfigs: Record<string, PageConfig> = {
+const house: Record<string, HouseConfig> = {
   bio: {
     eyebrow: 'About The Estate',
     title: 'A Legacy\nPoured Slowly',
     subtitle: 'Napa Valley · Since 1989',
     hero: '/img/wine-estate.jpg',
-    lead: 'Maison was built around a single discipline: craftsmanship without haste. Every decision in vineyard and cellar is measured against elegance, longevity, and fidelity to place.',
-    featureTitle: 'Three Decades Of Precision',
-    featureBody: 'From selective farming passes to low-intervention cellar work, the estate has preserved a house style defined by aromatic lift, structural depth, and quiet power.',
-    featureImage: '/img/wine-cellar-bottles.jpg',
-    gallery: ['/img/vineyard-landscape.jpg', '/img/clay-images-20.jpg', '/img/clay-images-16.jpg']
+    lead: 'Maison was built around one discipline: craftsmanship without haste. Every decision in vineyard and cellar is measured against elegance, longevity, and fidelity to place.',
+    art: ['/img/clay-images-20.jpg', '/img/wine-cellar-bottles.jpg', '/img/clay-images-16.jpg', '/img/wine-pour.jpg']
   },
   'our-story': {
     eyebrow: 'Our Story',
     title: 'From One Acre\nTo An Icon',
     subtitle: 'A chronology of deliberate growth',
     hero: '/img/vineyard-landscape.jpg',
-    lead: 'What began as a single hillside planting evolved into a reference estate because expansion followed quality, never volume.',
-    featureTitle: 'Growth By Selection, Not Scale',
-    featureBody: 'Maison added blocks only when exposure, soil profile, and farming resources could support the estate signature. Every acquisition had to improve the blend architecture.',
-    featureImage: '/img/wine-barrels.jpg',
-    gallery: ['/img/wine-red-glass.jpg', '/img/wine-estate.jpg', '/img/clay-images-10.jpg']
+    lead: 'What began as a single hillside planting became a reference estate because expansion followed quality, never volume.',
+    art: ['/img/wine-red-glass.jpg', '/img/wine-barrels.jpg', '/img/wine-estate.jpg', '/img/clay-images-10.jpg']
   },
   vineyards: {
     eyebrow: 'Vineyards',
     title: 'Five Blocks\nOne Signature',
-    subtitle: '42 acres of terroir, farmed parcel by parcel',
+    subtitle: '42 acres, farmed parcel by parcel',
     hero: '/img/vineyard-landscape.jpg',
-    lead: 'Each block is managed as its own ecosystem. Soil, altitude, and aspect are preserved in the final wines through separate farming and lot-by-lot vinification.',
-    featureTitle: 'Topography Shapes Character',
-    featureBody: 'The estate moves from volcanic hillside parcels to cooler marine-influenced rows, creating a broad palette for layered blends and site-pure bottlings.',
-    featureImage: '/img/wine-bottle-label.jpg',
-    gallery: ['/img/wine-pour.jpg', '/img/wine-cellar-bottles.jpg', '/img/clay-images-17.jpg']
+    lead: 'Each block is managed as its own ecosystem. Soil, altitude, and exposure are preserved in the final wines through lot-level farming and vinification.',
+    art: ['/img/wine-bottle-label.jpg', '/img/vineyard-landscape.jpg', '/img/wine-pour.jpg', '/img/clay-images-17.jpg']
   },
   philosophy: {
     eyebrow: 'Philosophy',
     title: 'Elegance Is\nAn Edit',
     subtitle: 'Less intervention, more truth',
     hero: '/img/wine-red-glass.jpg',
-    lead: 'The finest vintages are usually the quietest in cellar. The vineyard leads; the winemaking follows with restraint.',
-    featureTitle: 'Restraint Is A Technical Choice',
-    featureBody: 'Biodynamic farming, lower extraction, and patient elevage are not marketing language. They are repeatable methods for precision, balance, and ageability.',
-    featureImage: '/img/wine-pour.jpg',
-    gallery: ['/img/wine-estate.jpg', '/img/clay-images-12.jpg', '/img/clay-images-15.jpg']
+    lead: 'The most profound vintages are often the quietest in cellar. The vineyard leads, and winemaking follows with restraint.',
+    art: ['/img/wine-pour.jpg', '/img/wine-estate.jpg', '/img/clay-images-12.jpg', '/img/clay-images-15.jpg']
   },
   faq: {
     eyebrow: 'FAQ',
     title: 'Questions\nClearly Answered',
     subtitle: 'For allocation members, collectors, and guests',
     hero: '/img/wine-cellar-bottles.jpg',
-    lead: 'Practical details about purchasing, visits, shipping, and service standards at Maison.',
-    featureTitle: 'Service With Precision',
-    featureBody: 'Allocation logistics, tasting appointments, and fulfillment are handled with the same rigor as vineyard and cellar operations.',
-    featureImage: '/img/wine-tasting.jpg',
-    gallery: ['/img/wine-bottle-label.jpg', '/img/clay-images-11.jpg', '/img/wine-estate.jpg']
+    lead: 'Practical details around purchasing, shipping, and estate visits, delivered with the same precision as our farming and cellar work.',
+    art: ['/img/wine-tasting.jpg', '/img/wine-bottle-label.jpg', '/img/clay-images-11.jpg', '/img/wine-estate.jpg']
   }
 };
 
-const faqItems = [
-  {
-    q: 'How do I purchase the wines?',
-    a: 'Most wines are released through allocation first. Join the list via the contact page. A limited amount reaches selected restaurants and retail partners.'
-  },
-  {
-    q: 'What is the allocation list?',
-    a: 'Members receive priority access to new releases each spring and autumn. There is no minimum purchase requirement and membership is complimentary.'
-  },
-  {
-    q: 'Can I visit the estate?',
-    a: 'Yes. Private tastings are by appointment, typically Thursday through Sunday.'
-  },
-  {
-    q: 'Do you ship internationally?',
-    a: 'We ship where regulations permit. International delivery is coordinated via distribution partners when available.'
-  },
-  {
-    q: 'Are the wines vegan?',
-    a: 'Yes. We do not use animal-product fining agents, and vintages from 2018 onward are certified vegan.'
-  }
+const config = house[entry.slug];
+
+const vineyardBlocks = [
+  ['The Lion Block', '18 acres · Volcanic basalt · East-facing'],
+  ['The Ridge Block', '8 acres · Rocky loam · South-facing'],
+  ['The Fog Block', '6 acres · Goldridge sandy loam · Marine influence'],
+  ['The Stone Terrace', '5 acres · Alluvial gravel · Valley floor'],
+  ['The Palisades', '3 acres · Volcanic face · Extreme slope']
 ];
 
-const config = pageConfigs[entry.slug];
+const philosophyLines = [
+  'The finest wines are not made louder in cellar; they are preserved in clarity.',
+  'Biodynamic farming is a technical commitment to soil vitality and vine balance.',
+  'Scores are outcomes, not objectives. Pleasure and longevity are the objective.',
+  'Rarity exists to protect quality, never to manufacture scarcity.'
+];
+
+const faqItems = [
+  ['How do I purchase the wines?', 'Most wines are released through allocation first. A limited amount reaches selected partners.'],
+  ['What is the allocation list?', 'Members receive priority access to spring and autumn releases with no minimum purchase requirement.'],
+  ['Can I visit the estate?', 'Yes. Private tastings are by appointment, typically Thursday through Sunday.'],
+  ['Do you ship internationally?', 'We ship where regulations permit. International fulfillment is coordinated through distribution partners.'],
+  ['Are the wines vegan?', 'Yes. We do not use animal-product fining agents, and vintages since 2018 are certified vegan.']
+];
 ---
 
 <Layout title={entry.data.title} description={entry.data.description}>
   {config && (
-    <article class="house-page">
+    <article class={`house-page house-${entry.slug}`}>
       <section class="house-hero">
         <div class="house-hero-bg drift" data-drift="0.08" style={`background-image:url('${config.hero}')`}></div>
         <div class="house-hero-overlay"></div>
@@ -119,41 +101,98 @@ const config = pageConfigs[entry.slug];
         </div>
       </section>
 
-      <section class="house-statement" data-reveal="up">
+      <section class="house-lead" data-reveal="up">
         <p>{config.lead}</p>
       </section>
 
-      <section class="house-feature">
-        <div class="house-feature-image" data-reveal="left">
-          <img src={config.featureImage} alt={config.featureTitle} loading="lazy" />
-        </div>
-        <div class="house-feature-content" data-reveal="right">
-          <span class="house-eyebrow">Editorial</span>
-          <h2>{config.featureTitle}</h2>
-          <div class="house-rule"></div>
-          <p>{config.featureBody}</p>
-        </div>
-      </section>
-
-      {entry.slug === 'faq' ? (
-        <section class="house-faq" data-reveal="up">
-          {faqItems.map((item, i) => (
-            <details class="house-faq-item" data-delay={String((i % 3) + 1)}>
-              <summary>
-                <span>{item.q}</span>
-                <span class="house-faq-plus" aria-hidden="true">+</span>
-              </summary>
-              <p>{item.a}</p>
-            </details>
-          ))}
+      {entry.slug === 'bio' && (
+        <section class="bio-stage">
+          <figure class="bio-main" data-reveal="left">
+            <img src={config.art[0]} alt="Estate signature" loading="lazy" />
+          </figure>
+          <figure class="bio-detail drift" data-drift="0.11" data-reveal="right">
+            <img src={config.art[1]} alt="Cellar detail" loading="lazy" />
+          </figure>
+          <figure class="bio-detail drift" data-drift="0.06" data-reveal="up" data-delay="2">
+            <img src={config.art[2]} alt="Texture detail" loading="lazy" />
+          </figure>
+          <figure class="bio-line" data-reveal="up" data-delay="3">
+            <img src={config.art[3]} alt="Pour detail" loading="lazy" />
+          </figure>
         </section>
-      ) : (
-        <section class="house-gallery">
-          {config.gallery.map((image, i) => (
-            <figure class="house-gallery-item" data-reveal="up" data-delay={String((i % 3) + 1)}>
-              <img src={image} alt={entry.data.title || 'Maison'} loading="lazy" />
-            </figure>
-          ))}
+      )}
+
+      {entry.slug === 'our-story' && (
+        <section class="story-stage">
+          <article class="story-row" data-reveal="left">
+            <figure><img src={config.art[0]} alt="Founding era" loading="lazy" /></figure>
+            <div>
+              <h2>1989 · Foundation</h2>
+              <p>A single hillside acre established the estate DNA: structure, lift, and aging architecture.</p>
+            </div>
+          </article>
+          <article class="story-row reverse" data-reveal="right">
+            <figure><img src={config.art[1]} alt="Growth era" loading="lazy" /></figure>
+            <div>
+              <h2>2005 · Expansion</h2>
+              <p>Additional parcels were selected only when slope, soil, and farming resources met the house standard.</p>
+            </div>
+          </article>
+          <article class="story-row" data-reveal="left">
+            <figure><img src={config.art[2]} alt="Current era" loading="lazy" /></figure>
+            <div>
+              <h2>Today · Continuity</h2>
+              <p>Second-generation stewardship preserves the same philosophy while refining execution every vintage.</p>
+            </div>
+          </article>
+        </section>
+      )}
+
+      {entry.slug === 'vineyards' && (
+        <section class="vine-stage">
+          <div class="vine-mast" data-reveal="left">
+            <img src={config.art[0]} alt="Vineyard map tone" loading="lazy" />
+          </div>
+          <div class="vine-list">
+            {vineyardBlocks.map((row, i) => (
+              <article class="vine-item" data-reveal={i % 2 === 0 ? 'right' : 'left'}>
+                <h2>{row[0]}</h2>
+                <p>{row[1]}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {entry.slug === 'philosophy' && (
+        <section class="phi-stage">
+          <figure class="phi-image drift" data-drift="0.1" data-reveal="left">
+            <img src={config.art[0]} alt="Philosophy visual" loading="lazy" />
+          </figure>
+          <div class="phi-lines">
+            {philosophyLines.map((line, i) => (
+              <p data-reveal={i % 2 === 0 ? 'right' : 'left'}>{line}</p>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {entry.slug === 'faq' && (
+        <section class="faq-stage">
+          <div class="faq-aside" data-reveal="left">
+            <img src={config.art[0]} alt="Hospitality" loading="lazy" />
+          </div>
+          <div class="faq-list" data-reveal="right">
+            {faqItems.map((item) => (
+              <details class="faq-item">
+                <summary>
+                  <span>{item[0]}</span>
+                  <span class="faq-plus" aria-hidden="true">+</span>
+                </summary>
+                <p>{item[1]}</p>
+              </details>
+            ))}
+          </div>
         </section>
       )}
 
@@ -165,10 +204,7 @@ const config = pageConfigs[entry.slug];
 </Layout>
 
 <style>
-.house-page {
-  padding-bottom: min(10vw, 110px);
-}
-
+.house-page { padding-bottom: min(10vw, 110px); }
 .house-eyebrow {
   font-family: var(--font-sans-serif);
   font-size: 0.94rem;
@@ -176,13 +212,7 @@ const config = pageConfigs[entry.slug];
   text-transform: uppercase;
   color: var(--color-primary);
 }
-
-.house-rule {
-  width: 50px;
-  height: 1px;
-  background: var(--color-primary);
-  opacity: 0.75;
-}
+.house-rule { width: 50px; height: 1px; background: var(--color-primary); opacity: 0.75; }
 
 .house-hero {
   position: relative;
@@ -192,20 +222,17 @@ const config = pageConfigs[entry.slug];
   justify-content: center;
   overflow: hidden;
 }
-
 .house-hero-bg {
   position: absolute;
   inset: -8%;
   background-size: cover;
   background-position: center;
 }
-
 .house-hero-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to bottom, rgba(8, 6, 4, 0.32), rgba(8, 6, 4, 0.78));
+  background: linear-gradient(to bottom, rgba(8, 6, 4, 0.3), rgba(8, 6, 4, 0.78));
 }
-
 .house-hero-inner {
   position: relative;
   z-index: 2;
@@ -213,7 +240,6 @@ const config = pageConfigs[entry.slug];
   max-width: 980px;
   padding: 0 6vw;
 }
-
 .house-hero-inner h1 {
   margin: 1.8rem 0;
   font-family: var(--font-display);
@@ -224,11 +250,7 @@ const config = pageConfigs[entry.slug];
   text-transform: uppercase;
   color: #f4eddd;
 }
-
-.house-hero-inner .house-rule {
-  margin: 0 auto 1.8rem;
-}
-
+.house-hero-inner .house-rule { margin: 0 auto 1.8rem; }
 .house-hero-inner p {
   margin: 0;
   font-family: var(--font-serif);
@@ -237,114 +259,123 @@ const config = pageConfigs[entry.slug];
   color: rgba(244, 237, 221, 0.74);
 }
 
-.house-statement {
+.house-lead {
   max-width: 980px;
   margin: min(8vw, 92px) auto 0;
   padding: 0 6vw;
   text-align: center;
 }
-
-.house-statement p {
+.house-lead p {
   margin: 0;
   font-family: var(--font-serif);
   font-size: clamp(2rem, 2.7vw, 3rem);
   font-style: italic;
   line-height: 1.72;
-  color: var(--color-base);
   opacity: 0.82;
 }
 
-.house-feature {
+.bio-stage,
+.story-stage,
+.vine-stage,
+.phi-stage,
+.faq-stage {
   margin: min(8vw, 90px) auto 0;
   max-width: 1320px;
   padding: 0 6vw;
+}
+
+.bio-stage {
   display: grid;
-  grid-template-columns: 54% 1fr;
-  gap: min(5vw, 64px);
-  align-items: center;
+  grid-template-columns: 1.2fr 1fr;
+  gap: min(2vw, 24px);
 }
-
-.house-feature-image {
-  overflow: hidden;
-  aspect-ratio: 5 / 4;
-}
-
-.house-feature-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-  transition: transform 0.9s cubic-bezier(0.2, 0, 0, 1);
-}
-
-.house-feature-image:hover img {
-  transform: scale(1.04);
-}
-
-.house-feature-content h2 {
-  margin: 1.2rem 0 1.8rem;
-  font-family: var(--font-display);
-  font-size: clamp(2.8rem, 4vw, 5rem);
-  font-weight: 300;
-  text-transform: uppercase;
-  letter-spacing: 3px;
-  line-height: 1.1;
-}
-
-.house-feature-content .house-rule {
-  margin-bottom: 2rem;
-}
-
-.house-feature-content p {
-  margin: 0;
-  font-family: var(--font-serif);
-  font-size: clamp(1.6rem, 1.9vw, 1.95rem);
-  line-height: 1.8;
-  opacity: 0.7;
-}
-
-.house-gallery {
-  margin: min(7vw, 80px) auto 0;
-  max-width: 1320px;
-  padding: 0 6vw;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: min(2.2vw, 24px);
-}
-
-.house-gallery-item {
-  margin: 0;
-  aspect-ratio: 4 / 5;
-  overflow: hidden;
-}
-
-.house-gallery-item img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
+.bio-stage figure { margin: 0; overflow: hidden; }
+.bio-main { grid-row: 1 / span 2; aspect-ratio: 5 / 6; }
+.bio-detail { aspect-ratio: 4 / 3; }
+.bio-line { grid-column: 1 / -1; aspect-ratio: 16 / 6; }
+.bio-stage img,
+.story-stage img,
+.vine-stage img,
+.phi-stage img,
+.faq-stage img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
   transition: transform 0.85s cubic-bezier(0.2, 0, 0, 1);
 }
+.bio-stage figure:hover img,
+.story-stage figure:hover img,
+.vine-stage figure:hover img,
+.phi-stage figure:hover img,
+.faq-stage figure:hover img { transform: scale(1.04); }
 
-.house-gallery-item:hover img {
-  transform: scale(1.05);
-}
-
-.house-faq {
-  margin: min(7vw, 80px) auto 0;
-  max-width: 980px;
-  padding: 0 6vw;
+.story-stage { display: grid; gap: min(2vw, 24px); }
+.story-row {
   display: grid;
-  gap: 1rem;
+  grid-template-columns: 42% 1fr;
+  gap: min(3vw, 36px);
+  align-items: center;
+}
+.story-row.reverse { grid-template-columns: 1fr 42%; }
+.story-row.reverse figure { order: 2; }
+.story-row h2 {
+  margin: 0 0 1rem;
+  font-family: var(--font-display);
+  font-size: clamp(2.3rem, 3vw, 3.8rem);
+  font-weight: 300;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+}
+.story-row p { margin: 0; font-size: 1.55rem; line-height: 1.78; opacity: 0.72; }
+.story-row figure { margin: 0; aspect-ratio: 5 / 4; overflow: hidden; }
+
+.vine-stage {
+  display: grid;
+  grid-template-columns: 38% 1fr;
+  gap: min(4vw, 52px);
+  align-items: start;
+}
+.vine-mast { position: sticky; top: 110px; }
+.vine-mast img { aspect-ratio: 4 / 5; }
+.vine-list { display: grid; gap: 1rem; }
+.vine-item { border-top: 1px solid var(--color-border); padding: 1.1rem 0 1rem; }
+.vine-item h2 {
+  margin: 0 0 0.5rem;
+  font-family: var(--font-display);
+  font-size: clamp(2.1rem, 2.6vw, 3.3rem);
+  font-weight: 300;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+}
+.vine-item p { margin: 0; font-size: 1.35rem; letter-spacing: 1.1px; text-transform: uppercase; opacity: 0.66; }
+
+.phi-stage {
+  display: grid;
+  grid-template-columns: 44% 1fr;
+  gap: min(4vw, 52px);
+  align-items: center;
+}
+.phi-image { margin: 0; aspect-ratio: 4 / 5; overflow: hidden; }
+.phi-lines { display: grid; gap: 1rem; }
+.phi-lines p {
+  margin: 0;
+  padding-left: 1rem;
+  border-left: 1px solid var(--color-border);
+  font-size: clamp(1.8rem, 2.2vw, 2.5rem);
+  line-height: 1.7;
+  font-style: italic;
+  opacity: 0.8;
 }
 
-.house-faq-item {
-  border-top: 1px solid var(--color-border);
-  border-bottom: 1px solid var(--color-border);
-  padding: 0.9rem 0;
+.faq-stage {
+  display: grid;
+  grid-template-columns: 42% 1fr;
+  gap: min(4vw, 52px);
+  align-items: start;
 }
-
-.house-faq-item summary {
+.faq-aside { margin: 0; }
+.faq-aside img { aspect-ratio: 4 / 5; }
+.faq-list { display: grid; gap: 0.8rem; }
+.faq-item { border-top: 1px solid var(--color-border); border-bottom: 1px solid var(--color-border); padding: 0.8rem 0; }
+.faq-item summary {
   list-style: none;
   display: flex;
   justify-content: space-between;
@@ -352,36 +383,15 @@ const config = pageConfigs[entry.slug];
   gap: 1rem;
   cursor: pointer;
 }
-
-.house-faq-item summary::-webkit-details-marker {
-  display: none;
-}
-
-.house-faq-item summary span:first-child {
+.faq-item summary::-webkit-details-marker { display: none; }
+.faq-item summary span:first-child {
   font-family: var(--font-display);
-  font-size: clamp(2rem, 2.6vw, 3rem);
+  font-size: clamp(1.9rem, 2.4vw, 2.9rem);
   font-weight: 300;
-  letter-spacing: 1.2px;
 }
-
-.house-faq-plus {
-  font-family: var(--font-sans-serif);
-  font-size: 1.8rem;
-  color: var(--color-primary);
-  transition: transform 0.25s ease;
-}
-
-.house-faq-item[open] .house-faq-plus {
-  transform: rotate(45deg);
-}
-
-.house-faq-item p {
-  margin: 0.8rem 0 0;
-  font-family: var(--font-serif);
-  font-size: 1.5rem;
-  line-height: 1.75;
-  opacity: 0.72;
-}
+.faq-plus { font-family: var(--font-sans-serif); color: var(--color-primary); font-size: 1.8rem; transition: transform 0.25s ease; }
+.faq-item[open] .faq-plus { transform: rotate(45deg); }
+.faq-item p { margin: 0.7rem 0 0; font-size: 1.45rem; line-height: 1.75; opacity: 0.72; }
 
 .house-body {
   max-width: 980px;
@@ -389,7 +399,6 @@ const config = pageConfigs[entry.slug];
   padding: min(5vw, 56px) 6vw 0;
   border-top: 1px solid var(--color-border);
 }
-
 .house-body :global(h2) {
   font-family: var(--font-display);
   font-size: clamp(2.6rem, 3vw, 3.8rem);
@@ -397,7 +406,6 @@ const config = pageConfigs[entry.slug];
   text-transform: uppercase;
   letter-spacing: 2px;
 }
-
 .house-body :global(p),
 .house-body :global(li) {
   font-size: 1.6rem;
@@ -405,23 +413,21 @@ const config = pageConfigs[entry.slug];
   opacity: 0.74;
 }
 
-.drift {
-  transform: translate3d(0, calc(var(--drift-y, 0) * 1px), 0);
-}
+.drift { transform: translate3d(0, calc(var(--drift-y, 0) * 1px), 0); }
 
 @media (max-width: 980px) {
-  .house-feature {
-    grid-template-columns: 1fr;
-  }
-  .house-gallery {
-    grid-template-columns: 1fr;
-  }
+  .bio-stage,
+  .story-row,
+  .story-row.reverse,
+  .vine-stage,
+  .phi-stage,
+  .faq-stage { grid-template-columns: 1fr; }
+  .story-row.reverse figure { order: 0; }
+  .vine-mast { position: relative; top: auto; }
 }
 
 @media (max-width: 640px) {
-  .house-hero-inner h1 {
-    letter-spacing: 4px;
-  }
+  .house-hero-inner h1 { letter-spacing: 4px; }
 }
 </style>
 

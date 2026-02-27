@@ -1143,8 +1143,8 @@ const events = (await getCollection('news')).sort((a, b) =>
 }
 .wine-modal-panel {
     position: fixed;
-    left: 50%;
-    top: 50%;
+    left: var(--modal-center-x, 50vw);
+    top: var(--modal-center-y, 50vh);
     z-index: 2;
     display: grid;
     grid-template-columns: 45% 1fr;
@@ -1153,12 +1153,12 @@ const events = (await getCollection('news')).sort((a, b) =>
     max-height: min(90vh, 820px);
     background: var(--color-bg);
     overflow: hidden;
-    transform: translate(-50%, calc(-50% + 16px));
+    transform: translate(-50%, calc(-50% + 14px)) scale(0.985);
     transition: transform 0.24s ease-out;
     will-change: transform;
 }
 .wine-modal.is-open .wine-modal-panel {
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%) scale(1);
 }
 [data-theme='dark'] .wine-modal-panel {
     background: #100c08;
@@ -1371,8 +1371,6 @@ const events = (await getCollection('news')).sort((a, b) =>
         grid-template-columns: 1fr;
         max-height: 92vh;
         width: min(96vw, 560px);
-        top: 50%;
-        left: 50%;
     }
     .wine-modal-img-wrap { height: 50vw; min-height: 220px; }
     .wine-modal-img { min-height: 220px; }
@@ -1490,6 +1488,7 @@ const events = (await getCollection('news')).sort((a, b) =>
         if (price) price.textContent = trigger.dataset.winePrice || '';
         if (link) link.href = `/work/${slug}`;
 
+        updateModalCenter();
         clearFarCloseTimer();
         modal.classList.add('is-open');
         modal.setAttribute('aria-hidden', 'false');
@@ -1532,6 +1531,15 @@ const events = (await getCollection('news')).sort((a, b) =>
         if (far) scheduleFarClose();
         else clearFarCloseTimer();
     }
+    function updateModalCenter() {
+        const els = getEls();
+        if (!els?.panel) return;
+        const vv = window.visualViewport;
+        const x = vv ? vv.offsetLeft + vv.width / 2 : window.innerWidth / 2;
+        const y = vv ? vv.offsetTop + vv.height / 2 : window.innerHeight / 2;
+        els.panel.style.setProperty('--modal-center-x', `${x}px`);
+        els.panel.style.setProperty('--modal-center-y', `${y}px`);
+    }
 
     function onDocClick(e: MouseEvent) {
         const target = e.target as HTMLElement | null;
@@ -1552,9 +1560,13 @@ const events = (await getCollection('news')).sort((a, b) =>
         document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
         document.addEventListener('visibilitychange', () => { if (document.hidden) closeIfOpen(); });
         document.addEventListener('pointermove', onPointerMove);
+        window.addEventListener('resize', updateModalCenter);
+        window.visualViewport?.addEventListener('resize', updateModalCenter);
+        window.visualViewport?.addEventListener('scroll', updateModalCenter);
         document.addEventListener('astro:before-swap', closeModal);
         (window as any).__wineModalBound = true;
     }
+    updateModalCenter();
 })();
 
 // Parallax scroll on vineyard section
