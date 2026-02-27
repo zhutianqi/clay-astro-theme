@@ -1,44 +1,546 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import PostCard from '../components/PostCard.astro';
 import { type CollectionEntry } from 'astro:content';
 
 interface Props {
   entry: CollectionEntry<'pages'>;
-  items?: any[]; // The list of items to display
+  items?: any[];
   baseSlug?: string;
 }
 
 const { entry, items = [], baseSlug } = Astro.props;
-const { Content } = await entry.render();
+const { title, description } = entry.data;
 
-const { title, description, thumbnail } = entry.data;
-
-let postCounter = 0;
+const isWines  = baseSlug === 'work';
+const isEvents = baseSlug === 'news';
 ---
 
 <Layout title={title} description={description}>
-    {description && (
-      <header class="page-head">
-        <h2 class="page-head-title">
-          {description}
-        </h2>
-      </header>
-    )}
 
-    {/* Content from the index markdown (if any, though legacy work-page didn't show it, only description).
-        But generic List might want it. */}
+  {description && (
+    <header class="page-head" data-reveal="up">
+      <h2 class="page-head-title">{description}</h2>
+    </header>
+  )}
 
+  {/* ══════════════════════════════════════
+      WINES — Lookbook oval/capsule grid
+      ══════════════════════════════════════ */}
+  {isWines && (
+    <section class="lookbook">
+      {items.map((post, i) => {
+        const size = i % 5 === 2 ? 'lookbook-item--hero' : (i % 2 === 1 ? 'lookbook-item--tall' : '');
+        return (
+          <div class={`lookbook-item ${size}`} data-reveal="up" style={`--i:${i}`}>
+            <a href={`/${baseSlug}/${post.slug}`} class="lookbook-link">
+              <div class="lookbook-oval-wrap">
+                <div class="lookbook-oval">
+                  {post.data.thumbnail
+                    ? <img src={post.data.thumbnail} alt={post.data.title} loading="lazy" />
+                    : <div class="lookbook-oval-fallback"></div>
+                  }
+                </div>
+                {post.data.rating && (
+                  <div class="lookbook-badge">{post.data.rating}<span class="lookbook-badge-pts">pts</span></div>
+                )}
+              </div>
+              <div class="lookbook-info">
+                {(post.data.varietal || post.data.vintage) && (
+                  <p class="lookbook-varietal">
+                    {[post.data.varietal, post.data.vintage].filter(Boolean).join(' · ')}
+                  </p>
+                )}
+                <h3 class="lookbook-title">{post.data.title}</h3>
+                <div class="lookbook-rule"></div>
+              </div>
+            </a>
+          </div>
+        );
+      })}
+    </section>
+  )}
+
+  {/* ══════════════════════════════════════
+      EVENTS — Invitation-letter cards
+      ══════════════════════════════════════ */}
+  {isEvents && (
+    <section class="events-feed">
+      {items.map((post, i) => {
+        const d = post.data.date ? new Date(post.data.date) : null;
+        const month = d ? d.toLocaleDateString('en-US', { month: 'short' }).toUpperCase() : '';
+        const day   = d ? d.getDate() : '';
+        const year  = d ? d.getFullYear() : '';
+        return (
+          <article class="invitation-card" data-reveal="up" data-delay={String((i % 3) + 1)}>
+            <a href={`/${baseSlug}/${post.slug}`} class="invitation-link">
+
+              {/* Photo panel */}
+              <div class="invitation-photo">
+                {post.data.thumbnail
+                  ? <img src={post.data.thumbnail} alt={post.data.title} loading="lazy" />
+                  : <div class="invitation-photo-fallback"></div>
+                }
+                <div class="invitation-photo-overlay"></div>
+              </div>
+
+              {/* Content panel */}
+              <div class="invitation-body">
+                {d && (
+                  <div class="invitation-date">
+                    <span class="invitation-month">{month}</span>
+                    <span class="invitation-day">{day}</span>
+                    <span class="invitation-year">{year}</span>
+                  </div>
+                )}
+                <div class="invitation-divider"></div>
+                <h2 class="invitation-title">{post.data.title}</h2>
+                {post.data.description && (
+                  <p class="invitation-desc">{post.data.description}</p>
+                )}
+                <span class="invitation-cta">
+                  <span class="invitation-cta-text">View Invitation</span>
+                  <span class="invitation-cta-arrow">→</span>
+                </span>
+              </div>
+
+              {/* Index numeral watermark */}
+              <span class="invitation-numeral" aria-hidden="true">0{i + 1}</span>
+
+            </a>
+          </article>
+        );
+      })}
+    </section>
+  )}
+
+  {/* Fallback: generic PostCard feed for other collections */}
+  {!isWines && !isEvents && (
     <div class="post-feed">
-        {items.map((post) => {
-            postCounter++;
-            return (
-                <PostCard
-                    count={postCounter}
-                    post={post}
-                    slug={baseSlug ? `${baseSlug}/${post.slug}` : post.slug}
-                />
-            );
-        })}
+      {items.map((post, idx) => {
+        const bgStyle = post.data.thumbnail ? `background-image: url(${post.data.thumbnail});` : '';
+        return (
+          <article class="post-card with-image" style={bgStyle}>
+            <a href={`/${baseSlug}/${post.slug}`} class="post-card-link">
+              <div class="post-card-content">
+                <div class="post-card-text">
+                  <h2 class="post-card-title">{post.data.title}</h2>
+                </div>
+              </div>
+            </a>
+          </article>
+        );
+      })}
     </div>
+  )}
+
 </Layout>
+
+<style>
+/* ═══════════════════════════════════════════════
+   LOOKBOOK — oval/capsule masked wine grid
+   ═══════════════════════════════════════════════ */
+.lookbook {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 5vw 4vw;
+  padding: 6vw 6vw 10vw;
+  align-items: start;
+}
+
+/* Stagger middle column downward for editorial rhythm */
+.lookbook-item:nth-child(3n+2) {
+  margin-top: 6vw;
+}
+
+.lookbook-item--hero {
+  grid-column: span 1;
+}
+
+.lookbook-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
+/* ── Oval mask ── */
+.lookbook-oval-wrap {
+  position: relative;
+  margin-bottom: 1.8rem;
+}
+.lookbook-oval {
+  position: relative;
+  width: 100%;
+  padding-bottom: 138%;   /* portrait ratio → oval when border-radius:50% */
+  border-radius: 50%;
+  overflow: hidden;
+  background: #1a1209;
+  transition: transform 0.6s cubic-bezier(0.2,0,0,1);
+}
+.lookbook-link:hover .lookbook-oval {
+  transform: scale(1.02);
+}
+.lookbook-oval img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  transition: transform 0.8s cubic-bezier(0.2,0,0,1);
+}
+.lookbook-link:hover .lookbook-oval img {
+  transform: scale(1.06);
+}
+.lookbook-oval-fallback {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(160deg, #2a1a0e, #0a0604);
+}
+
+/* Rating badge — upper right of oval */
+.lookbook-badge {
+  position: absolute;
+  top: -0.4rem;
+  right: -0.4rem;
+  font-family: var(--font-display);
+  font-size: 2.2rem;
+  font-weight: 300;
+  color: var(--color-primary);
+  line-height: 1;
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+.lookbook-link:hover .lookbook-badge {
+  opacity: 1;
+  transform: translateY(0);
+}
+.lookbook-badge-pts {
+  font-family: var(--font-sans-serif);
+  font-size: 0.75rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+
+/* ── Wine info below oval ── */
+.lookbook-info {
+  text-align: center;
+  padding: 0 0.5rem;
+}
+.lookbook-varietal {
+  font-family: var(--font-sans-serif);
+  font-size: 0.78rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  margin: 0 0 0.7rem;
+  opacity: 0.85;
+}
+.lookbook-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 2.5vw, 2.8rem);
+  font-weight: 300;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--color-base);
+  margin: 0 0 1rem;
+  line-height: 1.2;
+  transition: color 0.25s;
+}
+.lookbook-link:hover .lookbook-title {
+  color: var(--color-primary);
+}
+.lookbook-rule {
+  width: 0;
+  height: 1px;
+  background: var(--color-primary);
+  margin: 0 auto;
+  transition: width 0.45s cubic-bezier(0.2,0,0,1);
+}
+.lookbook-link:hover .lookbook-rule { width: 32px; }
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .lookbook {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8vw 6vw;
+    padding: 8vw 6vw 12vw;
+  }
+  .lookbook-item:nth-child(3n+2) { margin-top: 0; }
+  .lookbook-item:nth-child(2n) { margin-top: 8vw; }
+}
+@media (max-width: 500px) {
+  .lookbook {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6vw 4vw;
+    padding: 6vw 4vw 10vw;
+  }
+  .lookbook-item:nth-child(2n) { margin-top: 6vw; }
+  .lookbook-title { font-size: 1.6rem; letter-spacing: 1.5px; }
+}
+
+
+/* ═══════════════════════════════════════════════
+   EVENTS — invitation-letter cards
+   ═══════════════════════════════════════════════ */
+.events-feed {
+  padding: 2vw 5vw 10vw;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.invitation-card {
+  position: relative;
+  border-top: 1px solid var(--color-border);
+  overflow: hidden;
+}
+.invitation-card:last-child {
+  border-bottom: 1px solid var(--color-border);
+}
+
+.invitation-link {
+  display: grid;
+  grid-template-columns: min(38%, 420px) 1fr;
+  min-height: 340px;
+  text-decoration: none;
+  color: inherit;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ── Photo panel ── */
+.invitation-photo {
+  position: relative;
+  overflow: hidden;
+}
+.invitation-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  transition: transform 0.8s cubic-bezier(0.2,0,0,1);
+}
+.invitation-card:hover .invitation-photo img {
+  transform: scale(1.06);
+}
+.invitation-photo-fallback {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(160deg, #1a1209, #0a0604);
+}
+.invitation-photo-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, transparent 70%, var(--color-bg) 100%);
+  pointer-events: none;
+}
+[data-theme='dark'] .invitation-photo-overlay {
+  background: linear-gradient(to right, transparent 70%, var(--color-bg) 100%);
+}
+
+/* ── Content panel ── */
+.invitation-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 3.5rem 5rem 3.5rem 3rem;
+  position: relative;
+  transition: transform 0.45s cubic-bezier(0.2,0,0,1);
+}
+.invitation-card:hover .invitation-body {
+  transform: translateX(8px);
+}
+
+/* Date stamp */
+.invitation-date {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  margin-bottom: 1.8rem;
+}
+.invitation-month {
+  font-family: var(--font-sans-serif);
+  font-size: 0.72rem;
+  letter-spacing: 3.5px;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  opacity: 0.85;
+}
+.invitation-day {
+  font-family: var(--font-display);
+  font-size: 2.8rem;
+  font-weight: 300;
+  color: var(--color-base);
+  line-height: 1;
+  opacity: 0.45;
+}
+.invitation-year {
+  font-family: var(--font-sans-serif);
+  font-size: 0.72rem;
+  letter-spacing: 2px;
+  color: var(--color-base);
+  opacity: 0.3;
+}
+
+/* Gold horizontal rule */
+.invitation-divider {
+  width: 36px;
+  height: 1px;
+  background: var(--color-primary);
+  opacity: 0.45;
+  margin-bottom: 1.8rem;
+  transition: width 0.45s cubic-bezier(0.2,0,0,1), opacity 0.45s;
+}
+.invitation-card:hover .invitation-divider {
+  width: 64px;
+  opacity: 0.75;
+}
+
+.invitation-title {
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 3.5vw, 3.8rem);
+  font-weight: 300;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--color-base);
+  margin: 0 0 1.2rem;
+  line-height: 1.15;
+  transition: color 0.25s;
+}
+.invitation-card:hover .invitation-title {
+  color: var(--color-primary);
+}
+.invitation-desc {
+  font-family: var(--font-serif);
+  font-size: 1.55rem;
+  font-style: italic;
+  line-height: 1.7;
+  color: var(--color-base);
+  opacity: 0.55;
+  margin: 0 0 2rem;
+  max-width: 520px;
+}
+[data-theme='dark'] .invitation-desc { opacity: 0.72; }
+
+/* CTA */
+.invitation-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  font-family: var(--font-sans-serif);
+  font-size: 0.82rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  opacity: 0;
+  transform: translateX(-8px);
+  transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.2,0,0,1);
+}
+.invitation-card:hover .invitation-cta {
+  opacity: 1;
+  transform: translateX(0);
+}
+.invitation-cta-arrow {
+  transition: transform 0.35s cubic-bezier(0.2,0,0,1);
+}
+.invitation-card:hover .invitation-cta-arrow {
+  transform: translateX(4px);
+}
+
+/* Issue numeral watermark */
+.invitation-numeral {
+  position: absolute;
+  right: 3rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: var(--font-display);
+  font-size: clamp(8rem, 14vw, 16rem);
+  font-weight: 200;
+  color: var(--color-base);
+  opacity: 0.03;
+  pointer-events: none;
+  user-select: none;
+  line-height: 1;
+  letter-spacing: -6px;
+}
+
+/* ── Responsive ── */
+@media (max-width: 800px) {
+  .invitation-link {
+    grid-template-columns: 1fr;
+    min-height: unset;
+  }
+  .invitation-photo {
+    height: 52vw;
+    max-height: 340px;
+  }
+  .invitation-photo-overlay {
+    background: linear-gradient(to bottom, transparent 60%, var(--color-bg) 100%);
+  }
+  .invitation-body {
+    padding: 2.5rem 6vw;
+    transform: none !important;
+  }
+  .invitation-card:hover .invitation-body { transform: none; }
+  .invitation-numeral { display: none; }
+  .invitation-cta {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (max-width: 500px) {
+  .events-feed { padding: 0 0 8vw; }
+  .invitation-title { font-size: 2rem; letter-spacing: 1.5px; }
+  .invitation-body { padding: 2rem 4vw 2.5rem; }
+}
+
+
+/* ═══════════════════════════════════════════════
+   FALLBACK post-card (other collections)
+   ═══════════════════════════════════════════════ */
+.post-feed {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 0 3vw 8vw;
+  gap: 0;
+}
+.post-card {
+  position: relative;
+  flex: 1 0 300px;
+  display: flex;
+  height: 40vw;
+  max-height: 680px;
+  background: linear-gradient(160deg, #1a1209 0%, #0a0604 100%) center center;
+  background-size: cover;
+  overflow: hidden;
+}
+.post-card-link {
+  flex: 1 1 auto;
+  display: block;
+  text-decoration: none;
+}
+.post-card-content {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  padding: 3rem 2.5rem;
+  background: linear-gradient(to top, rgba(8,6,4,0.85) 0%, transparent 50%);
+}
+.post-card-title {
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 3vw, 3.5rem);
+  font-weight: 300;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #fff;
+  margin: 0;
+}
+</style>

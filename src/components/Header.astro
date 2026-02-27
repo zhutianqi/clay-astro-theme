@@ -17,25 +17,41 @@ const currentPath = Astro.url?.pathname ?? '';
                 <!-- About dropdown -->
                 <li class={`nav-item has-dropdown${(currentPath.startsWith('/bio') || currentPath.startsWith('/our-story') || currentPath.startsWith('/winemaker') || currentPath.startsWith('/vineyards') || currentPath.startsWith('/philosophy')) ? ' nav-current' : ''}`} role="menuitem">
                     <a href="/bio">About</a>
-                    <ul class="dropdown" role="menu" aria-label="About submenu">
-                        <li><a href="/our-story">Our Story</a></li>
-                        <li><a href="/winemaker">The Winemaker</a></li>
-                        <li><a href="/vineyards">Vineyards</a></li>
-                        <li><a href="/philosophy">Philosophy</a></li>
-                        <li><a href="/faq">FAQ</a></li>
-                    </ul>
+                    <div class="dropdown" role="navigation" aria-label="About submenu">
+                        <div class="dropdown-editorial">
+                            <div class="dropdown-editorial-img">
+                                <img src="/img/wine-estate.jpg" alt="" loading="lazy" />
+                            </div>
+                            <p class="dropdown-editorial-label">The Estate</p>
+                        </div>
+                        <nav class="dropdown-links">
+                            <a href="/our-story">Our Story</a>
+                            <a href="/winemaker">The Winemaker</a>
+                            <a href="/vineyards">Vineyards</a>
+                            <a href="/philosophy">Philosophy</a>
+                            <a href="/faq">FAQ</a>
+                        </nav>
+                    </div>
                 </li>
 
                 <!-- Wines dropdown -->
                 <li class={`nav-item has-dropdown${currentPath.startsWith('/work') ? ' nav-current' : ''}`} role="menuitem">
                     <a href="/work">Wines</a>
-                    <ul class="dropdown" role="menu" aria-label="Wines submenu">
-                        <li><a href="/work/leonidas-cabernet">Leonidas Cabernet</a></li>
-                        <li><a href="/work/hillside-blend">Hillside Blend</a></li>
-                        <li><a href="/work/reserve-chardonnay">Reserve Chardonnay</a></li>
-                        <li><a href="/work/pinot-noir">Estate Pinot Noir</a></li>
-                        <li><a href="/work/petite-sirah">Palisades Petite Sirah</a></li>
-                    </ul>
+                    <div class="dropdown" role="navigation" aria-label="Wines submenu">
+                        <div class="dropdown-editorial">
+                            <div class="dropdown-editorial-img">
+                                <img src="/img/wine-bottle-label.jpg" alt="" loading="lazy" />
+                            </div>
+                            <p class="dropdown-editorial-label">Our Selection</p>
+                        </div>
+                        <nav class="dropdown-links">
+                            <a href="/work/leonidas-cabernet">Leonidas Cabernet</a>
+                            <a href="/work/hillside-blend">Hillside Blend</a>
+                            <a href="/work/reserve-chardonnay">Reserve Chardonnay</a>
+                            <a href="/work/pinot-noir">Estate Pinot Noir</a>
+                            <a href="/work/petite-sirah">Palisades Petite Sirah</a>
+                        </nav>
+                    </div>
                 </li>
 
             </ul>
@@ -55,11 +71,19 @@ const currentPath = Astro.url?.pathname ?? '';
                 <!-- Experience dropdown -->
                 <li class={`nav-item has-dropdown${(currentPath.startsWith('/news') || currentPath.startsWith('/wine-tasting') || currentPath.startsWith('/accolades')) ? ' nav-current' : ''}`} role="menuitem">
                     <a href="/news">Experience</a>
-                    <ul class="dropdown" role="menu" aria-label="Experience submenu">
-                        <li><a href="/wine-tasting">Wine Tasting</a></li>
-                        <li><a href="/news">Events &amp; Gallery</a></li>
-                        <li><a href="/accolades">Accolades</a></li>
-                    </ul>
+                    <div class="dropdown" role="navigation" aria-label="Experience submenu">
+                        <div class="dropdown-editorial">
+                            <div class="dropdown-editorial-img">
+                                <img src="/img/wine-tasting.jpg" alt="" loading="lazy" />
+                            </div>
+                            <p class="dropdown-editorial-label">The Experience</p>
+                        </div>
+                        <nav class="dropdown-links">
+                            <a href="/wine-tasting">Wine Tasting</a>
+                            <a href="/news">Events &amp; Gallery</a>
+                            <a href="/accolades">Accolades</a>
+                        </nav>
+                    </div>
                 </li>
 
                 <!-- Contact -->
@@ -143,23 +167,31 @@ const currentPath = Astro.url?.pathname ?? '';
     vertical-align: middle;
     transition: transform 0.25s cubic-bezier(0.2,0,0,1), opacity 0.25s;
 }
-.nav-item.has-dropdown:hover > a::after {
+.nav-item.has-dropdown:hover > a::after,
+.nav-item.is-open > a::after {
     transform: rotate(225deg) translateY(0px);
     opacity: 0.75;
 }
 
 /* ────────────────────────────────────────────
-   MEGA DROPDOWN — full-width, centered, no box
+   MEGA DROPDOWN — editorial image + links
+   Positions relative to sticky header (containing block)
    ──────────────────────────────────────────── */
-/*
-  Positions relative to header.site-head (position:sticky),
-  NOT relative to the nav-item li. No min-width box.
-  No left/right rectangular alignment.
-*/
 .nav-item.has-dropdown {
-    /* keep static so dropdown uses header as containing block */
     position: static;
+    height: 100%;
+    display: flex;
+    align-items: center;
 }
+.nav {
+    height: 100%;
+    align-items: stretch;
+}
+.site-head-left,
+.site-head-right {
+    height: 100%;
+}
+
 .dropdown {
     position: absolute;
     top: 100%;
@@ -168,100 +200,128 @@ const currentPath = Astro.url?.pathname ?? '';
     display: flex;
     flex-direction: row;
     justify-content: center;
-    flex-wrap: wrap;
-    gap: 0;
-    background: rgba(var(--color-bg-rgb), 0.97);
-    backdrop-filter: blur(32px) saturate(1.8);
-    -webkit-backdrop-filter: blur(32px) saturate(1.8);
+    align-items: stretch;
+    background: rgba(var(--color-bg-rgb), 0.98);
+    backdrop-filter: blur(36px) saturate(1.8);
+    -webkit-backdrop-filter: blur(36px) saturate(1.8);
     border: none;
-    padding: 1.2rem 0 1.6rem;
-    list-style: none;
-    margin: 0;
+    box-shadow: 0 24px 80px rgba(0,0,0,0.10);
     z-index: 500;
     /* hidden state */
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
-    transform: translateY(-8px);
+    transform: translateY(-10px);
     transition:
-        opacity 0.22s cubic-bezier(0.2,0,0,1),
-        transform 0.22s cubic-bezier(0.2,0,0,1),
-        visibility 0.22s;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.07);
+        opacity 0.28s cubic-bezier(0.2,0,0,1),
+        transform 0.28s cubic-bezier(0.2,0,0,1),
+        visibility 0s 0.28s;
 }
 
 [data-theme='dark'] .dropdown {
-    background: rgba(10, 7, 4, 0.98);
-    box-shadow: 0 20px 60px rgba(0,0,0,0.55);
+    background: rgba(10,7,4,0.98);
+    box-shadow: 0 24px 80px rgba(0,0,0,0.65);
 }
 
-/* Visible state */
+/* Visible state — JS .is-open + CSS :hover (fallback) + :focus-within (a11y) */
+.nav-item.is-open .dropdown,
 .nav-item:hover .dropdown,
 .nav-item:focus-within .dropdown {
     opacity: 1;
     visibility: visible;
     pointer-events: auto;
     transform: translateY(0);
+    transition:
+        opacity 0.28s cubic-bezier(0.2,0,0,1),
+        transform 0.28s cubic-bezier(0.2,0,0,1),
+        visibility 0s;
 }
 
-/* ── Dropdown items ── */
-.dropdown li {
-    margin: 0;
-    padding: 0;
+/* ── Editorial image panel (left) ── */
+.dropdown-editorial {
+    position: relative;
+    width: 260px;
+    flex-shrink: 0;
+    overflow: hidden;
 }
-
-.dropdown li a {
+.dropdown-editorial-img {
+    width: 100%;
+    height: 100%;
+    min-height: 230px;
+}
+.dropdown-editorial-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
     display: block;
-    padding: 1.4rem 2.6rem;
+    transition: transform 0.7s cubic-bezier(0.2,0,0,1);
+}
+.nav-item.is-open .dropdown-editorial-img img,
+.nav-item:hover .dropdown-editorial-img img {
+    transform: scale(1.06);
+}
+/* Dark gradient overlay on image */
+.dropdown-editorial::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.08) 40%, rgba(0,0,0,0.52) 100%);
+    pointer-events: none;
+}
+.dropdown-editorial-label {
+    position: absolute;
+    bottom: 1.4rem;
+    left: 1.8rem;
+    z-index: 2;
+    font-family: var(--font-display);
+    font-size: 1.45rem;
+    font-weight: 300;
+    font-style: italic;
+    color: rgba(255,255,255,0.9);
+    margin: 0;
+    letter-spacing: 1px;
+    text-shadow: 0 1px 8px rgba(0,0,0,0.35);
+}
+
+/* ── Links column (right) ── */
+.dropdown-links {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 2.2rem 4.5vw;
+    gap: 0;
+    min-width: 200px;
+}
+.dropdown-links a {
+    display: block;
+    padding: 1rem 0;
     font-family: var(--font-sans-serif);
-    font-size: 0.88rem;
-    letter-spacing: 3px;
+    font-size: 0.83rem;
+    letter-spacing: 3.5px;
     text-transform: uppercase;
     color: var(--color-base);
-    text-decoration: none;
     opacity: 0.55;
+    text-decoration: none;
     white-space: nowrap;
-    position: relative;
-    transition: opacity 0.22s, color 0.22s;
+    transition: opacity 0.22s, color 0.22s, transform 0.25s cubic-bezier(0.2,0,0,1);
 }
-[data-theme='dark'] .dropdown li a {
+[data-theme='dark'] .dropdown-links a {
     opacity: 0.75;
-    color: #f5efe2;
+    color: #f8f2e5;
 }
-
-/* Animated underline grows left → right */
-.dropdown li a::after {
-    content: '';
-    position: absolute;
-    bottom: 0.7rem;
-    left: 2.6rem;
-    width: 0;
-    height: 1px;
-    background: var(--color-primary);
-    transition: width 0.35s cubic-bezier(0.2,0,0,1);
+.dropdown-links a + a {
+    border-top: 1px solid rgba(150,120,60,0.12);
 }
-.dropdown li a:hover {
+[data-theme='dark'] .dropdown-links a + a {
+    border-top: 1px solid rgba(255,235,185,0.07);
+}
+.dropdown-links a:hover {
     opacity: 1;
     color: var(--color-primary);
+    transform: translateX(8px);
     text-decoration: none;
 }
-.dropdown li a:hover::after {
-    width: calc(100% - 5.2rem);
-}
-
-/* Subtle vertical separator between groups */
-.dropdown li + li::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    height: 14px;
-    width: 1px;
-    background: var(--color-border);
-    opacity: 0.35;
-}
-.dropdown li { position: relative; }
 
 /* ────────────────────────────────────────────
    MOBILE BURGER BUTTON
@@ -291,7 +351,7 @@ const currentPath = Astro.url?.pathname ?? '';
     border-radius: 1px;
 }
 .bar-1 { width: 28px; }
-.bar-2 { width: 20px; }   /* shorter middle — classic luxury style */
+.bar-2 { width: 20px; }
 .bar-3 { width: 28px; }
 
 /* White bars when transparent nav over dark hero */
@@ -328,7 +388,6 @@ const currentPath = Astro.url?.pathname ?? '';
     z-index: 200;
     overflow-y: auto;
     padding: 1rem 8vw 5rem;
-    /* No border-top — no rectangles */
     transform: translateX(-100%);
     transition: transform 0.38s cubic-bezier(0.4,0,0.2,1);
 }
@@ -358,7 +417,6 @@ const currentPath = Astro.url?.pathname ?? '';
     display: flex;
     flex-direction: column;
     padding: 2rem 0 1.5rem;
-    /* NO border-bottom — no cheap lines */
 }
 
 .mobile-section-label {
@@ -388,7 +446,7 @@ const currentPath = Astro.url?.pathname ?? '';
     opacity: 1;
 }
 
-/* Thin gold rule between sections (replaces border) */
+/* Thin gold rule between sections */
 .mobile-section + .mobile-section::before {
     content: '';
     display: block;
@@ -461,7 +519,7 @@ const currentPath = Astro.url?.pathname ?? '';
 </style>
 
 <script>
-// Wire up the mobile close button (separate from burger toggle)
+// Wire up the mobile close button
 (function() {
     const closeBtn = document.getElementById('mobile-close-btn');
     const drawer = document.getElementById('mobile-drawer') as HTMLElement;
@@ -475,4 +533,35 @@ const currentPath = Astro.url?.pathname ?? '';
         });
     }
 })();
+
+// JS hover management — bridges the gap between nav link and dropdown
+// Prevents dropdown from closing when mouse passes through the header gap
+document.addEventListener('astro:page-load', () => {
+    const items = document.querySelectorAll<HTMLElement>('.nav-item.has-dropdown');
+    items.forEach(item => {
+        let hideTimer: ReturnType<typeof setTimeout>;
+
+        item.addEventListener('mouseenter', () => {
+            clearTimeout(hideTimer);
+            // Close other open dropdowns
+            items.forEach(other => {
+                if (other !== item) other.classList.remove('is-open');
+            });
+            item.classList.add('is-open');
+        });
+
+        item.addEventListener('mouseleave', () => {
+            hideTimer = setTimeout(() => {
+                item.classList.remove('is-open');
+            }, 200);
+        });
+    });
+
+    // Close dropdowns on outside click
+    document.addEventListener('click', (e) => {
+        if (!(e.target as Element).closest('.nav-item.has-dropdown')) {
+            items.forEach(i => i.classList.remove('is-open'));
+        }
+    });
+});
 </script>

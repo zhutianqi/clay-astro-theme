@@ -7,7 +7,6 @@ interface Props {
 }
 
 const { entry } = Astro.props;
-const { title, description } = entry.data;
 ---
 
 <Layout title="Join the Allocation List" description="Request access to Maison's annual allocation — a limited release offered exclusively to members before reaching any retail or restaurant channel.">
@@ -455,16 +454,48 @@ form { width: 100%; }
 }
 .form-input:focus ~ .form-line { width: 100%; }
 
-/* Select overrides */
+/* Select — fully ghost, no rectangle, no browser chrome */
 .form-select {
   cursor: pointer;
-  padding-right: 2rem;
+  padding-right: 1.5rem;
   font-style: normal;
   font-family: var(--font-sans-serif);
   font-size: 1.1rem;
   letter-spacing: 0.5px;
+  background: transparent !important;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  /* Suppress browser dark-mode/light-mode forced backgrounds */
+  color-scheme: light;
 }
-.form-select option { background: var(--color-bg); color: var(--color-base); }
+[data-theme='dark'] .form-select {
+  color-scheme: dark;
+  color: var(--color-base);
+  background: transparent !important;
+}
+.form-select option {
+  background: var(--color-bg);
+  color: var(--color-base);
+}
+/* Custom chevron via parent wrapper */
+.form-field-select {
+  position: relative;
+}
+.form-field-select::after {
+  content: '';
+  position: absolute;
+  right: 2px;
+  top: 2.8rem;
+  width: 5px;
+  height: 5px;
+  border-right: 1px solid currentColor;
+  border-bottom: 1px solid currentColor;
+  transform: rotate(45deg);
+  opacity: 0.35;
+  pointer-events: none;
+  color: var(--color-base);
+}
 .form-label-select { top: 1.8rem; }
 .form-select:not([value=""]):valid + .form-label-select,
 .form-select:focus + .form-label-select {
