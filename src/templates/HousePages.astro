@@ -20,7 +20,7 @@ const { Content } = await entry.render();
 
 const house: Record<string, HouseConfig> = {
   bio: {
-    eyebrow: 'About The Estate',
+    eyebrow: 'Bio · Editorial Film',
     title: 'A Legacy\nPoured Slowly',
     subtitle: 'Napa Valley · Since 1989',
     hero: '/img/stock/bio-hero.jpg',
@@ -28,7 +28,7 @@ const house: Record<string, HouseConfig> = {
     art: ['/img/stock/bio-a.jpg', '/img/stock/bio-b.jpg', '/img/stock/bio-c.jpg', '/img/stock/estate-hero.jpg']
   },
   'our-story': {
-    eyebrow: 'Our Story',
+    eyebrow: 'Our Story · Timeline Museum',
     title: 'From One Acre\nTo An Icon',
     subtitle: 'A chronology of deliberate growth',
     hero: '/img/stock/story-hero.jpg',
@@ -36,7 +36,7 @@ const house: Record<string, HouseConfig> = {
     art: ['/img/stock/story-a.jpg', '/img/stock/story-b.jpg', '/img/stock/story-c.jpg', '/img/stock/estate-hero.jpg']
   },
   vineyards: {
-    eyebrow: 'Vineyards',
+    eyebrow: 'Vineyards · Cartographic',
     title: 'Five Blocks\nOne Signature',
     subtitle: '42 acres, farmed parcel by parcel',
     hero: '/img/stock/vine-hero.jpg',
@@ -44,7 +44,7 @@ const house: Record<string, HouseConfig> = {
     art: ['/img/stock/vine-a.jpg', '/img/stock/vine-b.jpg', '/img/stock/vine-hero.jpg', '/img/stock/estate-hero.jpg']
   },
   philosophy: {
-    eyebrow: 'Philosophy',
+    eyebrow: 'Philosophy · Manifesto',
     title: 'Elegance Is\nAn Edit',
     subtitle: 'Less intervention, more truth',
     hero: '/img/stock/phi-hero.jpg',
@@ -52,7 +52,7 @@ const house: Record<string, HouseConfig> = {
     art: ['/img/stock/phi-a.jpg', '/img/stock/phi-b.jpg', '/img/stock/phi-hero.jpg', '/img/stock/estate-hero.jpg']
   },
   faq: {
-    eyebrow: 'FAQ',
+    eyebrow: 'FAQ · Concierge',
     title: 'Questions\nClearly Answered',
     subtitle: 'For allocation members, collectors, and guests',
     hero: '/img/stock/faq-hero.jpg',
@@ -63,19 +63,34 @@ const house: Record<string, HouseConfig> = {
 
 const config = house[entry.slug];
 
+const bioStats = [
+  ['42', 'Estate Acres'],
+  ['2,500', 'Cases / Year'],
+  ['35+', 'Harvests'],
+  ['5', 'Distinct Blocks']
+];
+
+const storyMoments = [
+  ['1989', 'Foundation', 'A single acre on volcanic slope established the estate style.'],
+  ['1992', 'First Vintage', 'The first release defined the benchmark for balance and aging.'],
+  ['2005', 'Expansion', 'New parcels were acquired only when quality criteria were met.'],
+  ['2015', 'Transition', 'Second-generation stewardship preserved the house philosophy.'],
+  ['Today', 'Continuity', 'Every vintage still follows the same disciplined framework.']
+];
+
 const vineyardBlocks = [
-  ['The Lion Block', '18 acres · Volcanic basalt · East-facing'],
-  ['The Ridge Block', '8 acres · Rocky loam · South-facing'],
-  ['The Fog Block', '6 acres · Goldridge sandy loam · Marine influence'],
-  ['The Stone Terrace', '5 acres · Alluvial gravel · Valley floor'],
-  ['The Palisades', '3 acres · Volcanic face · Extreme slope']
+  ['The Lion Block', '18 acres', 'Volcanic basalt · East-facing'],
+  ['The Ridge Block', '8 acres', 'Rocky loam · South-facing'],
+  ['The Fog Block', '6 acres', 'Marine influence · Aromatic lift'],
+  ['The Stone Terrace', '5 acres', 'Alluvial gravel · Valley floor'],
+  ['The Palisades', '3 acres', 'Steep volcanic face · Tiny yields']
 ];
 
 const philosophyLines = [
-  'The finest wines are not made louder in cellar; they are preserved in clarity.',
-  'Biodynamic farming is a technical commitment to soil vitality and vine balance.',
-  'Scores are outcomes, not objectives. Pleasure and longevity are the objective.',
-  'Rarity exists to protect quality, never to manufacture scarcity.'
+  'The vineyard leads; the cellar follows.',
+  'Precision is subtraction, not amplification.',
+  'Scores may arrive, but pleasure is the objective.',
+  'Rarity exists to protect quality, never to perform exclusivity.'
 ];
 
 const faqItems = [
@@ -89,7 +104,7 @@ const faqItems = [
 
 <Layout title={entry.data.title} description={entry.data.description}>
   {config && (
-    <article class={`house-page house-${entry.slug}`}>
+    <article class={`house-page variant-${entry.slug}`}>
       <section class="house-hero">
         <div class="house-hero-bg drift" data-drift="0.08" style={`background-image:url('${config.hero}')`}></div>
         <div class="house-hero-overlay"></div>
@@ -106,58 +121,57 @@ const faqItems = [
       </section>
 
       {entry.slug === 'bio' && (
-        <section class="bio-stage">
-          <figure class="bio-main" data-reveal="left">
-            <img src={config.art[0]} alt="Estate signature" loading="lazy" />
+        <section class="bio-film">
+          <figure class="bio-film-main" data-reveal="left">
+            <img src={config.art[0]} alt="Estate" loading="lazy" />
           </figure>
-          <figure class="bio-detail drift" data-drift="0.11" data-reveal="right">
-            <img src={config.art[1]} alt="Cellar detail" loading="lazy" />
+          <figure class="bio-film-support drift" data-drift="0.1" data-reveal="right">
+            <img src={config.art[1]} alt="Cellar" loading="lazy" />
           </figure>
-          <figure class="bio-detail drift" data-drift="0.06" data-reveal="up" data-delay="2">
-            <img src={config.art[2]} alt="Texture detail" loading="lazy" />
-          </figure>
-          <figure class="bio-line" data-reveal="up" data-delay="3">
-            <img src={config.art[3]} alt="Pour detail" loading="lazy" />
+          <div class="bio-film-strip" data-reveal="up" data-delay="2">
+            {bioStats.map((s, i) => (
+              <article class="bio-chip" data-reveal={i % 2 === 0 ? 'up' : 'right'}>
+                <span>{s[0]}</span>
+                <small>{s[1]}</small>
+              </article>
+            ))}
+          </div>
+          <figure class="bio-film-wide" data-reveal="up" data-delay="3">
+            <img src={config.art[2]} alt="Estate detail" loading="lazy" />
           </figure>
         </section>
       )}
 
       {entry.slug === 'our-story' && (
-        <section class="story-stage">
-          <article class="story-row" data-reveal="left">
-            <figure><img src={config.art[0]} alt="Founding era" loading="lazy" /></figure>
-            <div>
-              <h2>1989 · Foundation</h2>
-              <p>A single hillside acre established the estate DNA: structure, lift, and aging architecture.</p>
-            </div>
-          </article>
-          <article class="story-row reverse" data-reveal="right">
-            <figure><img src={config.art[1]} alt="Growth era" loading="lazy" /></figure>
-            <div>
-              <h2>2005 · Expansion</h2>
-              <p>Additional parcels were selected only when slope, soil, and farming resources met the house standard.</p>
-            </div>
-          </article>
-          <article class="story-row" data-reveal="left">
-            <figure><img src={config.art[2]} alt="Current era" loading="lazy" /></figure>
-            <div>
-              <h2>Today · Continuity</h2>
-              <p>Second-generation stewardship preserves the same philosophy while refining execution every vintage.</p>
-            </div>
-          </article>
+        <section class="story-museum">
+          <div class="story-spine" aria-hidden="true"></div>
+          {storyMoments.map((m, i) => (
+            <article class={`story-card ${i % 2 === 0 ? 'left' : 'right'}`} data-reveal={i % 2 === 0 ? 'left' : 'right'}>
+              <span class="story-year">{m[0]}</span>
+              <div class="story-copy">
+                <h2>{m[1]}</h2>
+                <p>{m[2]}</p>
+              </div>
+            </article>
+          ))}
+          <figure class="story-visual" data-reveal="up">
+            <img src={config.art[0]} alt="Timeline visual" loading="lazy" />
+          </figure>
         </section>
       )}
 
       {entry.slug === 'vineyards' && (
-        <section class="vine-stage">
-          <div class="vine-mast" data-reveal="left">
-            <img src={config.art[0]} alt="Vineyard map tone" loading="lazy" />
-          </div>
-          <div class="vine-list">
-            {vineyardBlocks.map((row, i) => (
-              <article class="vine-item" data-reveal={i % 2 === 0 ? 'right' : 'left'}>
-                <h2>{row[0]}</h2>
-                <p>{row[1]}</p>
+        <section class="vine-carto">
+          <figure class="vine-map" data-reveal="left">
+            <img src={config.art[0]} alt="Estate map texture" loading="lazy" />
+            <div class="map-grid" aria-hidden="true"></div>
+          </figure>
+          <div class="vine-pins">
+            {vineyardBlocks.map((b, i) => (
+              <article class="vine-pin" data-reveal={i % 2 === 0 ? 'right' : 'up'}>
+                <h2>{b[0]}</h2>
+                <p class="vine-size">{b[1]}</p>
+                <p>{b[2]}</p>
               </article>
             ))}
           </div>
@@ -165,31 +179,37 @@ const faqItems = [
       )}
 
       {entry.slug === 'philosophy' && (
-        <section class="phi-stage">
-          <figure class="phi-image drift" data-drift="0.1" data-reveal="left">
-            <img src={config.art[0]} alt="Philosophy visual" loading="lazy" />
+        <section class="phi-manifesto">
+          <figure class="phi-image drift" data-drift="0.08" data-reveal="left">
+            <img src={config.art[0]} alt="Manifesto visual" loading="lazy" />
           </figure>
-          <div class="phi-lines">
+          <div class="phi-texts">
             {philosophyLines.map((line, i) => (
               <p data-reveal={i % 2 === 0 ? 'right' : 'left'}>{line}</p>
             ))}
           </div>
+          <figure class="phi-secondary" data-reveal="up" data-delay="2">
+            <img src={config.art[1]} alt="Philosophy detail" loading="lazy" />
+          </figure>
         </section>
       )}
 
       {entry.slug === 'faq' && (
-        <section class="faq-stage">
-          <div class="faq-aside" data-reveal="left">
-            <img src={config.art[0]} alt="Hospitality" loading="lazy" />
+        <section class="faq-concierge">
+          <div class="faq-panel" data-reveal="left">
+            <figure>
+              <img src={config.art[0]} alt="Hospitality" loading="lazy" />
+            </figure>
+            <p>Allocation, shipping, and hospitality are coordinated by a dedicated concierge team.</p>
           </div>
           <div class="faq-list" data-reveal="right">
-            {faqItems.map((item) => (
+            {faqItems.map((f) => (
               <details class="faq-item">
                 <summary>
-                  <span>{item[0]}</span>
+                  <span>{f[0]}</span>
                   <span class="faq-plus" aria-hidden="true">+</span>
                 </summary>
-                <p>{item[1]}</p>
+                <p>{f[1]}</p>
               </details>
             ))}
           </div>
@@ -274,105 +294,157 @@ const faqItems = [
   opacity: 0.82;
 }
 
-.bio-stage,
-.story-stage,
-.vine-stage,
-.phi-stage,
-.faq-stage {
+.bio-film,
+.story-museum,
+.vine-carto,
+.phi-manifesto,
+.faq-concierge {
   margin: min(8vw, 90px) auto 0;
   max-width: 1320px;
   padding: 0 6vw;
 }
 
-.bio-stage {
+.bio-film {
   display: grid;
-  grid-template-columns: 1.2fr 1fr;
+  grid-template-columns: 1.1fr 0.9fr;
   gap: min(2vw, 24px);
 }
-.bio-stage figure { margin: 0; overflow: hidden; }
-.bio-main { grid-row: 1 / span 2; aspect-ratio: 5 / 6; }
-.bio-detail { aspect-ratio: 4 / 3; }
-.bio-line { grid-column: 1 / -1; aspect-ratio: 16 / 6; }
-.bio-stage img,
-.story-stage img,
-.vine-stage img,
-.phi-stage img,
-.faq-stage img {
-  width: 100%; height: 100%; object-fit: cover; display: block;
-  transition: transform 0.85s cubic-bezier(0.2, 0, 0, 1);
-}
-.bio-stage figure:hover img,
-.story-stage figure:hover img,
-.vine-stage figure:hover img,
-.phi-stage figure:hover img,
-.faq-stage figure:hover img { transform: scale(1.04); }
-
-.story-stage { display: grid; gap: min(2vw, 24px); }
-.story-row {
+.bio-film-main,
+.bio-film-support,
+.bio-film-wide { margin: 0; overflow: hidden; }
+.bio-film-main { grid-row: 1 / span 2; aspect-ratio: 4 / 5; }
+.bio-film-support { aspect-ratio: 4 / 3; }
+.bio-film-wide { grid-column: 1 / -1; aspect-ratio: 16 / 6; }
+.bio-film-strip {
   display: grid;
-  grid-template-columns: 42% 1fr;
-  gap: min(3vw, 36px);
-  align-items: center;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.8rem;
 }
-.story-row.reverse { grid-template-columns: 1fr 42%; }
-.story-row.reverse figure { order: 2; }
-.story-row h2 {
-  margin: 0 0 1rem;
+.bio-chip {
+  border-top: 1px solid var(--color-border);
+  padding: 0.8rem 0;
+}
+.bio-chip span {
+  display: block;
   font-family: var(--font-display);
-  font-size: clamp(2.3rem, 3vw, 3.8rem);
-  font-weight: 300;
-  letter-spacing: 1.8px;
+  font-size: clamp(2rem, 3vw, 3.2rem);
+  color: var(--color-primary);
+}
+.bio-chip small {
+  font-family: var(--font-sans-serif);
+  letter-spacing: 2px;
   text-transform: uppercase;
+  font-size: 0.76rem;
+  opacity: 0.62;
 }
-.story-row p { margin: 0; font-size: 1.55rem; line-height: 1.78; opacity: 0.72; }
-.story-row figure { margin: 0; aspect-ratio: 5 / 4; overflow: hidden; }
 
-.vine-stage {
+.story-museum {
+  position: relative;
   display: grid;
-  grid-template-columns: 38% 1fr;
-  gap: min(4vw, 52px);
-  align-items: start;
+  gap: 1rem;
 }
-.vine-mast { position: sticky; top: 110px; }
-.vine-mast img { aspect-ratio: 4 / 5; }
-.vine-list { display: grid; gap: 1rem; }
-.vine-item { border-top: 1px solid var(--color-border); padding: 1.1rem 0 1rem; }
-.vine-item h2 {
-  margin: 0 0 0.5rem;
-  font-family: var(--font-display);
-  font-size: clamp(2.1rem, 2.6vw, 3.3rem);
-  font-weight: 300;
+.story-spine {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  transform: translateX(-50%);
+  background: linear-gradient(to bottom, transparent, var(--color-border), transparent);
+}
+.story-card {
+  width: 50%;
+  display: grid;
+  gap: 0.7rem;
+  padding: 0.8rem 1rem;
+}
+.story-card.left { margin-right: auto; text-align: right; }
+.story-card.right { margin-left: auto; }
+.story-year {
+  font-family: var(--font-sans-serif);
+  letter-spacing: 3px;
   text-transform: uppercase;
-  letter-spacing: 1.2px;
+  color: var(--color-primary);
+  font-size: 0.78rem;
 }
-.vine-item p { margin: 0; font-size: 1.35rem; letter-spacing: 1.1px; text-transform: uppercase; opacity: 0.66; }
-
-.phi-stage {
-  display: grid;
-  grid-template-columns: 44% 1fr;
-  gap: min(4vw, 52px);
-  align-items: center;
-}
-.phi-image { margin: 0; aspect-ratio: 4 / 5; overflow: hidden; }
-.phi-lines { display: grid; gap: 1rem; }
-.phi-lines p {
+.story-copy h2 {
   margin: 0;
-  padding-left: 1rem;
-  border-left: 1px solid var(--color-border);
-  font-size: clamp(1.8rem, 2.2vw, 2.5rem);
-  line-height: 1.7;
-  font-style: italic;
-  opacity: 0.8;
+  font-family: var(--font-display);
+  font-size: clamp(2.1rem, 2.8vw, 3.8rem);
+  font-weight: 300;
+  text-transform: uppercase;
 }
+.story-copy p { margin: 0; font-size: 1.48rem; line-height: 1.75; opacity: 0.72; }
+.story-visual { margin: 1rem auto 0; width: min(720px, 100%); overflow: hidden; aspect-ratio: 16 / 8; }
 
-.faq-stage {
+.vine-carto {
+  display: grid;
+  grid-template-columns: 40% 1fr;
+  gap: min(4vw, 48px);
+}
+.vine-map { position: relative; margin: 0; overflow: hidden; aspect-ratio: 4 / 5; }
+.map-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(245, 217, 128, 0.12) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(245, 217, 128, 0.12) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events: none;
+}
+.vine-pins { display: grid; gap: 0.8rem; }
+.vine-pin { border-top: 1px solid var(--color-border); padding: 0.9rem 0; }
+.vine-pin h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 2.6vw, 3.2rem);
+  font-weight: 300;
+  text-transform: uppercase;
+}
+.vine-size {
+  margin: 0.3rem 0;
+  font-family: var(--font-sans-serif);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  font-size: 0.78rem;
+}
+.vine-pin p { margin: 0; font-size: 1.38rem; opacity: 0.7; }
+
+.phi-manifesto {
   display: grid;
   grid-template-columns: 42% 1fr;
-  gap: min(4vw, 52px);
+  gap: min(4vw, 48px);
+  align-items: center;
+}
+.phi-image,
+.phi-secondary { margin: 0; overflow: hidden; }
+.phi-image { aspect-ratio: 4 / 5; }
+.phi-secondary { grid-column: 1 / -1; aspect-ratio: 16 / 6; }
+.phi-texts { display: grid; gap: 0.8rem; }
+.phi-texts p {
+  margin: 0;
+  border-left: 1px solid var(--color-border);
+  padding-left: 1rem;
+  font-size: clamp(1.8rem, 2.2vw, 2.5rem);
+  line-height: 1.72;
+  font-style: italic;
+}
+
+.faq-concierge {
+  display: grid;
+  grid-template-columns: 42% 1fr;
+  gap: min(4vw, 48px);
   align-items: start;
 }
-.faq-aside { margin: 0; }
-.faq-aside img { aspect-ratio: 4 / 5; }
+.faq-panel { position: sticky; top: 110px; }
+.faq-panel figure { margin: 0; overflow: hidden; aspect-ratio: 4 / 5; }
+.faq-panel p {
+  margin: 1rem 0 0;
+  font-size: 1.42rem;
+  line-height: 1.7;
+  opacity: 0.68;
+}
 .faq-list { display: grid; gap: 0.8rem; }
 .faq-item { border-top: 1px solid var(--color-border); border-bottom: 1px solid var(--color-border); padding: 0.8rem 0; }
 .faq-item summary {
@@ -389,7 +461,7 @@ const faqItems = [
   font-size: clamp(1.9rem, 2.4vw, 2.9rem);
   font-weight: 300;
 }
-.faq-plus { font-family: var(--font-sans-serif); color: var(--color-primary); font-size: 1.8rem; transition: transform 0.25s ease; }
+.faq-plus { color: var(--color-primary); font-size: 1.8rem; transition: transform 0.25s ease; }
 .faq-item[open] .faq-plus { transform: rotate(45deg); }
 .faq-item p { margin: 0.7rem 0 0; font-size: 1.45rem; line-height: 1.75; opacity: 0.72; }
 
@@ -413,21 +485,30 @@ const faqItems = [
   opacity: 0.74;
 }
 
+.house-page img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.85s cubic-bezier(0.2, 0, 0, 1);
+}
+.house-page figure:hover img { transform: scale(1.04); }
+
 .drift { transform: translate3d(0, calc(var(--drift-y, 0) * 1px), 0); }
 
 @media (max-width: 980px) {
-  .bio-stage,
-  .story-row,
-  .story-row.reverse,
-  .vine-stage,
-  .phi-stage,
-  .faq-stage { grid-template-columns: 1fr; }
-  .story-row.reverse figure { order: 0; }
-  .vine-mast { position: relative; top: auto; }
+  .bio-film,
+  .vine-carto,
+  .phi-manifesto,
+  .faq-concierge { grid-template-columns: 1fr; }
+  .story-spine { left: 24px; }
+  .story-card { width: calc(100% - 42px); margin-left: 42px !important; text-align: left !important; }
+  .faq-panel { position: static; top: auto; }
 }
 
 @media (max-width: 640px) {
   .house-hero-inner h1 { letter-spacing: 4px; }
+  .bio-film-strip { grid-template-columns: 1fr; }
 }
 </style>
 
