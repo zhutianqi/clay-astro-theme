@@ -371,7 +371,7 @@ const currentPath = Astro.url?.pathname ?? '';
     flex-direction: column;
     align-items: flex-end;
     justify-content: center;
-    gap: 4px;
+    gap: 5px;
     background: transparent;
     border: 0;
     cursor: pointer;
@@ -411,21 +411,21 @@ const currentPath = Astro.url?.pathname ?? '';
 
 .burger-bar {
     display: block;
-    height: 2px;
+    height: 2.5px;
+    width: 24px;
     background: var(--color-base);
     transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
     transform-origin: center;
-    border-radius: 1px;
+    border-radius: 999px;
+    opacity: 0.96;
 }
-.bar-1 { width: 28px; }
-.bar-2 { width: 20px; }
-.bar-3 { width: 28px; }
+.bar-1, .bar-2, .bar-3 { width: 24px; }
 
 .site-head.is-transparent .burger-bar { background: rgba(255,255,255,0.92); }
 
-.nav-burger.is-active .bar-1 { transform: translateY(6px) rotate(45deg); width: 28px; }
+.nav-burger.is-active .bar-1 { transform: translateY(6px) rotate(45deg); width: 24px; }
 .nav-burger.is-active .bar-2 { opacity: 0; transform: scaleX(0); }
-.nav-burger.is-active .bar-3 { transform: translateY(-6px) rotate(-45deg); width: 28px; }
+.nav-burger.is-active .bar-3 { transform: translateY(-6px) rotate(-45deg); width: 24px; }
 
 .burger-text-wrap {
     display: inline-flex;
