@@ -51,24 +51,51 @@ const { title, description } = Astro.props;
 
         <script>
             function initNav() {
-                const burger = document.getElementById('nav-burger') as HTMLElement;
-                const drawer = document.getElementById('mobile-drawer') as HTMLElement;
+                const burger = document.getElementById('nav-burger') as HTMLElement | null;
+                const drawer = document.getElementById('mobile-drawer') as HTMLElement | null;
+                const closeBtn = document.getElementById('mobile-close-btn') as HTMLElement | null;
+                if (!burger || !drawer) return;
 
-                if (burger && drawer) {
-                    burger.addEventListener('click', () => {
-                        const isOpen = drawer.classList.toggle('is-open');
-                        burger.setAttribute('aria-expanded', String(isOpen));
-                        drawer.setAttribute('aria-hidden', String(!isOpen));
-                        burger.classList.toggle('is-active', isOpen);
-                    });
-                }
+                const lockBodyScroll = () => {
+                    const scrollY = window.scrollY || window.pageYOffset;
+                    document.body.dataset.scrollY = String(scrollY);
+                    document.body.style.position = 'fixed';
+                    document.body.style.top = `-${scrollY}px`;
+                    document.body.style.left = '0';
+                    document.body.style.right = '0';
+                    document.body.style.width = '100%';
+                    document.body.style.overflow = 'hidden';
+                };
 
-                drawer?.querySelectorAll('a').forEach(link => {
-                    link.addEventListener('click', () => {
-                        drawer.classList.remove('is-open');
-                        burger?.setAttribute('aria-expanded', 'false');
-                        burger?.classList.remove('is-active');
-                    });
+                const unlockBodyScroll = () => {
+                    const saved = Number(document.body.dataset.scrollY || '0');
+                    document.body.style.position = '';
+                    document.body.style.top = '';
+                    document.body.style.left = '';
+                    document.body.style.right = '';
+                    document.body.style.width = '';
+                    document.body.style.overflow = '';
+                    delete document.body.dataset.scrollY;
+                    window.scrollTo(0, saved);
+                };
+
+                const setMenuState = (open: boolean) => {
+                    drawer.classList.toggle('is-open', open);
+                    burger.setAttribute('aria-expanded', String(open));
+                    drawer.setAttribute('aria-hidden', String(!open));
+                    burger.classList.toggle('is-active', open);
+                    if (open) lockBodyScroll(); else unlockBodyScroll();
+                };
+
+                burger.onclick = () => {
+                    const isOpen = !drawer.classList.contains('is-open');
+                    setMenuState(isOpen);
+                };
+
+                closeBtn && (closeBtn.onclick = () => setMenuState(false));
+
+                drawer.querySelectorAll('a').forEach(link => {
+                    (link as HTMLElement).onclick = () => setMenuState(false);
                 });
             }
 

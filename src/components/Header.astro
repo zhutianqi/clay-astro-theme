@@ -500,16 +500,17 @@ html:not([data-theme='dark']) .site-head.is-transparent .burger-chevron,
     position: absolute;
     top: 1.2rem;
     right: 6vw;
+    z-index: 12;
     background: transparent;
     border: 0;
     cursor: pointer;
     color: var(--text-body);
-    opacity: 0.82;
+    opacity: 0.9;
     padding: 6px;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: opacity 0.2s;
+    transition: opacity 0.2s, color 0.2s;
     box-shadow: none;
     -webkit-appearance: none;
     appearance: none;
@@ -524,6 +525,10 @@ html:not([data-theme='dark']) .site-head.is-transparent .burger-chevron,
     border-color: transparent;
 }
 .mobile-close:hover { opacity: 1; }
+html:not([data-theme='dark']) .mobile-close,
+:root:not([data-theme='dark']) .mobile-close {
+    color: rgba(20,13,6,0.9);
+}
 
 .mobile-section {
     display: flex;
@@ -663,21 +668,6 @@ html:not([data-theme='dark']) .site-head.is-transparent .burger-chevron,
 </style>
 
 <script>
-// Mobile close button
-(function() {
-    const closeBtn = document.getElementById('mobile-close-btn');
-    const drawer = document.getElementById('mobile-drawer') as HTMLElement;
-    const burger = document.getElementById('nav-burger') as HTMLElement;
-    if (closeBtn && drawer && burger) {
-        closeBtn.addEventListener('click', () => {
-            drawer.classList.remove('is-open');
-            drawer.setAttribute('aria-hidden', 'true');
-            burger.setAttribute('aria-expanded', 'false');
-            burger.classList.remove('is-active');
-        });
-    }
-})();
-
 // JS hover management — 200ms delay bridges the gap between nav link and dropdown
 document.addEventListener('astro:page-load', () => {
     const items = document.querySelectorAll<HTMLElement>('.nav-item.has-dropdown');
