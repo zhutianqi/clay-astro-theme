@@ -104,9 +104,17 @@ const currentPath = Astro.url?.pathname ?? '';
 
         <!-- MOBILE BURGER — visible on ≤850px -->
         <button class="nav-burger" id="nav-burger" aria-label="Open menu" aria-expanded="false">
-            <span class="burger-bar bar-1"></span>
-            <span class="burger-bar bar-2"></span>
-            <span class="burger-bar bar-3"></span>
+            <span class="burger-icon-wrap" aria-hidden="true">
+                <svg class="burger-icon burger-open" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M4 7H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M8 12H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M12 17H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+                <svg class="burger-icon burger-close" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+            </span>
             <span class="burger-text-wrap">
                 <span class="burger-text">Menu</span>
                 <svg class="burger-chevron" width="10" height="10" viewBox="0 0 12 12" fill="none" aria-hidden="true">
@@ -409,23 +417,26 @@ const currentPath = Astro.url?.pathname ?? '';
     border: 0 !important;
 }
 
-.burger-bar {
-    display: block;
-    height: 2.5px;
+.burger-icon-wrap {
+    position: relative;
     width: 24px;
-    background: var(--color-base);
-    transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
-    transform-origin: center;
-    border-radius: 999px;
-    opacity: 0.96;
+    height: 24px;
+    display: grid;
+    place-items: center;
 }
-.bar-1, .bar-2, .bar-3 { width: 24px; }
+.burger-icon {
+    position: absolute;
+    inset: 0;
+    color: var(--color-base);
+    transition: opacity 0.24s ease, transform 0.28s cubic-bezier(0.2,0,0,1);
+}
+.burger-open { opacity: 1; transform: scale(1); }
+.burger-close { opacity: 0; transform: scale(0.9) rotate(-10deg); }
 
-.site-head.is-transparent .burger-bar { background: rgba(255,255,255,0.92); }
+.site-head.is-transparent .burger-icon { color: rgba(255,255,255,0.92); }
 
-.nav-burger.is-active .bar-1 { transform: translateY(6px) rotate(45deg); width: 24px; }
-.nav-burger.is-active .bar-2 { opacity: 0; transform: scaleX(0); }
-.nav-burger.is-active .bar-3 { transform: translateY(-6px) rotate(-45deg); width: 24px; }
+.nav-burger.is-active .burger-open { opacity: 0; transform: scale(0.9) rotate(10deg); }
+.nav-burger.is-active .burger-close { opacity: 1; transform: scale(1) rotate(0deg); }
 
 .burger-text-wrap {
     display: inline-flex;
@@ -466,9 +477,9 @@ const currentPath = Astro.url?.pathname ?? '';
 }
 
 /* Light mode on transparent header: keep menu button dark for contrast */
-html:not([data-theme='dark']) .site-head.is-transparent .burger-bar,
-:root:not([data-theme='dark']) .site-head.is-transparent .burger-bar {
-    background: rgba(20,13,6,0.92) !important;
+html:not([data-theme='dark']) .site-head.is-transparent .burger-icon,
+:root:not([data-theme='dark']) .site-head.is-transparent .burger-icon {
+    color: rgba(20,13,6,0.92) !important;
 }
 html:not([data-theme='dark']) .site-head.is-transparent .burger-text-wrap,
 html:not([data-theme='dark']) .site-head.is-transparent .burger-text,
